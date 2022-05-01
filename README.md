@@ -2,8 +2,8 @@
 
 A robot to follow my dog around and give her treats
 
-<img src="markdownmonstericon.png"
-     alt="Markdown Monster icon"
+<img src="https://github.com/littlebee/scatbot/blob/fdfa67ec1966cedb2e5a322f2bc2d7778dd695b0/docs/img/scatbot-pi-design.png"
+     alt="design image"
      style="float: right; margin-right: 10px; width: 200px;" />
 
 I originally got the idea for scatbot watching my dog interact with the Roomba. She seemed disappointed and frustrated that El Roomba just went about his business as if she wasn't sitting right there with the ball under the couch the robot just pushed out from under the couch. How rude.
