@@ -9,7 +9,7 @@ import sys
 import time
 import cv2
 
-video_channel = 0
+video_channel = 4
 if len(sys.argv) > 1:
     video_channel = int(sys.argv[1])
 
@@ -39,7 +39,9 @@ writer = cv2.VideoWriter('camera_test_output.avi',
                          cv2.VideoWriter_fourcc(*'MJPG'),
                          10, size)
 
+print("recording 30 secs of video...")
 start = time.time()
+num_frames = 0
 while(True):
     ret, frame = video.read()
 
@@ -48,7 +50,6 @@ while(True):
         # Write the frame into the
         # file 'filename.avi'
         writer.write(frame)
-        print('...wrote a frame to avi')
 
         # Display the frame
         # saved in the file
@@ -56,12 +57,14 @@ while(True):
 
         cv2.waitKey(1)
 
+        num_frames += 1
+
     # Break the loop
     else:
         break
 
     # runs for 15
-    if time.time() - start >= 15:
+    if time.time() - start >= 30:
         break
 
 # When everything done, release
@@ -73,4 +76,5 @@ writer.release()
 # Closes all the frames
 cv2.destroyAllWindows()
 
-print("The video was successfully saved")
+print("The video was successfully saved.")
+print(f"recorded {num_frames} in 30s ({num_frames/30:.2f} fps)")
