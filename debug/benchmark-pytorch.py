@@ -3,8 +3,8 @@
 import time
 from os.path import exists
 
-# OMFG, only python and nano, you HAVE to import cv2
-#  before torch on nano.  WTAFF?
+# OMG, only python and nano, you HAVE to import cv2
+#  before torch on nano.
 #  https://github.com/opencv/opencv/issues/14884#issuecomment-599852128
 import cv2
 from psutil import NIC_DUPLEX_HALF

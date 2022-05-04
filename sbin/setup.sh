@@ -6,9 +6,14 @@ set -x
 # stop on errors
 set -e
 
+# custom scatbot stuff
+# web and web socket server - https://gitlab.com/pgjones/quart
+sudo pip3 install \
+quart \
+websockets
 
 # :heart: PyTorch!  This is the easiest setup ever
-
+#
 # This was test with very fresh and clean Raspian Bullseye 64 OS install.
 # PyTorch requires a 64 bit os.  It and OpenCV are both included in the
 # Bullseye distro.
@@ -33,7 +38,7 @@ sudo python3 raspi-blinka.py
 # reboots
 
 # dot star, motor kit and app libs
-pip3 install --upgrade adafruit-circuitpython-dotstar adafruit-circuitpython-motor adafruit-circuitpython-bmp280
+sudo pip3 install --upgrade adafruit-circuitpython-dotstar adafruit-circuitpython-motor adafruit-circuitpython-bmp280
 sudo pip3 install adafruit-circuitpython-motorkit
 
 # audio
@@ -53,9 +58,6 @@ sudo apt-get -y install libportaudio2
 sudo apt-get -y install portaudio19-dev python3-pyaudio
 sudo pip3 install pyaudio
 
-read -p "Press any key to continue rebooting"
-sudo reboot
-# reboot
 
 cd ~
 sudo pip3 install --upgrade adafruit-python-shell click
@@ -63,7 +65,6 @@ sudo apt-get install -y git
 git clone https://github.com/adafruit/Raspberry-Pi-Installer-Scripts.git
 cd Raspberry-Pi-Installer-Scripts
 sudo python3 adafruit-pitft.py -u /home/bee --display=st7789_240x240 --rotation=0 --install-type=fbcp
-# reboot
 
 set +x
 echo "See the link below to test / adjust audio after reboot. "
@@ -76,3 +77,6 @@ echo " - interfaces / legacy camera support = yes"
 echo ""
 echo "And finally, after rebooting, run the following script(s):"
 echo " - sbin/setup-display.sh"
+
+read -p "Press any key to continue rebooting"
+sudo reboot
