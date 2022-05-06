@@ -10,6 +10,8 @@ COMPASS_ADDRESS = 0x60
 COMPASS_SAMPLE_INTERVAL = 0.01
 # min absolute difference between samples to send to hub
 COMPASS_CHANGE_TOLERANCE = 0.1
+# true north / magnetic north offset
+COMPASS_MAGNETIC_OFFSET = -67.2
 
 # Connect to central hub websocket
 HUB_URI = "ws://127.0.0.1/ws"

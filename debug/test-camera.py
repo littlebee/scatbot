@@ -78,3 +78,7 @@ cv2.destroyAllWindows()
 
 print("The video was successfully saved.")
 print(f"recorded {num_frames} in 30s ({num_frames/30:.2f} fps)")
+print("")
+print("You can view the video recorded with:")
+print("   scp raspberrypi.local:/home/bee/scatbot/camera_test_output.avi . && open camera_test_output.avi")
+print("on your local machine")

@@ -7,13 +7,11 @@ from os.path import exists
 #  before torch on nano.
 #  https://github.com/opencv/opencv/issues/14884#issuecomment-599852128
 import cv2
-from psutil import NIC_DUPLEX_HALF
 
 import torch
 import numpy as np
 from torchvision import models, transforms
 
-from PIL import Image
 
 is_jetson = exists('/etc/nv_tegra_release')
 
@@ -22,10 +20,8 @@ if not is_jetson:
     torch.backends.quantized.engine = 'qnnpack'
 
 cap = None
-if is_jetson:
-    cap = cv2.VideoCapture(2, cv2.CAP_V4L2)
-else:
-    cap = cv2.VideoCapture(2, cv2.CAP_V4L2)
+# TODO : figure out someway to import commons/constants
+cap = cv2.VideoCapture(4, cv2.CAP_V4L2)
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)

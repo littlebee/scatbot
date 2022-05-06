@@ -16,7 +16,7 @@ def get_heading():
     bear2 = bus.read_byte_data(constants.COMPASS_ADDRESS, 3)
     bear = (bear1 << 8) + bear2
     bear = bear/10.0
-    return 360 - bear
+    return add_degrees(bear, constants.COMPASS_MAGNETIC_OFFSET)
 
 
 def add_degrees(heading, deg):
