@@ -5,8 +5,7 @@ import json
 import asyncio
 import websockets
 
-from commons import enums
-from commons import shared_state
+from commons import enums, constants, shared_state
 
 
 logging.basicConfig()
@@ -148,7 +147,7 @@ async def handleMessage(websocket, path):
         await unregister(websocket)
 
 
-print(f"Starting server on port 80")
-start_server = websockets.serve(handleMessage, port=80)
+print(f"Starting server on port {constants.HUB_PORT}")
+start_server = websockets.serve(handleMessage, port=constants.HUB_PORT)
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()

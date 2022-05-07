@@ -1,58 +1,44 @@
 import time
 import json
-import smbus
 import asyncio
 import traceback
 import websockets
 
+import pyrealsense2 as rs
+import numpy as np
+
 from commons import constants
-
-bus = smbus.SMBus(constants.I2C_BUS)
-
-
-# Make clockwise negative
-def get_heading():
-    bear1 = bus.read_byte_data(constants.COMPASS_ADDRESS, 2)
-    bear2 = bus.read_byte_data(constants.COMPASS_ADDRESS, 3)
-    bear = (bear1 << 8) + bear2
-    bear = bear/10.0
-    return add_degrees(bear, constants.COMPASS_MAGNETIC_OFFSET)
-
-
-def add_degrees(heading, deg):
-    newHeading = heading + deg
-    if newHeading < 0:
-        newHeading = 360 - newHeading
-    if newHeading > 360:
-        newHeading -= 360
-    return newHeading
-
-
-def diff_degrees(deg1, deg2):
-    deg1_adj = deg1 + 180 if deg1 < 180 else deg1 - 180
-    deg2_adj = deg2 + 180 if deg2 < 180 else deg2 - 180
-
-    return deg1_adj + deg2_adj
 
 
 async def provide_state():
     sample_count = 0
     start_time = time.time()
-    last_sample = 0
+    # last_sample = 0
     while True:
         try:
+            # Create a context object. This object owns the handles to all connected realsense devices
+            pipeline = rs.pipeline()
+
+            # Configure streams
+            config = rs.config()
+            config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+
+            # Start streaming
+            pipeline.start(config)
+
             print(f"connecting to {constants.HUB_URI}")
             async with websockets.connect(constants.HUB_URI) as websocket:
                 while True:
-                    sample = get_heading()
-                    diff = abs(sample - last_sample)
-                    last_sample = sample
-                    if diff > constants.COMPASS_CHANGE_TOLERANCE:
+                    frames = pipeline.wait_for_frames()
+                    depth_frame = frames.get_depth_frame()
+                    depth_array = np.asanyarray(depth_frame.get_data())
+                    # last_sample = sample
+                    if True:  # diff > constants.COMPASS_CHANGE_TOLERANCE:
                         message = json.dumps({
                             "type": "updateState",
                             "data": {
-                                "compass": sample
-                            },
+                                "depth_map": depth_array.to_list(),
+                            }
                         })
                         await websocket.send(message)
                     sample_count += 1
@@ -62,7 +48,7 @@ async def provide_state():
                             f"Got {sample_count} samples in {elapsed} seconds. ({sample_count/elapsed} Hz)")
                         sample_count = 0
                         start_time = time.time()
-                    await asyncio.sleep(constants.COMPASS_SAMPLE_INTERVAL)
+                    await asyncio.sleep(1)
         except:
             traceback.print_exc()
 

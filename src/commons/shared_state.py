@@ -2,22 +2,26 @@ import time
 import json
 
 SHARED_STATE = {
-    # frustrating that enum is a class and makes this a complex object
-    # that is not json serializable without a custom encoder :/
-    # I don't want to use pickle on every single state broadcast loop
-    "mode": 0,
-    "compass": {
-        "heading": 0,
-    },
-    "vision": {
+    # which behavior - RC, hide $ seek, follow
+    "behavior": 0,
+    # feedback about what behavior is doing
+    "behavior_status": "offline",
+
+    # heading
+    "compass": 0,
+
+    # depth map - array of mm distance from camera per pixel
+    "depth_map": [],
+
+    # recognized objects from pytorch
+    "inference": [
         # this is a array of
         #  {
         #     "classificaton": "dog",
         #     "bounding_box": [0, 0, 0, 0],
         #     "confidence": 90
         #  }
-        "last_seen": []
-    }
+    ]
 }
 
 # these are intended to be semi-constant and calibrated values

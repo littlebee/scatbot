@@ -10,7 +10,9 @@ set -e
 # web and web socket server - https://gitlab.com/pgjones/quart
 sudo pip3 install \
 quart \
-websockets
+websockets \
+flask \
+flask-cors
 
 # :heart: PyTorch!  This is the easiest setup ever
 #

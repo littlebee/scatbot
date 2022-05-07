@@ -14,7 +14,8 @@ COMPASS_CHANGE_TOLERANCE = 0.1
 COMPASS_MAGNETIC_OFFSET = -67.2
 
 # Connect to central hub websocket
-HUB_URI = "ws://127.0.0.1/ws"
+HUB_PORT = 5000
+HUB_URI = f"ws://127.0.0.1:{HUB_PORT}/ws"
 
 # For Raspberry Pi4 w/ 64bit OS, this should be 1
 I2C_BUS = 1
