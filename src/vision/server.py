@@ -14,9 +14,10 @@ import threading
 import json
 import psutil
 import logging
+from enum import Enum
 
 
-from flask import Flask, Response, send_from_directory
+from flask import Flask, Response, send_from_directory, abort
 from flask_cors import CORS
 
 import cv2
@@ -30,8 +31,24 @@ from vision.recognition import Recognition
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-camera = None
+
+class CAMERAS(Enum):
+    opencv = 0
+    realsense = 1
+    # future maybe
+    # picamera = 2
+
+
+which_camera = None
 if os.getenv('USE_OPENCV') != None:
+    print("Will use opencv camera")
+    which_camera = CAMERAS.opecv
+else:
+    print("Will use realsense camera")
+    which_camera = CAMERAS.realsense
+
+camera = None
+if which_camera == CAMERAS.opencv:
     camera = OpenCvCamera()
 else:
     camera = RealsenseCamera()
@@ -39,7 +56,7 @@ else:
 recognition = Recognition(camera)
 
 
-def gen(camera):
+def gen_rgb_video(camera):
     """Video streaming generator function."""
     while True:
         frame = camera.get_frame()
@@ -50,6 +67,15 @@ def gen(camera):
 
         # add names and bounding boxes
         frame = recognition.augment_frame(frame)
+        jpeg = cv2.imencode('.jpg', frame)[1].tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
+
+
+def gen_depth_video(camera):
+    """Video streaming generator function."""
+    while True:
+        frame = camera.get_depth_image()
         jpeg = cv2.imencode('.jpg', frame)[1].tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
@@ -81,7 +107,16 @@ def respond_not_ok(status, data):
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(camera),
+    return Response(gen_rgb_video(camera),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/depth_feed')
+def depth_feed():
+    """Colorized depth map streaming route. Put this in the src attribute of an img tag."""
+    if which_camera == CAMERAS.opencv:
+        abort(404, "depth image not support by camera")
+    return Response(gen_depth_video(camera),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
