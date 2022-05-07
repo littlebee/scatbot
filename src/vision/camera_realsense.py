@@ -34,10 +34,16 @@ class RealsenseCamera(BaseCamera):
         super(RealsenseCamera, self).__init__()
 
     def get_depth_image(self):
-        """Return the current camera frame."""
+        """Return the last colorized depth image."""
         RealsenseCamera.last_depth_image_access = time.time()
 
         return RealsenseCamera.last_depth_image
+
+    def get_depth_data(self):
+        """Return the last depth map (not colorized)."""
+        RealsenseCamera.last_depth_data_access = time.time()
+
+        return RealsenseCamera.last_depth_data
 
     @staticmethod
     def set_video_source(source):

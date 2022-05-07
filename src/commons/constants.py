@@ -13,6 +13,9 @@ COMPASS_CHANGE_TOLERANCE = 0.1
 # true north / magnetic north offset
 COMPASS_MAGNETIC_OFFSET = -67.2
 
+# min time in seconds, between publishing depth map data to central hub
+DEPTH_PUBLISH_INTERVAL = 0.1
+
 # Connect to central hub websocket
 HUB_PORT = 5000
 HUB_URI = f"ws://127.0.0.1:{HUB_PORT}/ws"
