@@ -55,6 +55,9 @@ class RealsenseCamera(BaseCamera):
         config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
         config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 
+        align_to = rs.stream.color
+        align = rs.align(align_to)
+
         # Start streaming
         pipeline.start(config)
 
@@ -63,6 +66,12 @@ class RealsenseCamera(BaseCamera):
             # This call waits until a new coherent set of frames is available on a device
             # Calls to get_frame_data(...) and get_frame_timestamp(...) on a device will return stable values until wait_for_frames(...) is called
             frames = pipeline.wait_for_frames()
+
+            # This would align the depth_frame with the color frame, but...
+            # It's so freaking slow.  Capture FPS when from 29 fps down to
+            # 7 fps  and CPU utilization went from 26% to 36%
+            # frames = align.process(frames)
+
             color_frame = frames.get_color_frame()
             depth_frame = frames.get_depth_frame()
 
