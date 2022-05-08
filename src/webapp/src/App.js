@@ -1,0 +1,63 @@
+import React from "react";
+
+import { VideoFeed } from "./VideoFeed";
+
+import "./lcars.css";
+import "./App.css";
+
+function App() {
+  return (
+    <div>
+      <div className="wrap">
+        <div className="left-frame-top"></div>
+
+        <div className="right-frame-top">
+          <div className="title">
+            <h1>scatbot</h1>
+          </div>
+          <div class="top-corner-bg">
+            <div class="top-corner"></div>
+          </div>
+          <div class="bar-panel">
+            <div class="bar-1"></div>
+            <div class="bar-2"></div>
+            <div class="bar-3"></div>
+            <div class="bar-4">
+              <div class="bar-4-inside"></div>
+            </div>
+            <div class="bar-5"></div>
+          </div>
+        </div>
+      </div>
+      <div className="wrap">
+        <div className="left-frame" id="gap">
+          <div className="panel-3" />
+          <div className="sidebar-buttons">
+            <a href="/">Remote Control</a>
+            <a href="/">Hide & Seek</a>
+            <a href="/">Follow</a>
+          </div>
+        </div>
+        <div className="right-frame">
+          <div class="bar-panel">
+            <div class="bar-6"></div>
+            <div class="bar-7"></div>
+            <div class="bar-8"></div>
+            <div class="bar-9">
+              <div class="bar-9-inside"></div>
+            </div>
+            <div class="bar-10"></div>
+          </div>
+          <div class="corner-bg">
+            <div class="corner"></div>
+          </div>
+          <div className="content">
+            <VideoFeed />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;

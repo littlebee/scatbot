@@ -19,6 +19,8 @@ DEPTH_PUBLISH_INTERVAL = 0.1
 DEPTH_MAP_SECTION_WIDTH = 5
 # divide depth map into this many vert sections
 DEPTH_MAP_SECTION_HEIGHT = 5
+# min change in min distance before section map will republish
+DEPTH_MAP_CHANGE_TOLERACE = 1
 
 # Connect to central hub websocket
 HUB_PORT = 5000
