@@ -26,6 +26,9 @@ from vision.camera_opencv import OpenCvCamera
 from vision.camera_realsense import RealsenseCamera
 from vision.base_camera import BaseCamera
 from vision.recognition import Recognition
+from vision.depth_provider import DepthProvider
+
+from commons import constants
 
 
 app = Flask(__name__)
@@ -54,6 +57,7 @@ else:
     camera = RealsenseCamera()
 
 recognition = Recognition(camera)
+depth = DepthProvider(camera)
 
 
 def gen_rgb_video(camera):
@@ -133,6 +137,7 @@ def send_stats():
     return json_response({
         "capture": BaseCamera.stats(),
         "recognition": Recognition.stats(),
+        "depthProvider": DepthProvider.stats(),
         "system": {
             "cpuPercent": psutil.cpu_percent(),
             "ram": psutil.virtual_memory()[2],
@@ -175,7 +180,7 @@ class webapp:
         self.camera = camera
 
     def thread(self):
-        app.run(host='0.0.0.0', threaded=True)
+        app.run(host='0.0.0.0', port=constants.VISION_PORT, threaded=True)
 
     def start_thread(self):
         # Define a thread for FPV and OpenCV

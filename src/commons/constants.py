@@ -15,10 +15,17 @@ COMPASS_MAGNETIC_OFFSET = -67.2
 
 # min time in seconds, between publishing depth map data to central hub
 DEPTH_PUBLISH_INTERVAL = 0.1
+# divide depth map into this many horz sections
+DEPTH_MAP_SECTION_WIDTH = 5
+# divide depth map into this many vert sections
+DEPTH_MAP_SECTION_HEIGHT = 5
 
 # Connect to central hub websocket
 HUB_PORT = 5000
 HUB_URI = f"ws://127.0.0.1:{HUB_PORT}/ws"
+
+# vision http server
+VISION_PORT = 5001
 
 # For Raspberry Pi4 w/ 64bit OS, this should be 1
 I2C_BUS = 1
