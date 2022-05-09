@@ -1,0 +1,32 @@
+{
+  "env": {
+    "browser": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "parser": "babel-eslint",
+  "extends": [
+    "standard",
+    "standard-react",
+    "prettier",
+    "prettier/react",
+    "plugin:react-hooks/recommended"
+  ],
+  "rules": {
+    "no-case-declarations": "off",
+    "no-prototype-builtins": "off",
+    "react/jsx-fragments": "off",
+    "react/jsx-handler-names": "off",
+    "eslintjsx-a11y/anchor-is-valid": "off"
+  },
+  "globals": {
+    "inGlobalContext": "readonly",
+    "page": "readonly"
+  }
+}

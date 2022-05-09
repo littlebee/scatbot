@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
+import * as c from "./constants";
 import { VideoFeed } from "./VideoFeed";
+import { VideoControls } from "./VideoControls";
 
 import "./lcars.css";
 import "./App.css";
 
 function App() {
+  const [whichVideo, setWhichVideo] = useState(c.RGB_VIDEO);
+
   return (
     <div>
       <div className="wrap">
@@ -31,7 +35,6 @@ function App() {
       </div>
       <div className="wrap">
         <div className="left-frame" id="gap">
-          <div className="panel-3" />
           <div className="sidebar-buttons">
             <a href="/">Remote Control</a>
             <a href="/">Hide & Seek</a>
@@ -52,7 +55,8 @@ function App() {
             <div class="corner"></div>
           </div>
           <div className="content">
-            <VideoFeed />
+            <VideoControls whichVideo={whichVideo} onSelect={setWhichVideo} />
+            <VideoFeed whichVideo={whichVideo} />
           </div>
         </div>
       </div>

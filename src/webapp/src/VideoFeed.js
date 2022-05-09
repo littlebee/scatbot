@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import * as c from "./constants";
 
 const VIDEO_HOST =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? "scatbot.local:5001"
     : `${window.location.hostname}:5001`;
 
-export function VideoFeed() {
+export function VideoFeed({ whichVideo }) {
   const [rand, setRand] = useState(0);
   const [errorMsg, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +16,7 @@ export function VideoFeed() {
       setIsLoading(true);
       setRand(Math.random());
       // setErrorMessage(null);
-    }, 600000);
+    }, 30000);
   }, []);
 
   const handleError = (e) => {
@@ -28,9 +29,11 @@ export function VideoFeed() {
     setIsLoading(false);
   };
 
-  const feedUrl = `http://${VIDEO_HOST}/video_feed?rand=${rand}`;
+  const feed_path = whichVideo == c.DEPTH_VIDEO ? "depth_feed" : "video_feed";
+  const feedUrl = `http://${VIDEO_HOST}/${feed_path}?rand=${rand}`;
+  const imgClass = `pics video-feed ${isLoading || errorMsg ? "loading" : ""}`;
   return (
-    <div>
+    <>
       {(isLoading || errorMsg) && (
         <img
           className="standby-image"
@@ -39,12 +42,12 @@ export function VideoFeed() {
         />
       )}
       <img
-        className="pics"
+        className={imgClass}
         alt="video feed"
         src={feedUrl}
         onError={handleError}
         onLoad={handleLoad}
       />
-    </div>
+    </>
   );
 }
