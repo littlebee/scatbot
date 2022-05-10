@@ -56,7 +56,7 @@ async def provide_state():
                         })
                         await websocket.send(message)
                     sample_count += 1
-                    if sample_count == 50000:
+                    if sample_count == 1000:
                         elapsed = time.time() - start_time
                         print(
                             f"Got {sample_count} samples in {elapsed} seconds. ({sample_count/elapsed} Hz)")

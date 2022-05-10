@@ -6,15 +6,15 @@ CAMERA_CHANNEL_DEPTH = 2  # maybe??
 
 # Compass I2C address
 COMPASS_ADDRESS = 0x60
-# delay between sampling compass; 0.01 = ~90Hz
-COMPASS_SAMPLE_INTERVAL = 0.01
+# delay between sampling compass; 0.5 = ~20Hz
+COMPASS_SAMPLE_INTERVAL = 0.05
 # min absolute difference between samples to send to hub
 COMPASS_CHANGE_TOLERANCE = 0.1
 # true north / magnetic north offset
 COMPASS_MAGNETIC_OFFSET = -67.2
 
 # min time in seconds, between publishing depth map data to central hub
-DEPTH_PUBLISH_INTERVAL = 0.1
+DEPTH_PUBLISH_INTERVAL = 0.05  # 19fps
 # divide depth map into this many horz sections
 DEPTH_MAP_SECTION_WIDTH = 5
 # divide depth map into this many vert sections

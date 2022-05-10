@@ -29,7 +29,7 @@ export function VideoFeed({ whichVideo }) {
     setIsLoading(false);
   };
 
-  const feed_path = whichVideo == c.DEPTH_VIDEO ? "depth_feed" : "video_feed";
+  const feed_path = whichVideo === c.DEPTH_VIDEO ? "depth_feed" : "video_feed";
   const feedUrl = `http://${VIDEO_HOST}/${feed_path}?rand=${rand}`;
   const imgClass = `pics video-feed ${isLoading || errorMsg ? "loading" : ""}`;
   return (

@@ -1075,6 +1075,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@hookstate/core@3.0.13":
+  version "3.0.13"
+  resolved "https://registry.yarnpkg.com/@hookstate/core/-/core-3.0.13.tgz#827c92166399cd4ae227d3c7ae76445e388ce3e8"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"

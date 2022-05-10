@@ -77,6 +77,7 @@ async def handleStateUpdate(websocket, message_data):
     subscribed_sockets = set()
     for key in message_data:
         if key in subscribers:
+            print(f"subscribed sockets for {key}: {subscribers[key]}")
             for sub_socket in subscribers[key]:
                 subscribed_sockets.add(sub_socket)
 
@@ -104,6 +105,7 @@ async def handleStateSubscribe(websocket, data):
             socket_set = set()
             subscribers[key] = socket_set
 
+        print(f"subscribing {websocket} to {key}")
         socket_set.add(websocket)
 
 
