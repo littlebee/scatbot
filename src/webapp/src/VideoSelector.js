@@ -1,8 +1,9 @@
 import React from "react";
 
 import * as c from "./constants";
+import st from "./VideoSelector.module.css";
 
-export function VideoControls({ whichVideo, onSelect }) {
+export function VideoSelector({ whichVideo, onSelect }) {
   let rgbButtonClass = "button";
   let depthButtonClass = "button";
   switch (whichVideo) {
@@ -15,7 +16,7 @@ export function VideoControls({ whichVideo, onSelect }) {
   }
 
   return (
-    <div className="buttons video-controls">
+    <div className={`buttons ${st.videoSelector}`}>
       <div className={rgbButtonClass} onClick={() => onSelect(c.RGB_VIDEO)}>
         <a>RGB Video</a>
       </div>

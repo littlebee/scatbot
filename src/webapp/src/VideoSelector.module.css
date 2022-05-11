@@ -1,0 +1,5 @@
+.videoSelector {
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+}

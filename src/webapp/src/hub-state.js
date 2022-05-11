@@ -23,6 +23,9 @@ export const HubState = createState({
     //     "confidence": 90
     //  }
   ],
+  hub_stats: {
+    state_updates_recv: 0,
+  },
 });
 // setInterval(() => HubState.hubConnStatus.set((p) => p + 1), 3000);
 
@@ -45,7 +48,7 @@ export function connectToHub(state) {
   try {
     const hubUrl = `ws://${HUB_HOST}/ws`;
     setHubConnStatus("connecting");
-    console.log("connecting to central-hub at ${hubUrl}");
+    console.log(`connecting to central-hub at ${hubUrl}`);
 
     webSocket = new WebSocket(hubUrl);
 

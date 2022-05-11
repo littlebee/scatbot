@@ -3,8 +3,10 @@ import { useState } from "@hookstate/core";
 
 import * as c from "./constants";
 import { HubState } from "./hub-state";
+
+import { Header } from "./Header";
 import { VideoFeed } from "./VideoFeed";
-import { VideoControls } from "./VideoControls";
+import { VideoSelector } from "./VideoSelector";
 
 import "./lcars.css";
 import "./App.css";
@@ -15,37 +17,16 @@ function App() {
 
   return (
     <div>
-      <div className="wrap">
-        <div className="left-frame-top"></div>
-
-        <div className="right-frame-top">
-          <div className="title">
-            <h1>scatbot</h1>
-            {/* central hub status: {sharedState.hubConnectionStatus} */}
-            <div> hub status: {hubState.hubConnStatus.get()}</div>
-            <div> compass: {hubState.compass.get()}</div>
-          </div>
-          <div className="top-corner-bg">
-            <div className="top-corner"></div>
-          </div>
-          <div className="bar-panel">
-            <div className="bar-1"></div>
-            <div className="bar-2"></div>
-            <div className="bar-3"></div>
-            <div className="bar-4">
-              <div className="bar-4-inside"></div>
-            </div>
-            <div className="bar-5"></div>
-          </div>
-        </div>
-      </div>
+      <Header hubState={hubState} />
       <div className="wrap">
         <div className="left-frame" id="gap">
           <div className="sidebar-buttons">
             <a href="/">Remote Control</a>
-            <a href="/">Hide & Seek</a>
-            <a href="/">Follow</a>
           </div>
+          <div className="sidebar-buttons">
+            <a href="/">Give Treat</a>
+          </div>
+          <div className="panel-3"></div>
         </div>
         <div className="right-frame">
           <div className="bar-panel">
@@ -61,7 +42,7 @@ function App() {
             <div className="corner"></div>
           </div>
           <div className="content">
-            <VideoControls
+            <VideoSelector
               whichVideo={whichVideo.get()}
               onSelect={whichVideo.set}
             />

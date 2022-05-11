@@ -26,6 +26,9 @@ DEPTH_MAP_CHANGE_TOLERACE = 1
 HUB_PORT = 5000
 HUB_URI = f"ws://127.0.0.1:{HUB_PORT}/ws"
 
+# delay between sampling compass; 0.5 = ~2Hz
+SYSTEM_STATS_SAMPLE_INTERVAL = 0.5
+
 # vision http server
 VISION_PORT = 5001
 

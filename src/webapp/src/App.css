@@ -8,11 +8,35 @@ h1 {
   margin: 0px;
 }
 
+label {
+  margin-right: 8px;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-grow {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.padded-1 {
+  padding: 8px 12px;
+}
+
 /* App specific */
 .content {
   height: calc(100vh - 250px);
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .content img.video-feed,
@@ -22,13 +46,6 @@ h1 {
 }
 .content img.video-feed.loading {
   display: none;
-}
-
-
-.content .video-controls {
-  align-self: center;
-  display: flex;
-  flex-direction: row;
 }
 
 .button.selected  a {
