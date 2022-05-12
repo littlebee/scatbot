@@ -23,8 +23,15 @@ export const HubState = createState({
     //     "confidence": 90
     //  }
   ],
+
   hub_stats: {
     state_updates_recv: 0,
+  },
+
+  system_stats: {
+    cpu_util: 0,
+    cpu_temp: 0,
+    ram_util: 0,
   },
 });
 // setInterval(() => HubState.hubConnStatus.set((p) => p + 1), 3000);

@@ -21,10 +21,10 @@ function App() {
       <div className="wrap">
         <div className="left-frame" id="gap">
           <div className="sidebar-buttons">
-            <a href="/">Remote Control</a>
+            <a>Remote Control</a>
           </div>
           <div className="sidebar-buttons">
-            <a href="/">Give Treat</a>
+            <a>Give Treat</a>
           </div>
           <div className="panel-3"></div>
         </div>
