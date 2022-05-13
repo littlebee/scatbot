@@ -14,17 +14,6 @@
   margin-right: 32px;
 }
 
-.statsRow {
-  display: flex;
-  flex-direction: row;
-}
-
-.statsLabel {
-  min-width: 100px;
-  text-align: right;
-  margin-right: 16px;
-}
-
 .leftFrameTop {
   transition: border-top-left-radius 1s;
   padding: 20px 10px 20px 2px;

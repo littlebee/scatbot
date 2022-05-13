@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { LabeledText } from "./components/LabeledText";
+
 import { classnames } from "./util/classNames";
 import st from "./Header.module.css";
 
@@ -32,32 +34,30 @@ export function Header({
           <div className={`flex-column flex-grow`}>
             <div className={`flex-row ${st.stats}`}>
               <div className={st.statsColumn}>
-                <div className={st.statsRow}>
-                  <div className={st.statsLabel}>hub status:</div>
-                  <div>{hubState.hubConnStatus.get()}</div>
-                </div>
-
-                <div className={st.statsRow}>
-                  <div className={st.statsLabel}>cpu temp:</div>
-                  <div>{system_stats?.cpu_temp.toFixed(1)}˚</div>
-                </div>
-
-                <div className={st.statsRow}>
-                  <div className={st.statsLabel}>cpu util:</div>
-                  <div>{system_stats?.cpu_util.toFixed(1)}%</div>
-                </div>
-
-                <div className={st.statsRow}>
-                  <div className={st.statsLabel}>ram util:</div>
-                  <div>{system_stats?.ram_util.toFixed(1)}%</div>
-                </div>
+                <LabeledText label="hub status">
+                  {hubState.hubConnStatus.get()}
+                </LabeledText>
+                <LabeledText label="cpu temp">
+                  {system_stats?.cpu_temp.toFixed(1)}˚
+                </LabeledText>
+                <LabeledText label="cpu util">
+                  {system_stats?.cpu_util.toFixed(1)}%
+                </LabeledText>
+                <LabeledText label="ram util">
+                  {system_stats?.ram_util.toFixed(1)}%
+                </LabeledText>
               </div>
 
               <div className={st.statsColumn}>
-                <div className={st.statsRow}>
-                  <div className={st.statsLabel}>compass:</div>
-                  <div>{hubState.compass.get().toFixed(1)}˚</div>
-                </div>
+                <LabeledText label="compass">
+                  {hubState.compass.get().toFixed(1)}˚
+                </LabeledText>
+                <LabeledText label="min dist">
+                  {hubState.depth_map.min_distance.get().toFixed(1)}cm
+                </LabeledText>
+                <LabeledText label="max dist">
+                  {hubState.depth_map.max_distance.get().toFixed(1)}cm
+                </LabeledText>
               </div>
             </div>
           </div>

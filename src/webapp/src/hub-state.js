@@ -20,7 +20,11 @@ export const HubState = createState({
   compass: 0,
 
   // depth map - array of mm distance from camera per pixel
-  depth_map: [],
+  depth_map: {
+    min_distance: 0,
+    max_distance: 0,
+    section_map: [],
+  },
 
   // recognized objects from pytorch
   inference: [
