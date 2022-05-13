@@ -1,12 +1,20 @@
 import "react";
 import { createState } from "@hookstate/core";
 
+const urlParams = new URLSearchParams(window.location.search);
+const debugThings = urlParams.get("debug")?.split(",") || [];
+const logMesssages = debugThings.indexOf("messages") >= 0;
+
+let hubStatePromises = [];
+
 export const HubState = createState({
+  // this is UI only
   hubConnStatus: "offline",
+
+  // the keys below are shared from central hub.  See shared_state.py
+
   // which behavior - RC, hide $ seek, follow
   behavior: 0,
-  // feedback about what behavior is doing
-  behavior_status: "offline",
 
   // heading
   compass: 0,
@@ -33,31 +41,44 @@ export const HubState = createState({
     cpu_temp: 0,
     ram_util: 0,
   },
+
+  subsystem_stats: {
+    central_hub: {
+      online: 0,
+    },
+    compass: {
+      online: 0,
+    },
+    onboard_ui: {
+      online: 0,
+    },
+    system_stats: {
+      online: 0,
+    },
+    vision: {
+      online: 0,
+    },
+  },
 });
 // setInterval(() => HubState.hubConnStatus.set((p) => p + 1), 3000);
 
-const HUB_HOST =
+export const HUB_HOST =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? "scatbot.local:5000"
     : `${window.location.hostname}:5000`;
+
+export const HUB_URL = `ws://${HUB_HOST}/ws`;
 
 export let webSocket = null;
 
 connectToHub(HubState);
 
-// not exported, should only be called from connectToHub
-function setHubConnStatus(newStatus) {
-  console.log("setting conn status", newStatus);
-  HubState.hubConnStatus.set(newStatus);
-}
-
 export function connectToHub(state) {
   try {
-    const hubUrl = `ws://${HUB_HOST}/ws`;
     setHubConnStatus("connecting");
-    console.log(`connecting to central-hub at ${hubUrl}`);
+    console.log(`connecting to central-hub at ${HUB_URL}`);
 
-    webSocket = new WebSocket(hubUrl);
+    webSocket = new WebSocket(HUB_URL);
 
     webSocket.addEventListener("open", function (event) {
       try {
@@ -78,14 +99,24 @@ export function connectToHub(state) {
     });
 
     webSocket.addEventListener("message", function (event) {
-      console.log("got message from central-hub", event.data);
+      log("got message from central-hub", event.data);
       const message = JSON.parse(event.data);
-      if (message.type == "state" || message.type == "stateUpdate")
+      if (message.type === "state" && hubStatePromises.length > 0) {
+        hubStatePromises.forEach((p) => p(message.data));
+        hubStatePromises = [];
+      } else if (message.type === "state" || message.type === "stateUpdate") {
         updateStateFromCentralHub(message.data);
+      }
     });
   } catch (e) {
     onConnError(state, e);
   }
+}
+
+export function getStateFromCentralHub() {
+  const statePromise = new Promise((resolve) => hubStatePromises.push(resolve));
+  webSocket.send(JSON.stringify({ type: "getState" }));
+  return statePromise;
 }
 
 function delayedConnectToHub(state) {
@@ -105,9 +136,21 @@ function onConnError(state, e) {
   delayedConnectToHub(state);
 }
 
+// not exported, should only be called from connectToHub
+function setHubConnStatus(newStatus) {
+  log("setting conn status", newStatus);
+  HubState.hubConnStatus.set(newStatus);
+}
+
 function updateStateFromCentralHub(hubData) {
   for (const [key, value] of Object.entries(hubData)) {
-    console.log("got hub state update", key, value);
+    log("got hub state update", key, value);
     HubState[key].set(value);
+  }
+}
+
+function log(...args) {
+  if (logMesssages) {
+    console.log(...args);
   }
 }

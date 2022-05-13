@@ -1,3 +1,5 @@
+@import './vars.css';
+
 .header {
   position: relative;
 }
@@ -9,5 +11,42 @@
 .statsColumn {
   display: flex;
   flex-direction: column;
-  margin-right: 24px;
+  margin-right: 32px;
+}
+
+.statsRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.statsLabel {
+  min-width: 100px;
+  text-align: right;
+  margin-right: 16px;
+}
+
+.leftFrameTop {
+  transition: border-top-left-radius 1s;
+  padding: 20px 10px 20px 2px;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.activeDialogTrigger {
+  background-color: var(--color-dialog-frame) !important;
+  color: var(--color-black) !important;
+  border-top-left-radius: var(--radius-dialog-lg) !important;
+  transition: border-top-left-radius 1s;
+}
+
+@media only screen and (max-width: 700px) {
+  .activeDialogTrigger {
+    border-top-left-radius: var(--radius-dialog-md) !important;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .activeDialogTrigger {
+    border-top-left-radius: var(--radius-dialog-sm) !important;
+  }
 }

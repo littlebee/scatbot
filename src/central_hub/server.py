@@ -17,6 +17,9 @@ connected_sockets = set()
 # dictionary key in shared_state
 subscribers = dict()
 
+# a dictionary of websocket to subsystem name; see handleIdentity
+identities = dict()
+
 
 def iseeu_message(websocket):
     remoteIp = websocket.remote_address[0]
@@ -84,6 +87,12 @@ async def unregister(websocket):
         connected_sockets.remove(websocket)
         for key in subscribers:
             subscribers[key].remove(websocket)
+
+        subsystem_name = identities.pop(websocket, None)
+        shared_state.SHARED_STATE["subsystem_stats"][subsystem_name]["online"] = 0
+        await send_state_update_to_subscribers(
+            {"subsystem_stats": shared_state.SHARED_STATE["subsystem_stats"]})
+
     except:
         pass
 
@@ -134,6 +143,16 @@ async def handleStateUnsubscribe(websocket, data):
             subscribers[key].remove(websocket)
 
 
+async def handleIdentity(websocket, subsystem_name):
+    identities[websocket] = subsystem_name
+    print(
+        f"setting identity of {websocket.remote_address[1]} to {subsystem_name}")
+
+    shared_state.SHARED_STATE["subsystem_stats"][subsystem_name]["online"] = 1
+    await send_state_update_to_subscribers(
+        {"subsystem_stats": shared_state.SHARED_STATE["subsystem_stats"]})
+
+
 async def handleMessage(websocket, path):
     await register(websocket)
     try:
@@ -157,6 +176,8 @@ async def handleMessage(websocket, path):
             # {type: "unsubscribeState", data: [state_keys] or "*"
             elif messageType == "unsubscribeState":
                 await handleStateUnsubscribe(websocket, messageData)
+            elif messageType == "identity":
+                await handleIdentity(websocket, messageData)
             else:
                 logging.error("received unsupported message: %s", messageType)
     finally:

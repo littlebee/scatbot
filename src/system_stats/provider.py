@@ -7,7 +7,7 @@ import websockets
 import psutil
 
 
-from commons import constants
+from commons import constants, messages
 
 
 def get_update_message():
@@ -33,6 +33,7 @@ async def provide_state():
         try:
             print(f"connecting to {constants.HUB_URI}")
             async with websockets.connect(constants.HUB_URI) as websocket:
+                await messages.send_identity(websocket, "system_stats")
                 while True:
                     message = get_update_message()
                     await websocket.send(message)

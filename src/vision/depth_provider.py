@@ -6,7 +6,7 @@ import websockets
 import traceback
 import logging
 
-from commons import constants
+from commons import constants, messages
 from commons.fps_stats import FpsStats
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class DepthProvider:
 
                 print(f"connecting to hub central at {constants.HUB_URI}")
                 async with websockets.connect(constants.HUB_URI) as websocket:
-                    last_min_distance = 0
+                    await messages.send_identity(websocket, "vision")
                     while True:
                         cls.fps_stats.increment()
 

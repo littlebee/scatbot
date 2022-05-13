@@ -1,0 +1,16 @@
+@import '../vars.css';
+
+
+.button {
+  text-align: center !important;
+}
+
+.button a {
+  background-color: var(--color-dialog-button) !important;
+  width: auto !important;
+  padding-left: 20px !important;
+}
+
+.buttonSelected a {
+  background-color: var(--color-dialog-button-selected) !important;
+}

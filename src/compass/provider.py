@@ -5,7 +5,7 @@ import asyncio
 import traceback
 import websockets
 
-from commons import constants
+from commons import constants, messages
 
 bus = smbus.SMBus(constants.I2C_BUS)
 
@@ -43,6 +43,7 @@ async def provide_state():
         try:
             print(f"connecting to {constants.HUB_URI}")
             async with websockets.connect(constants.HUB_URI) as websocket:
+                await messages.send_identity(websocket, "compass")
                 while True:
                     sample = get_heading()
                     diff = abs(sample - last_sample)

@@ -4,8 +4,6 @@ import json
 SHARED_STATE = {
     # which behavior - RC, hide $ seek, follow
     "behavior": 0,
-    # feedback about what behavior is doing
-    "behavior_status": "offline",
 
     # heading
     "compass": 0,
@@ -22,14 +20,34 @@ SHARED_STATE = {
         #     "confidence": 90
         #  }
     ],
+
     "hub_stats": {
         "state_updates_recv": 0
     },
+
     "system_stats": {
         "cpu_util": 0,
         "cpu_temp": 0,
         "ram_util": 0,
-    }
+    },
+
+    "subsystem_stats": {
+        "central_hub": {
+            "online": 1,
+        },
+        "compass": {
+            "online": 0,
+        },
+        "onboard_ui": {
+            "online": 0,
+        },
+        "system_stats": {
+            "online": 0,
+        },
+        "vision": {
+            "online": 0,
+        },
+    },
 }
 
 # these are intended to be semi-constant and calibrated values

@@ -7,6 +7,7 @@ import { HubState } from "./hub-state";
 import { Header } from "./Header";
 import { VideoFeed } from "./VideoFeed";
 import { VideoSelector } from "./VideoSelector";
+import { HubStateDialog } from "./HubStateDialog";
 
 import "./lcars.css";
 import "./App.css";
@@ -14,10 +15,15 @@ import "./App.css";
 function App() {
   const hubState = useState(HubState);
   const whichVideo = useState(c.RGB_VIDEO);
+  const isHubStateDialogOpen = useState(false);
 
   return (
     <div>
-      <Header hubState={hubState} />
+      <Header
+        hubState={hubState}
+        isHubStateDialogOpen={isHubStateDialogOpen.get()}
+        onHubStateDialogOpen={() => isHubStateDialogOpen.set(true)}
+      />
       <div className="wrap">
         <div className="left-frame" id="gap">
           <div className="sidebar-buttons">
@@ -50,6 +56,11 @@ function App() {
           </div>
         </div>
       </div>
+      <HubStateDialog
+        hubState={hubState}
+        isOpen={isHubStateDialogOpen.get()}
+        onClose={() => isHubStateDialogOpen.set(false)}
+      />
     </div>
   );
 }

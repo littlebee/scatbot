@@ -17,8 +17,6 @@ if [ $# -ne 0 ]; then
   to_stop=$@
 fi
 
-echo "will stop ${to_stop[*]}"
-
 for sub_system in ${to_stop[@]}
 do
   echo "stopping $sub_system"

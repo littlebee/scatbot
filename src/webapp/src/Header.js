@@ -1,40 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
+
+import { classnames } from "./util/classNames";
 import st from "./Header.module.css";
 
-export function Header({ hubState }) {
+export function Header({
+  hubState,
+  isHubStateDialogOpen,
+  onHubStateDialogOpen,
+}) {
   const system_stats = hubState.system_stats.get();
 
+  const dialogCls = classnames("wrap", st.header);
+  const topLeftCls = classnames(
+    "left-frame-top",
+    "sidebar-buttons",
+    st.leftFrameTop,
+    {
+      predicate: isHubStateDialogOpen,
+      value: st.activeDialogTrigger,
+    }
+  );
+
   return (
-    <div className={`wrap ${st.header}`}>
-      <div className="left-frame-top"></div>
+    <div className={dialogCls}>
+      <div className={topLeftCls} onClick={onHubStateDialogOpen}>
+        Hub State
+      </div>
 
       <div className="right-frame-top">
         <div className={`padded-1 flex-row`}>
           <div className={`flex-column flex-grow`}>
             <div className={`flex-row ${st.stats}`}>
               <div className={st.statsColumn}>
-                <div>
-                  <label>hub status:</label>
-                  <span>{hubState.hubConnStatus.get()}</span>
-                </div>
-                <div>
-                  <label>cpu temp:</label>
-                  <span>{system_stats?.cpu_temp.toFixed(1)}˚</span>
+                <div className={st.statsRow}>
+                  <div className={st.statsLabel}>hub status:</div>
+                  <div>{hubState.hubConnStatus.get()}</div>
                 </div>
 
-                <div>
-                  <label>cpu util:</label>
-                  <span>{system_stats?.cpu_util.toFixed(1)}%</span>
+                <div className={st.statsRow}>
+                  <div className={st.statsLabel}>cpu temp:</div>
+                  <div>{system_stats?.cpu_temp.toFixed(1)}˚</div>
                 </div>
-                <div>
-                  <label>ram util:</label>
-                  <span>{system_stats?.ram_util.toFixed(1)}%</span>
+
+                <div className={st.statsRow}>
+                  <div className={st.statsLabel}>cpu util:</div>
+                  <div>{system_stats?.cpu_util.toFixed(1)}%</div>
+                </div>
+
+                <div className={st.statsRow}>
+                  <div className={st.statsLabel}>ram util:</div>
+                  <div>{system_stats?.ram_util.toFixed(1)}%</div>
                 </div>
               </div>
+
               <div className={st.statsColumn}>
-                <div>
-                  <label>compass:</label>
-                  <span>{hubState.compass.get().toFixed(1)}˚</span>
+                <div className={st.statsRow}>
+                  <div className={st.statsLabel}>compass:</div>
+                  <div>{hubState.compass.get().toFixed(1)}˚</div>
                 </div>
               </div>
             </div>
