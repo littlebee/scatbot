@@ -9,12 +9,13 @@ fi
 to_stop=(
   "central_hub"
   "compass"
+  "motor_control"
   "onboard_ui"
   "system_stats"
   "vision"
 )
 if [ $# -ne 0 ]; then
-  to_stop=$@
+  to_stop=($@)
 fi
 
 for sub_system in ${to_stop[@]}

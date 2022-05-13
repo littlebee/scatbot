@@ -2,15 +2,18 @@ import React, { useEffect } from "react";
 import { useState } from "@hookstate/core";
 
 import * as c from "./constants";
-import { HubState } from "./hub-state";
+import { HubState, connectToHub } from "./hub-state";
 
 import { Header } from "./Header";
 import { VideoFeed } from "./VideoFeed";
 import { VideoSelector } from "./VideoSelector";
 import { HubStateDialog } from "./HubStateDialog";
+import { Thumbstick } from "./Thumbstick";
 
 import "./lcars.css";
 import "./App.css";
+
+connectToHub();
 
 function App() {
   const hubState = useState(HubState);
@@ -56,6 +59,7 @@ function App() {
           </div>
         </div>
       </div>
+      <Thumbstick />
       <HubStateDialog
         hubState={hubState}
         isOpen={isHubStateDialogOpen.get()}

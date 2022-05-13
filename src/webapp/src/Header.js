@@ -50,13 +50,13 @@ export function Header({
 
               <div className={st.statsColumn}>
                 <LabeledText label="compass">
-                  {hubState.compass.get().toFixed(1)}˚
+                  {hubState.compass?.get().toFixed(1)}˚
                 </LabeledText>
                 <LabeledText label="min dist">
-                  {hubState.depth_map.min_distance.get().toFixed(1)}cm
+                  {hubState.depth_map?.min_distance?.get().toFixed(1)}cm
                 </LabeledText>
                 <LabeledText label="max dist">
-                  {hubState.depth_map.max_distance.get().toFixed(1)}cm
+                  {hubState.depth_map?.max_distance?.get().toFixed(1)}cm
                 </LabeledText>
               </div>
             </div>

@@ -40,6 +40,14 @@ export const HubState = createState({
     state_updates_recv: 0,
   },
 
+  // This is separate from throttles which is the requested throttles.
+  // This is what motor_control subsystem says the actual throttles are.
+  motors: {
+    left: 0,
+    right: 0,
+    feeder: 0,
+  },
+
   system_stats: {
     cpu_util: 0,
     cpu_temp: 0,
@@ -53,6 +61,9 @@ export const HubState = createState({
     compass: {
       online: 0,
     },
+    motor_control: {
+      online: 0,
+    },
     onboard_ui: {
       online: 0,
     },
@@ -62,6 +73,11 @@ export const HubState = createState({
     vision: {
       online: 0,
     },
+  },
+
+  throttles: {
+    left: 0,
+    right: 0,
   },
 });
 // setInterval(() => HubState.hubConnStatus.set((p) => p + 1), 3000);
@@ -75,9 +91,7 @@ export const HUB_URL = `ws://${HUB_HOST}/ws`;
 
 export let webSocket = null;
 
-connectToHub(HubState);
-
-export function connectToHub(state) {
+export function connectToHub(state = HubState) {
   try {
     setHubConnStatus("connecting");
     console.log(`connecting to central-hub at ${HUB_URL}`);
@@ -123,6 +137,29 @@ export function getStateFromCentralHub() {
   return statePromise;
 }
 
+export function updateSharedState(newState) {
+  webSocket.send(JSON.stringify({ type: "updateState", data: newState }));
+}
+
+export function sendThrottles(leftThrottle, rightThrottle) {
+  console.log("sending throttles", {
+    leftThrottle,
+    rightThrottle,
+  });
+
+  webSocket.send(
+    JSON.stringify({
+      type: "updateState",
+      data: {
+        throttles: {
+          left: leftThrottle,
+          right: rightThrottle,
+        },
+      },
+    })
+  );
+}
+
 function delayedConnectToHub(state) {
   setTimeout(() => {
     if (state.hubConnStatus.get() === "offline") {
@@ -149,6 +186,8 @@ function setHubConnStatus(newStatus) {
 function updateStateFromCentralHub(hubData) {
   for (const [key, value] of Object.entries(hubData)) {
     log("got hub state update", key, value);
+    // TODO : unless we merge the state with incoming
+    // state for any top level key must be whole
     HubState[key].set(value);
   }
 }

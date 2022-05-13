@@ -15,9 +15,12 @@ export function VideoFeed({ whichVideo }) {
     setInterval(() => {
       setIsLoading(true);
       setRand(Math.random());
-      // setErrorMessage(null);
     }, 30000);
   }, []);
+
+  useEffect(() => {
+    setErrorMessage(null);
+  }, [whichVideo]);
 
   const handleError = (e) => {
     console.log("got error from image load", e);
@@ -26,6 +29,7 @@ export function VideoFeed({ whichVideo }) {
 
   const handleLoad = (e) => {
     console.log("video feed loaded");
+    setErrorMessage(null);
     setIsLoading(false);
   };
 

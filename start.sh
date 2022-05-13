@@ -12,15 +12,15 @@ fi
 to_start=(
   "central_hub"
   "compass"
+  "motor_control"
   "onboard_ui"
   "system_stats"
   "vision"
 )
 
 if [ $# -ne 0 ]; then
-  to_start=$@
+  to_start=($@)
 fi
-
 
 for sub_system in ${to_start[@]}
 do

@@ -9,7 +9,11 @@ SHARED_STATE = {
     "compass": 0,
 
     # depth map - array of mm distance from camera per pixel
-    "depth_map": [],
+    "depth_map": {
+        "min_distance": 0,
+        "max_distance": 0,
+        "section_map": [],
+    },
 
     # recognized objects from pytorch
     "inference": [
@@ -25,6 +29,14 @@ SHARED_STATE = {
         "state_updates_recv": 0
     },
 
+    # This is separate from throttles which is the requested throttles.
+    # This is what motor_control subsystem says the actual throttles are.
+    "motors": {
+        "left": 0,
+        "right": 0,
+        "feeder": 0
+    },
+
     "system_stats": {
         "cpu_util": 0,
         "cpu_temp": 0,
@@ -38,6 +50,9 @@ SHARED_STATE = {
         "compass": {
             "online": 0,
         },
+        "motor_control": {
+            "online": 0,
+        },
         "onboard_ui": {
             "online": 0,
         },
@@ -48,6 +63,11 @@ SHARED_STATE = {
             "online": 0,
         },
     },
+
+    "throttles": {
+        "left": 0,
+        "right": 0,
+    }
 }
 
 # these are intended to be semi-constant and calibrated values

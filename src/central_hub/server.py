@@ -126,7 +126,8 @@ async def handleStateSubscribe(websocket, data):
             socket_set = set()
             subscribers[key] = socket_set
 
-        print(f"subscribing {websocket} to {key}")
+        print(
+            f"subscribing {websocket.remote_address[0]}:{websocket.remote_address[1]} to {key}")
         socket_set.add(websocket)
 
 
