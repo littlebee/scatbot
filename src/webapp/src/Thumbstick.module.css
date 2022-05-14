@@ -3,8 +3,6 @@
   position: fixed;
   right: 20px;
   bottom: 20px;
-  height: 200px;
-  width: 200px;
   border: 1px solid white;
   user-select: none;
 }

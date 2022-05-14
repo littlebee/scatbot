@@ -5,9 +5,12 @@ import { sendThrottles } from "./hub-state";
 
 import st from "./Thumbstick.module.css";
 
+// container element is 2x this width and height
+const STICK_RADIUS = 100;
+
 export function Thumbstick() {
   // hang these off of document so we get them when you
-  // release outside the container
+  // release outside the container element
   useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("touchend", handleMouseUp);
@@ -51,9 +54,12 @@ export function Thumbstick() {
   };
 
   const setRelativePosition = (clientX, clientY) => {
-    const relativeX = clientX - containerRef.current.offsetLeft - 100;
-    const relativeY = -1 * (clientY - containerRef.current.offsetTop - 100);
+    const relativeX = clientX - containerRef.current.offsetLeft - STICK_RADIUS;
+    const relativeY =
+      -1 * (clientY - containerRef.current.offsetTop - STICK_RADIUS);
+
     console.log("computed offsets", { relativeX, relativeY });
+
     setRelativeX(relativeX);
     setRelativeY(relativeY);
 
@@ -61,22 +67,22 @@ export function Thumbstick() {
     let rightThrottle = 0;
     // if the stick is mostly centered vertically, then we are going
     // to turn like a tank and spin the motors in opposite directions
-    if (Math.abs(relativeY <= 15)) {
+    if (Math.abs(relativeY) <= 15) {
       console.log("doing tank turn");
-      leftThrottle = relativeX / 100;
+      leftThrottle = relativeX / STICK_RADIUS;
       rightThrottle = leftThrottle * -1;
     } else {
-      const maxThrottle = relativeY / 100;
+      const maxThrottle = relativeY / STICK_RADIUS;
       // if you are, for example at the top of the Y, and a little to the right,
       // the right motor needs to be lower than the left by an amount relative
       // to the x coord of the stick
       leftThrottle =
         relativeX < 15
-          ? maxThrottle + maxThrottle * (relativeX / 100)
+          ? maxThrottle + maxThrottle * (relativeX / STICK_RADIUS)
           : maxThrottle;
       rightThrottle =
         relativeX > 15
-          ? maxThrottle - maxThrottle * (relativeX / 100)
+          ? maxThrottle - maxThrottle * (relativeX / STICK_RADIUS)
           : maxThrottle;
     }
 
@@ -86,16 +92,24 @@ export function Thumbstick() {
   const top = 95 + relativeY * -1;
   const left = 95 + relativeX;
 
+  const containerStyle = {
+    width: STICK_RADIUS * 2,
+    height: STICK_RADIUS * 2,
+  };
+
+  const stickStyle = { top, left };
+
   return (
     <div
       className={st.thumbstickContainer}
+      style={containerStyle}
       ref={containerRef}
       onMouseDown={handleMouseDown}
       onTouchStart={handleMouseDown}
       onMouseMove={handleMouseMove}
       onTouchMove={handleMouseMove}
     >
-      <div className={st.thumbstickPosition} style={{ top, left }} />
+      <div className={st.thumbstickPosition} style={stickStyle} />
     </div>
   );
 }

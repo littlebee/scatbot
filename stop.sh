@@ -24,7 +24,7 @@ do
   pid_file="./$sub_system.pid"
   if [ -f "$pid_file" ]; then
     kill -9 `cat $pid_file`
-    # rm -f $pid_file
+    rm -f $pid_file
   else
     echo "$pid_file does not exist. skipping"
   fi

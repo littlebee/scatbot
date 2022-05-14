@@ -1,22 +1,13 @@
 #!/bin/sh -e
 #
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
+# rc.local for scatbot-pi
 
-mkdir -p /home/pi/logs
+TARGET_DIR="/home/bee/scatbot"
+LOG_FILE=$TARGET_DIR/logs/rclocal.log
 
-exec 1>/home/pi/logs/rc.local.log 2>&1  # send stdout and stderr from rc.local to a log file
-set -x
+cd $TARGET_DIR
 
-cd /home/pi/scatbot
-python src/onboard-ui/onboard-ui.py
+echo "$(date) starting scatbot from rc.local" > $LOG_FILE
+sudo bash ./start.sh >> $LOG_FILE 2>&1
 
 exit 0
