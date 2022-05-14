@@ -5,6 +5,8 @@ import time
 import pygame
 import websockets
 import asyncio
+import traceback
+import subprocess
 
 from commons import constants, messages
 
@@ -51,17 +53,23 @@ async def render_network_stats():
     global screen_width
     global screen_height
 
-    text = small_font.render("Host name:", True, white, black)
+    text = small_font.render("Wifi SSID:", True, white, black)
     screen.blit(text, (0, 0))
-    text = large_font.render(
-        f"{socket.gethostname()}.local", True, white, black)
+    wifiSsid = subprocess.run(["iwgetid", "-r"], stdout=subprocess.PIPE).stdout
+    text = large_font.render(wifiSsid, True, white, black)
     screen.blit(text, (10, 22))
 
-    text = small_font.render("IP address:", True, white, black)
+    text = small_font.render("Host name:", True, white, black)
     screen.blit(text, (0, 60))
     text = large_font.render(
-        get_ip_address(), True, white, black)
+        f"{socket.gethostname()}.local", True, white, black)
     screen.blit(text, (10, 82))
+
+    text = small_font.render("IP address:", True, white, black)
+    screen.blit(text, (0, 120))
+    text = large_font.render(
+        get_ip_address(), True, white, black)
+    screen.blit(text, (10, 142))
 
     pygame.display.update()
 
@@ -93,8 +101,8 @@ async def ui_task():
 
             print('socket disconnected.  Reconnecting in 5 sec...')
             time.sleep(5)
-    except:
-        print("got exception on async loop. Exiting.")
+    except Exception as e:
+        print(f"got exception on async loop. Exiting. {e}")
     finally:
         pygame.quit()
 
