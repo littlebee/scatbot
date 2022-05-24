@@ -7,6 +7,7 @@ import websockets
 import asyncio
 import traceback
 import subprocess
+import psutil
 
 from commons import constants, messages
 
@@ -53,6 +54,13 @@ async def render_network_stats():
     global screen_width
     global screen_height
 
+    (cpu_temp, *rest) = [
+        int(i) / 1000 for i in
+        os.popen(
+            'cat /sys/devices/virtual/thermal/thermal_zone*/temp').read().split()
+    ]
+
+    screen.fill(black)
     text = small_font.render("Wifi SSID:", True, white, black)
     screen.blit(text, (0, 0))
     wifiSsid = subprocess.run(["iwgetid", "-r"], stdout=subprocess.PIPE).stdout
@@ -70,6 +78,15 @@ async def render_network_stats():
     text = large_font.render(
         get_ip_address(), True, white, black)
     screen.blit(text, (10, 142))
+
+    text = small_font.render("CPU: ", True, white, black)
+    screen.blit(text, (0, 180))
+    text = large_font.render(
+        f"{psutil.cpu_percent():.1f}%", True, white, black)
+    screen.blit(text, (10, 202))
+    text = large_font.render(
+        f"{cpu_temp:.1f}°", True, white, black)
+    screen.blit(text, (100, 202))
 
     pygame.display.update()
 
@@ -93,14 +110,15 @@ async def ui_task():
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     await messages.send_identity(websocket, "onboard_ui")
                     while True:
+                        await render_network_stats()
                         # TODO : call function to handle button interactions
                         #   and screen updates.   Also reduce sleep duration below.
-                        await asyncio.sleep(60)
+                        await asyncio.sleep(2)
             except:
                 traceback.print_exc()
 
             print('socket disconnected.  Reconnecting in 5 sec...')
-            time.sleep(5)
+            await asyncio.sleep(5)
     except Exception as e:
         print(f"got exception on async loop. Exiting. {e}")
     finally:

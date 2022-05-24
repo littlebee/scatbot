@@ -6,7 +6,7 @@
 import time
 from adafruit_motorkit import MotorKit
 
-kit = MotorKit(0x70)
+kit = MotorKit(0x60)
 
 motors = [kit.motor1, kit.motor2, kit.motor3, kit.motor4]
 

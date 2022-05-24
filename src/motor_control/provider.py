@@ -8,10 +8,10 @@ from adafruit_motorkit import MotorKit
 
 from commons import constants, messages
 
-kit = MotorKit(0x70)
-left_motor = kit.motor1
-right_motor = kit.motor2
-feed_motor = kit.motor4
+kit = MotorKit(0x60)
+left_motor = kit.motor3
+right_motor = kit.motor4
+feed_motor = kit.motor1
 
 
 async def send_motor_state(websocket):
