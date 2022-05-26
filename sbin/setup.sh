@@ -68,6 +68,8 @@ git clone https://github.com/adafruit/Raspberry-Pi-Installer-Scripts.git
 cd Raspberry-Pi-Installer-Scripts
 sudo python3 adafruit-pitft.py -u /home/bee --display=st7789_240x240 --rotation=0 --install-type=fbcp
 
+sudo pip3 install adafruit-circuitpython-ina219
+
 set +x
 echo "See the link below to test / adjust audio after reboot. "
 echo "https://learn.adafruit.com/adafruit-braincraft-hat-easy-machine-learning-for-raspberry-pi/audio-setup"

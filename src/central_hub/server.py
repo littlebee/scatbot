@@ -89,9 +89,9 @@ async def unregister(websocket):
             subscribers[key].remove(websocket)
 
         subsystem_name = identities.pop(websocket, None)
-        shared_state.SHARED_STATE["subsystem_stats"][subsystem_name]["online"] = 0
+        shared_state.state["subsystem_stats"][subsystem_name]["online"] = 0
         await send_state_update_to_subscribers(
-            {"subsystem_stats": shared_state.SHARED_STATE["subsystem_stats"]})
+            {"subsystem_stats": shared_state.state["subsystem_stats"]})
 
     except:
         pass
@@ -105,7 +105,7 @@ async def handleStateUpdate(websocket, message_data):
     global subscribers
 
     shared_state.update_state_from_message_data(message_data)
-    shared_state.SHARED_STATE["hub_stats"]["state_updates_recv"] += 1
+    shared_state.state["hub_stats"]["state_updates_recv"] += 1
 
     await send_state_update_to_subscribers(message_data)
 
@@ -114,7 +114,7 @@ async def handleStateSubscribe(websocket, data):
     global subscribers
     subscription_keys = []
     if data == "*":
-        subscription_keys = shared_state.SHARED_STATE.keys()
+        subscription_keys = shared_state.state.keys()
     else:
         subscription_keys = data
 
@@ -149,9 +149,9 @@ async def handleIdentity(websocket, subsystem_name):
     print(
         f"setting identity of {websocket.remote_address[1]} to {subsystem_name}")
 
-    shared_state.SHARED_STATE["subsystem_stats"][subsystem_name]["online"] = 1
+    shared_state.state["subsystem_stats"][subsystem_name]["online"] = 1
     await send_state_update_to_subscribers(
-        {"subsystem_stats": shared_state.SHARED_STATE["subsystem_stats"]})
+        {"subsystem_stats": shared_state.state["subsystem_stats"]})
 
 
 async def handleMessage(websocket, path):
@@ -188,7 +188,7 @@ async def handleMessage(websocket, path):
 async def send_hub_stats_task():
     while True:
         await send_state_update_to_subscribers(
-            {"hub_stats": shared_state.SHARED_STATE["hub_stats"]})
+            {"hub_stats": shared_state.state["hub_stats"]})
 
         await asyncio.sleep(.2)
 

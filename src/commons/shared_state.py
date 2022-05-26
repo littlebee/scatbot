@@ -1,7 +1,7 @@
 import time
 import json
 
-SHARED_STATE = {
+state = {
     # which behavior - RC, hide $ seek, follow
     "behavior": 0,
 
@@ -80,15 +80,15 @@ CONFIG = {
 
 
 def serializeState():
-    return json.dumps({"type": "state", "data": SHARED_STATE})
+    return json.dumps({"type": "state", "data": state})
 
 
 def serializeConfig():
-    return json.dumps({"type": "config", "data": SHARED_STATE})
+    return json.dumps({"type": "config", "data": state})
 
 
 def update_state_from_message_data(message_data):
     for key in message_data:
-        SHARED_STATE[key] = message_data[key]
-        SHARED_STATE[f"{key}_updated_at"] = time.time()
+        state[key] = message_data[key]
+        state[f"{key}_updated_at"] = time.time()
     return

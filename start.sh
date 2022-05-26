@@ -13,7 +13,7 @@ to_start=(
   "central_hub"
   "compass"
   "motor_control"
-  "onboard_ui"
+  # "onboard_ui"
   "system_stats"
   "vision"
 )

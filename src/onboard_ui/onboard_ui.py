@@ -1,15 +1,14 @@
 import sys
 import os
 import socket
-import time
+import json
 import pygame
 import websockets
 import asyncio
 import traceback
 import subprocess
-import psutil
 
-from commons import constants, messages
+from commons import constants, messages, shared_state
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -30,6 +29,8 @@ screen.fill(black)
 large_font = pygame.font.SysFont('timesnewroman',  30)
 small_font = pygame.font.SysFont('timesnewroman',  20)
 
+current_websocket = None
+
 
 async def render_splash():
     global screen
@@ -49,7 +50,7 @@ async def render_splash():
     pygame.display.update()
 
 
-async def render_network_stats():
+async def render():
     global screen
     global screen_width
     global screen_height
@@ -61,59 +62,80 @@ async def render_network_stats():
     ]
 
     screen.fill(black)
-    text = small_font.render("Wifi SSID:", True, white, black)
+    text = small_font.render("Network:", True, white, black)
     screen.blit(text, (0, 0))
-    wifiSsid = subprocess.run(["iwgetid", "-r"], stdout=subprocess.PIPE).stdout
-    text = large_font.render(wifiSsid, True, white, black)
-    screen.blit(text, (10, 22))
 
-    text = small_font.render("Host name:", True, white, black)
-    screen.blit(text, (0, 60))
     text = large_font.render(
         f"{socket.gethostname()}.local", True, white, black)
-    screen.blit(text, (10, 82))
+    screen.blit(text, (10, 22))
 
-    text = small_font.render("IP address:", True, white, black)
-    screen.blit(text, (0, 120))
     text = large_font.render(
         get_ip_address(), True, white, black)
-    screen.blit(text, (10, 142))
+    screen.blit(text, (10, 58))
+
+    wifiSsid = subprocess.run(["iwgetid", "-r"], stdout=subprocess.PIPE).stdout
+    text = large_font.render(wifiSsid, True, white, black)
+    screen.blit(text, (10, 92))
 
     text = small_font.render("CPU: ", True, white, black)
-    screen.blit(text, (0, 180))
+    screen.blit(text, (0, 130))
+
+    cpu_util = shared_state.state["system_stats"]["cpu_util"]
     text = large_font.render(
-        f"{psutil.cpu_percent():.1f}%", True, white, black)
-    screen.blit(text, (10, 202))
+        f"{cpu_util:.1f}%", True, white, black)
+    screen.blit(text, (10, 152))
+
+    cpu_temp = shared_state.state["system_stats"]["cpu_temp"]
     text = large_font.render(
         f"{cpu_temp:.1f}°", True, white, black)
-    screen.blit(text, (100, 202))
+    screen.blit(text, (100, 152))
 
     pygame.display.update()
 
 
 def get_ip_address():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    ip_addr = s.getsockname()[0]
-    s.close()
-    return ip_addr
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip_addr = s.getsockname()[0]
+        s.close()
+        return ip_addr
+    except Exception as e:
+        print(f"unable to get ip address. {e}")
+        return "0.0.0.0"
 
 
 async def ui_task():
-    await render_splash()
-    await render_network_stats()
+    # await render_splash()
+    while True:
+        await render()
+        # TODO : call function to handle button interactions
+        #   and screen updates.   Also reduce sleep duration below.
+        await asyncio.sleep(1)
+
+
+async def state_task():
+    global current_websocket
 
     try:
         while True:
             try:
-                print(f"connecting to {constants.HUB_URI}")
+                print(f"connecting to {constants.HUB_URI}", flush=True)
                 async with websockets.connect(constants.HUB_URI) as websocket:
+                    current_websocket = websocket
                     await messages.send_identity(websocket, "onboard_ui")
-                    while True:
-                        await render_network_stats()
-                        # TODO : call function to handle button interactions
-                        #   and screen updates.   Also reduce sleep duration below.
-                        await asyncio.sleep(2)
+                    await messages.send_subscribe(websocket, ["system_stats"])
+                    await messages.send_get_state(websocket)
+                    async for message in websocket:
+                        json_data = json.loads(message)
+                        message_type = json_data.get("type")
+                        message_data = json_data.get('data')
+                        # print(f"got {message_type}: {message_data}")
+                        if message_type in ["stateUpdate", "state"]:
+                            shared_state.update_state_from_message_data(
+                                message_data)
+                        # print('getting next message')
+
             except:
                 traceback.print_exc()
 
@@ -124,4 +146,10 @@ async def ui_task():
     finally:
         pygame.quit()
 
-asyncio.run(ui_task())
+
+async def start():
+    recvTask = asyncio.create_task(state_task())
+    movementTask = asyncio.create_task(ui_task())
+    await asyncio.wait([recvTask, movementTask])
+
+asyncio.run(start())

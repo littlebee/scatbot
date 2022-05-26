@@ -16,7 +16,11 @@ async def send_subscribe(websocket, subscriptionNames):
         "data": subscriptionNames,
     }))
 
-# subscriptionNames should be an array or "*"
+
+async def send_get_state(websocket):
+    await websocket.send(json.dumps({
+        "type": "getState",
+    }))
 
 
 async def send_state_update(websocket, stateData):
