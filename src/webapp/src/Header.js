@@ -37,6 +37,12 @@ export function Header({
                 <LabeledText label="hub status">
                   {hubState.hubConnStatus.get()}
                 </LabeledText>
+                <LabeledText label="battery">
+                  {hubState.battery?.voltage.get().toFixed(1)}V@
+                  {hubState.battery?.current.get().toFixed(1)}A
+                </LabeledText>
+              </div>
+              <div className={st.statsColumn}>
                 <LabeledText label="cpu temp">
                   {system_stats?.cpu_temp.toFixed(1)}˚
                 </LabeledText>

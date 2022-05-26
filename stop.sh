@@ -7,6 +7,7 @@ if [ "$user" != "root" ]; then
 fi
 
 to_stop=(
+  "battery"
   "central_hub"
   "compass"
   "motor_control"

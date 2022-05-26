@@ -13,6 +13,9 @@ COMPASS_CHANGE_TOLERANCE = 0.1
 # true north / magnetic north offset
 COMPASS_MAGNETIC_OFFSET = -67.2
 
+# how often the ina219 is sampled for batter voltage
+BATTERY_SAMPLE_INTERVAL = 1  # 1Hz
+
 # min time in seconds, between publishing depth map data to central hub
 DEPTH_PUBLISH_INTERVAL = 0.05  # 19fps
 # divide depth map into this many horz sections

@@ -55,42 +55,55 @@ async def render():
     global screen_width
     global screen_height
 
-    (cpu_temp, *rest) = [
-        int(i) / 1000 for i in
-        os.popen(
-            'cat /sys/devices/virtual/thermal/thermal_zone*/temp').read().split()
-    ]
+    try:
+        (cpu_temp, *rest) = [
+            int(i) / 1000 for i in
+            os.popen(
+                'cat /sys/devices/virtual/thermal/thermal_zone*/temp').read().split()
+        ]
 
-    screen.fill(black)
-    text = small_font.render("Network:", True, white, black)
-    screen.blit(text, (0, 0))
+        screen.fill(black)
+        text = small_font.render("Network:", True, white, black)
+        screen.blit(text, (0, 0))
 
-    text = large_font.render(
-        f"{socket.gethostname()}.local", True, white, black)
-    screen.blit(text, (10, 22))
+        text = large_font.render(
+            f"{socket.gethostname()}.local", True, white, black)
+        screen.blit(text, (10, 22))
 
-    text = large_font.render(
-        get_ip_address(), True, white, black)
-    screen.blit(text, (10, 58))
+        text = large_font.render(
+            get_ip_address(), True, white, black)
+        screen.blit(text, (10, 58))
 
-    wifiSsid = subprocess.run(["iwgetid", "-r"], stdout=subprocess.PIPE).stdout
-    text = large_font.render(wifiSsid, True, white, black)
-    screen.blit(text, (10, 92))
+        wifiSsid = subprocess.run(
+            ["iwgetid", "-r"], stdout=subprocess.PIPE).stdout
+        text = large_font.render(wifiSsid, True, white, black)
+        screen.blit(text, (10, 92))
 
-    text = small_font.render("CPU: ", True, white, black)
-    screen.blit(text, (0, 130))
+        text = small_font.render("CPU: ", True, white, black)
+        screen.blit(text, (0, 126))
 
-    cpu_util = shared_state.state["system_stats"]["cpu_util"]
-    text = large_font.render(
-        f"{cpu_util:.1f}%", True, white, black)
-    screen.blit(text, (10, 152))
+        cpu_util = shared_state.state["system_stats"]["cpu_util"]
+        text = large_font.render(
+            f"{cpu_util:.1f}%", True, white, black)
+        screen.blit(text, (10, 148))
 
-    cpu_temp = shared_state.state["system_stats"]["cpu_temp"]
-    text = large_font.render(
-        f"{cpu_temp:.1f}°", True, white, black)
-    screen.blit(text, (100, 152))
+        cpu_temp = shared_state.state["system_stats"]["cpu_temp"]
+        text = large_font.render(
+            f"{cpu_temp:.1f}°", True, white, black)
+        screen.blit(text, (100, 148))
 
-    pygame.display.update()
+        text = small_font.render("Battery: ", True, white, black)
+        screen.blit(text, (0, 180))
+        battery_voltage = shared_state.state["battery"]["voltage"]
+        battery_current = shared_state.state["battery"]["current"]
+        text = large_font.render(
+            f"{battery_voltage:.1f}V@{battery_current:.1f}A", True, white, black)
+        screen.blit(text, (10, 202))
+
+        pygame.display.update()
+
+    except Exception as e:
+        print(f"could not get stats {e}")
 
 
 def get_ip_address():
@@ -124,7 +137,7 @@ async def state_task():
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     current_websocket = websocket
                     await messages.send_identity(websocket, "onboard_ui")
-                    await messages.send_subscribe(websocket, ["system_stats"])
+                    await messages.send_subscribe(websocket, ["system_stats", "battery"])
                     await messages.send_get_state(websocket)
                     async for message in websocket:
                         json_data = json.loads(message)

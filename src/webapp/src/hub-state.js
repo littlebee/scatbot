@@ -12,6 +12,10 @@ export const HubState = createState({
   hubConnStatus: "offline",
 
   // the keys below are shared from central hub.  See shared_state.py
+  battery: {
+    voltage: 0,
+    current: 0,
+  },
 
   // which behavior - RC, hide $ seek, follow
   behavior: 0,

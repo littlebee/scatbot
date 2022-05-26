@@ -2,6 +2,11 @@ import time
 import json
 
 state = {
+    "battery": {
+        "voltage": 0,
+        "current": 0,
+    },
+
     # which behavior - RC, hide $ seek, follow
     "behavior": 0,
 

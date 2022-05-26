@@ -10,10 +10,11 @@ if [ "$user" != "root" ]; then
 fi
 
 to_start=(
+  "battery"
   "central_hub"
   "compass"
   "motor_control"
-  # "onboard_ui"
+  "onboard_ui"
   "system_stats"
   "vision"
 )
