@@ -1,4 +1,6 @@
+import os
 import time
+import datetime
 import json
 import asyncio
 import traceback
@@ -17,9 +19,6 @@ ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
 
 
 async def provide_state():
-    sample_count = 0
-    start_time = time.time()
-    last_sample = 0
     while True:
         try:
             print(f"connecting to {constants.HUB_URI}")
@@ -37,6 +36,13 @@ async def provide_state():
                         },
                     })
                     await websocket.send(message)
+                    # print(f"{datetime.datetime.now()}: {message}", flush=True)
+
+                    if (ina219.bus_voltage < constants.BATTERY_SHUTDOWN_VOLTAGE):
+                        print(
+                            f"battery critical @{ina219.bus_voltage}V .  shutting down", flush=True)
+                        os.system('shutdown now')
+
                     await asyncio.sleep(constants.BATTERY_SAMPLE_INTERVAL)
         except:
             traceback.print_exc()

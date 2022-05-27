@@ -15,6 +15,8 @@ COMPASS_MAGNETIC_OFFSET = -67.2
 
 # how often the ina219 is sampled for batter voltage
 BATTERY_SAMPLE_INTERVAL = 1  # 1Hz
+# below what voltage the battery subsystem issues a `sudo shutdown now`
+BATTERY_SHUTDOWN_VOLTAGE = 5.5
 
 # min time in seconds, between publishing depth map data to central hub
 DEPTH_PUBLISH_INTERVAL = 0.05  # 19fps
