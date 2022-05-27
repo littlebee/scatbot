@@ -53,6 +53,16 @@ export function Thumbstick() {
     setRelativeY(0);
   };
 
+  // stick throttles are now at 0 - 1 scale.  Motors will not turn
+  // at less than 0.5 so set that as the min and scale the remain
+  // by the stick throttles
+  const governThrottle = (stickThrottle) => {
+    const minThrottle = stickThrottle > 0 ? 0.5 : -0.5;
+    const throttleRange = 1 - Math.abs(minThrottle);
+
+    return minThrottle + stickThrottle * throttleRange;
+  };
+
   const setRelativePosition = (clientX, clientY) => {
     const relativeX = clientX - containerRef.current.offsetLeft - STICK_RADIUS;
     const relativeY =
@@ -76,16 +86,18 @@ export function Thumbstick() {
       // if you are, for example at the top of the Y, and a little to the right,
       // the right motor needs to be lower than the left by an amount relative
       // to the x coord of the stick
-      leftThrottle =
+      leftThrottle = governThrottle(
         relativeX < 15
           ? maxThrottle + maxThrottle * (relativeX / STICK_RADIUS)
-          : maxThrottle;
-      rightThrottle =
+          : maxThrottle
+      );
+      rightThrottle = governThrottle(
         relativeX > 15
           ? maxThrottle - maxThrottle * (relativeX / STICK_RADIUS)
-          : maxThrottle;
+          : maxThrottle
+      );
     }
-
+    console.log("sending throttles", { leftThrottle, rightThrottle });
     sendThrottles(leftThrottle, rightThrottle);
   };
 
