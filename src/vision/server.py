@@ -138,13 +138,6 @@ def send_stats():
         "capture": BaseCamera.stats(),
         "recognition": Recognition.stats(),
         "depthProvider": DepthProvider.stats(),
-        "system": {
-            "cpuPercent": psutil.cpu_percent(),
-            "ram": psutil.virtual_memory()[2],
-            "temp": {
-                "CPU": cpu_temp,
-            }
-        },
     })
 
 

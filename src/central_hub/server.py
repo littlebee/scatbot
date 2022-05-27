@@ -190,7 +190,7 @@ async def send_hub_stats_task():
         await send_state_update_to_subscribers(
             {"hub_stats": shared_state.state["hub_stats"]})
 
-        await asyncio.sleep(.2)
+        await asyncio.sleep(20)
 
 
 print(f"Starting server on port {constants.HUB_PORT}")

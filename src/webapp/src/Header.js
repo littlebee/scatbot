@@ -31,7 +31,7 @@ export function Header({
 
       <div className="right-frame-top">
         <div className={`padded-1 flex-row`}>
-          <div className={`flex-column flex-grow`}>
+          <div className={st.rightFrameContent}>
             <div className={`flex-row ${st.stats}`}>
               <div className={st.statsColumn}>
                 <LabeledText label="hub status">
@@ -67,7 +67,7 @@ export function Header({
               </div>
             </div>
           </div>
-          <div>
+          <div className={st.title}>
             <h1>scatbot</h1>
           </div>
         </div>

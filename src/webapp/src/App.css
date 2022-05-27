@@ -12,6 +12,11 @@ label {
   margin-right: 8px;
 }
 
+.sidebar-buttons {
+  cursor: pointer;
+}
+
+/* convenience  */
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -50,4 +55,8 @@ label {
 
 .button.selected  a {
   background-color: #747;
+}
+
+.wrap {
+  max-width: inherit;
 }

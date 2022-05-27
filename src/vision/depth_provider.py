@@ -107,5 +107,5 @@ class DepthProvider:
 
     @ classmethod
     def _thread(cls):
-        logger.info('Starting pytorch thread.')
+        logger.info('Starting depth map thread.')
         asyncio.run(cls.provide_state())
