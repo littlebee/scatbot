@@ -44,14 +44,7 @@ label {
   overflow: auto;
 }
 
-.content img.video-feed,
-.content img.standby-image {
-  width: 640px;
-  align-self: center;
-}
-.content img.video-feed.loading {
-  display: none;
-}
+
 
 .button.selected  a {
   background-color: #747;

@@ -11,6 +11,7 @@ import {
 import { Header } from "./Header";
 import { VideoFeed } from "./VideoFeed";
 import { VideoSelector } from "./VideoSelector";
+import { Overlays } from "./Overlays";
 import { OverlaySelector } from "./OverlaySelector";
 import { HubStateDialog } from "./HubStateDialog";
 import { Thumbstick } from "./Thumbstick";
@@ -79,7 +80,12 @@ function App() {
           </div>
           <div className="content">
             <VideoSelector whichVideo={whichVideo} onSelect={setWhichVideo} />
-            <VideoFeed whichVideo={whichVideo} />
+            <Overlays
+              whichOverlays={whichOverlays}
+              depthMap={hubState.depth_map.section_map}
+            >
+              <VideoFeed whichVideo={whichVideo} />
+            </Overlays>
             <OverlaySelector
               whichOverlays={whichOverlays}
               onSelect={handleOverlaySelected}

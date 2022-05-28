@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import * as c from "./constants";
 
+import st from "./VideoFeed.module.css";
+
 const VIDEO_HOST =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? "scatbot.local:5001"
@@ -35,9 +37,11 @@ export function VideoFeed({ whichVideo }) {
 
   const feed_path = whichVideo === c.DEPTH_VIDEO ? "depth_feed" : "video_feed";
   const feedUrl = `http://${VIDEO_HOST}/${feed_path}?rand=${rand}`;
-  const imgClass = `pics video-feed ${isLoading || errorMsg ? "loading" : ""}`;
+
+  // note must always render the img or it endlessly triggers onLoad
+  const imgStyle = isLoading || errorMsg ? { display: "none" } : {};
   return (
-    <>
+    <div className={st.videoFeedContainer}>
       {(isLoading || errorMsg) && (
         <img
           className="standby-image"
@@ -46,12 +50,12 @@ export function VideoFeed({ whichVideo }) {
         />
       )}
       <img
-        className={imgClass}
+        style={imgStyle}
         alt="video feed"
         src={feedUrl}
         onError={handleError}
         onLoad={handleLoad}
       />
-    </>
+    </div>
   );
 }

@@ -17,7 +17,7 @@ export function Button({ className, children, isSelected, onClick }) {
   });
   return (
     <div className={buttonCls} onClick={handleClick}>
-      <a>{children}</a>
+      <a onClick={handleClick}>{children}</a>
     </div>
   );
 }

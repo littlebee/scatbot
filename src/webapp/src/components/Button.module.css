@@ -3,6 +3,7 @@
 
 .button {
   text-align: center !important;
+  margin-right: 24px;
 }
 
 .button a {

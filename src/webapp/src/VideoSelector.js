@@ -6,7 +6,7 @@ import st from "./VideoSelector.module.css";
 
 export function VideoSelector({ whichVideo, onSelect }) {
   return (
-    <div className={`buttons ${st.videoSelector}`}>
+    <div className={st.videoSelector}>
       <Button
         isSelected={whichVideo === c.RGB_VIDEO}
         onClick={() => onSelect(c.RGB_VIDEO)}
