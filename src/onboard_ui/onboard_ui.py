@@ -7,12 +7,17 @@ import websockets
 import asyncio
 import traceback
 import subprocess
+import board
+from digitalio import DigitalInOut, Direction, Pull
 
 from commons import constants, messages, shared_state
 
 white = (255, 255, 255)
 black = (0, 0, 0)
 
+reset_button = DigitalInOut(board.D17)
+reset_button.direction = Direction.INPUT
+reset_button.pull = Pull.UP
 
 os.putenv('SDL_FBDEV', '/dev/fb1')
 print("Initializing pygame...")
@@ -122,8 +127,10 @@ async def ui_task():
     # await render_splash()
     while True:
         await render()
-        # TODO : call function to handle button interactions
-        #   and screen updates.   Also reduce sleep duration below.
+
+        if not reset_button.value:
+            os.system('shutdown now')
+
         await asyncio.sleep(1)
 
 
