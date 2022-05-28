@@ -10,7 +10,7 @@ export function Header({
   isHubStateDialogOpen,
   onHubStateDialogOpen,
 }) {
-  const system_stats = hubState.system_stats.get();
+  const system_stats = hubState.system_stats;
 
   const dialogCls = classnames("wrap", st.header);
   const topLeftCls = classnames(
@@ -35,11 +35,11 @@ export function Header({
             <div className={`flex-row ${st.stats}`}>
               <div className={st.statsColumn}>
                 <LabeledText label="hub status">
-                  {hubState.hubConnStatus.get()}
+                  {hubState.hubConnStatus}
                 </LabeledText>
                 <LabeledText label="battery">
-                  {hubState.battery?.voltage.get().toFixed(1)}V@
-                  {hubState.battery?.current.get().toFixed(1)}A
+                  {hubState.battery?.voltage.toFixed(1)}V@
+                  {hubState.battery?.current.toFixed(1)}A
                 </LabeledText>
               </div>
               <div className={st.statsColumn}>
@@ -56,13 +56,13 @@ export function Header({
 
               <div className={st.statsColumn}>
                 <LabeledText label="compass">
-                  {hubState.compass?.get().toFixed(1)}˚
+                  {hubState.compass?.toFixed(1)}˚
                 </LabeledText>
                 <LabeledText label="min dist">
-                  {hubState.depth_map?.min_distance?.get().toFixed(1)}cm
+                  {hubState.depth_map?.min_distance?.toFixed(1)}cm
                 </LabeledText>
                 <LabeledText label="max dist">
-                  {hubState.depth_map?.max_distance?.get().toFixed(1)}cm
+                  {hubState.depth_map?.max_distance?.toFixed(1)}cm
                 </LabeledText>
               </div>
             </div>

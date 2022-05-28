@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { classnames } from "./util/classNames";
 import { Button } from "./components/Button";
@@ -38,8 +38,7 @@ export function HubStateDialog({ hubState, isOpen, onClose }) {
     e.stopPropagation();
   }
 
-  const displayedState =
-    whichState === REMOTE_STATE ? remoteState : hubState.get();
+  const displayedState = whichState === REMOTE_STATE ? remoteState : hubState;
 
   return (
     <div

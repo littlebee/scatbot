@@ -1,13 +1,13 @@
 import "react";
-import { createState } from "@hookstate/core";
 
 const urlParams = new URLSearchParams(window.location.search);
 const debugThings = urlParams.get("debug")?.split(",") || [];
-const logMesssages = debugThings.indexOf("messages") >= 0;
+const logMessages = debugThings.indexOf("messages") >= 0;
 
 let hubStatePromises = [];
+let onUpdateCallbacks = [];
 
-export const HubState = createState({
+export const DEFAULT_HUB_STATE = {
   // this is UI only
   hubConnStatus: "offline",
 
@@ -83,8 +83,9 @@ export const HubState = createState({
     left: 0,
     right: 0,
   },
-});
-// setInterval(() => HubState.hubConnStatus.set((p) => p + 1), 3000);
+};
+
+const __hub_state = { ...DEFAULT_HUB_STATE };
 
 export const HUB_HOST =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
@@ -95,7 +96,7 @@ export const HUB_URL = `ws://${HUB_HOST}/ws`;
 
 export let webSocket = null;
 
-export function connectToHub(state = HubState) {
+export function connectToHub(state = DEFAULT_HUB_STATE) {
   try {
     setHubConnStatus("connecting");
     console.log(`connecting to central-hub at ${HUB_URL}`);
@@ -135,6 +136,22 @@ export function connectToHub(state = HubState) {
   }
 }
 
+// handler gets called with __hub_state
+export function addHubStateUpdatedListener(handler) {
+  onUpdateCallbacks.push(handler);
+}
+
+export function removeHubStateUpdatedListener(handler) {
+  const index = onUpdateCallbacks.indexOf(item);
+  if (index !== -1) {
+    onUpdateCallbacks.splice(index, 1);
+  }
+}
+
+export function getLocalState() {
+  return __hub_state;
+}
+
 export function getStateFromCentralHub() {
   const statePromise = new Promise((resolve) => hubStatePromises.push(resolve));
   webSocket.send(JSON.stringify({ type: "getState" }));
@@ -166,7 +183,7 @@ export function sendThrottles(leftThrottle, rightThrottle) {
 
 function delayedConnectToHub(state) {
   setTimeout(() => {
-    if (state.hubConnStatus.get() === "offline") {
+    if (state.hubConnStatus === "offline") {
       connectToHub(state);
     }
   }, 5000);
@@ -184,7 +201,7 @@ function onConnError(state, e) {
 // not exported, should only be called from connectToHub
 function setHubConnStatus(newStatus) {
   log("setting conn status", newStatus);
-  HubState.hubConnStatus.set(newStatus);
+  __hub_state.hubConnStatus = newStatus;
 }
 
 function updateStateFromCentralHub(hubData) {
@@ -192,12 +209,15 @@ function updateStateFromCentralHub(hubData) {
     log("got hub state update", key, value);
     // TODO : unless we merge the state with incoming
     // state for any top level key must be whole
-    HubState[key].set(value);
+    __hub_state[key] = value;
+  }
+  for (const callback of onUpdateCallbacks) {
+    callback(__hub_state);
   }
 }
 
 function log(...args) {
-  if (logMesssages) {
+  if (logMessages) {
     console.log(...args);
   }
 }

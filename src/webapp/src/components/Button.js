@@ -4,12 +4,19 @@ import { classnames } from "../util/classNames";
 import st from "./Button.module.css";
 
 export function Button({ className, children, isSelected, onClick }) {
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    onClick(e);
+  };
+
   const buttonCls = classnames(className, "button", st.button, {
     predicate: isSelected,
     value: st.buttonSelected,
   });
   return (
-    <div className={buttonCls} onClick={onClick}>
+    <div className={buttonCls} onClick={handleClick}>
       <a>{children}</a>
     </div>
   );
