@@ -79,11 +79,11 @@ export function Thumbstick() {
     // to turn like a tank and spin the motors in opposite directions
     if (Math.abs(relativeY) <= 15) {
       console.log("doing tank turn");
-      leftThrottle = relativeX / STICK_RADIUS;
-      rightThrottle = leftThrottle * -1;
+      leftThrottle = governThrottle(relativeX / STICK_RADIUS);
+      rightThrottle = governThrottle(leftThrottle * -1);
     } else {
       const maxThrottle = relativeY / STICK_RADIUS;
-      // if you are, for example at the top of the Y, and a little to the right,
+      // if you are, for example, at the top of the Y and a little to the right,
       // the right motor needs to be lower than the left by an amount relative
       // to the x coord of the stick
       leftThrottle = governThrottle(
