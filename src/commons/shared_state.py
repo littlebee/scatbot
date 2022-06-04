@@ -20,6 +20,14 @@ state = {
         "section_map": [],
     },
 
+    "feeder": {
+        "requested_at": 0
+    },
+
+    "hub_stats": {
+        "state_updates_recv": 0
+    },
+
     # recognized objects from pytorch
     "inference": [
         # this is a array of
@@ -29,10 +37,6 @@ state = {
         #     "confidence": 90
         #  }
     ],
-
-    "hub_stats": {
-        "state_updates_recv": 0
-    },
 
     # This is separate from throttles which is the requested throttles.
     # This is what motor_control subsystem says the actual throttles are.
@@ -73,6 +77,7 @@ state = {
         "left": 0,
         "right": 0,
     }
+
 }
 
 # these are intended to be semi-constant and calibrated values

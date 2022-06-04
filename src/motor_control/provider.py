@@ -13,6 +13,8 @@ left_motor = kit.motor3
 right_motor = kit.motor4
 feed_motor = kit.motor1
 
+last_feed_requested_at = 0
+
 
 async def send_motor_state(websocket):
     await messages.send_state_update(websocket, {
@@ -21,6 +23,18 @@ async def send_motor_state(websocket):
             "right": right_motor.throttle,
         }
     })
+
+
+async def feeder_task(requestedAt):
+    global last_feed_requested_at
+    print(f"got feeder request: {requestedAt}")
+    if requestedAt != last_feed_requested_at:
+        feed_motor.throttle = 1
+        await asyncio.sleep(1)
+        feed_motor.throttle = -1
+        await asyncio.sleep(1)
+        feed_motor.throttle = 0
+        last_feed_requested_at = requestedAt
 
 
 async def provide_state():
@@ -34,7 +48,7 @@ async def provide_state():
                 feed_motor.throttle = 0
 
                 await messages.send_identity(websocket, "motor_control")
-                await messages.send_subscribe(websocket, ["throttles"])
+                await messages.send_subscribe(websocket, ["throttles", "feeder"])
                 async for message in websocket:
                     data = json.loads(message)
                     message_data = data.get("data")
@@ -48,6 +62,9 @@ async def provide_state():
                         left_motor.throttle = left_throttle
                         right_motor.throttle = right_throttle
                         await send_motor_state(websocket)
+                    elif "feeder" in message_data:
+                        asyncio.create_task(feeder_task(
+                            message_data["feeder"]["requested_at"]))
 
                 await asyncio.sleep(0.05)
 

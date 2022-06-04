@@ -6,6 +6,7 @@ import {
   connectToHub,
   addHubStateUpdatedListener,
   removeHubStateUpdatedListener,
+  giveTreat,
 } from "./hub-state";
 
 import { Header } from "./Header";
@@ -48,6 +49,11 @@ function App() {
     setWhichOverlays(newOverlays);
   };
 
+  const handleGiveTreatClick = (e) => {
+    e.preventDefault();
+    giveTreat();
+  };
+
   return (
     <div>
       <Header
@@ -61,7 +67,7 @@ function App() {
             <a>Remote Control</a>
           </div>
           <div className="sidebar-buttons">
-            <a>Give Treat</a>
+            <a onClick={handleGiveTreatClick}>Give Treat</a>
           </div>
           <div className="panel-3"></div>
         </div>

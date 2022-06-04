@@ -30,6 +30,14 @@ export const DEFAULT_HUB_STATE = {
     section_map: [],
   },
 
+  feeder: {
+    requested_at: 0,
+  },
+
+  hub_stats: {
+    state_updates_recv: 0,
+  },
+
   // recognized objects from pytorch
   inference: [
     // this is a array of
@@ -39,10 +47,6 @@ export const DEFAULT_HUB_STATE = {
     //     "confidence": 90
     //  }
   ],
-
-  hub_stats: {
-    state_updates_recv: 0,
-  },
 
   // This is separate from throttles which is the requested throttles.
   // This is what motor_control subsystem says the actual throttles are.
@@ -175,6 +179,19 @@ export function sendThrottles(leftThrottle, rightThrottle) {
         throttles: {
           left: leftThrottle,
           right: rightThrottle,
+        },
+      },
+    })
+  );
+}
+
+export function giveTreat() {
+  webSocket.send(
+    JSON.stringify({
+      type: "updateState",
+      data: {
+        feeder: {
+          requested_at: Date.now(),
         },
       },
     })
