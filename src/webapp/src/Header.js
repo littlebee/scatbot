@@ -37,34 +37,40 @@ export function Header({
                 <LabeledText label="hub status">
                   {hubState.hubConnStatus}
                 </LabeledText>
-                <LabeledText label="battery">
-                  {hubState.battery?.voltage.toFixed(1)}V@
-                  {hubState.battery?.current.toFixed(1)}A
-                </LabeledText>
+                {hubState.hubConnStatus === "online" && (
+                  <LabeledText label="battery">
+                    {hubState.battery?.voltage.toFixed(1)}V@
+                    {hubState.battery?.current.toFixed(1)}A
+                  </LabeledText>
+                )}
               </div>
-              <div className={st.statsColumn}>
-                <LabeledText label="cpu temp">
-                  {system_stats?.cpu_temp.toFixed(1)}˚
-                </LabeledText>
-                <LabeledText label="cpu util">
-                  {system_stats?.cpu_util.toFixed(1)}%
-                </LabeledText>
-                <LabeledText label="ram util">
-                  {system_stats?.ram_util.toFixed(1)}%
-                </LabeledText>
-              </div>
+              {hubState.hubConnStatus === "online" && (
+                <>
+                  <div className={st.statsColumn}>
+                    <LabeledText label="cpu temp">
+                      {system_stats?.cpu_temp.toFixed(1)}˚
+                    </LabeledText>
+                    <LabeledText label="cpu util">
+                      {system_stats?.cpu_util.toFixed(1)}%
+                    </LabeledText>
+                    <LabeledText label="ram util">
+                      {system_stats?.ram_util.toFixed(1)}%
+                    </LabeledText>
+                  </div>
 
-              <div className={st.statsColumn}>
-                <LabeledText label="compass">
-                  {hubState.compass?.toFixed(1)}˚
-                </LabeledText>
-                <LabeledText label="min dist">
-                  {hubState.depth_map?.min_distance?.toFixed(1)}cm
-                </LabeledText>
-                <LabeledText label="max dist">
-                  {hubState.depth_map?.max_distance?.toFixed(1)}cm
-                </LabeledText>
-              </div>
+                  <div className={st.statsColumn}>
+                    <LabeledText label="compass">
+                      {hubState.compass?.toFixed(1)}˚
+                    </LabeledText>
+                    <LabeledText label="min dist">
+                      {hubState.depth_map?.min_distance?.toFixed(1)}cm
+                    </LabeledText>
+                    <LabeledText label="max dist">
+                      {hubState.depth_map?.max_distance?.toFixed(1)}cm
+                    </LabeledText>
+                  </div>
+                </>
+              )}
             </div>
           </div>
           <div className={st.title}>

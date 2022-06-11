@@ -154,6 +154,10 @@ async def handleIdentity(websocket, subsystem_name):
         {"subsystem_stats": shared_state.state["subsystem_stats"]})
 
 
+async def handlePing(websocket):
+    send_message(websocket, json.dumps({"type": "pong"}))
+
+
 async def handleMessage(websocket, path):
     await register(websocket)
     try:
@@ -179,6 +183,8 @@ async def handleMessage(websocket, path):
                 await handleStateUnsubscribe(websocket, messageData)
             elif messageType == "identity":
                 await handleIdentity(websocket, messageData)
+            elif messageType == "ping":
+                await handlePing(websocket)
             else:
                 logging.error("received unsupported message: %s", messageType)
     finally:

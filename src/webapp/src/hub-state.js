@@ -91,6 +91,14 @@ export const DEFAULT_HUB_STATE = {
 
 const __hub_state = { ...DEFAULT_HUB_STATE };
 
+setInterval(() => {
+  if (__hub_state.hubConnStatus === "online") {
+    // if the socket is hung or there is no network,
+    // the websocket will not error out until we send something
+    webSocket.send(JSON.stringify({ type: "ping" }));
+  }
+}, 1000);
+
 export const HUB_HOST =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? "scatbot.local:5000"
@@ -219,6 +227,7 @@ function onConnError(state, e) {
 function setHubConnStatus(newStatus) {
   log("setting conn status", newStatus);
   __hub_state.hubConnStatus = newStatus;
+  emitUpdated();
 }
 
 function updateStateFromCentralHub(hubData) {
@@ -228,6 +237,10 @@ function updateStateFromCentralHub(hubData) {
     // state for any top level key must be whole
     __hub_state[key] = value;
   }
+  emitUpdated();
+}
+
+function emitUpdated() {
   for (const callback of onUpdateCallbacks) {
     callback(__hub_state);
   }
