@@ -4,8 +4,19 @@ const urlParams = new URLSearchParams(window.location.search);
 const debugThings = urlParams.get("debug")?.split(",") || [];
 const logMessages = debugThings.indexOf("messages") >= 0;
 
-let hubStatePromises = [];
-let onUpdateCallbacks = [];
+// How often to check if hub is really still alive
+const HUB_PING_INTERVAL = 1000;
+// with us pinging every 1000ms, there should
+// never be a lapse of more than 1500 between
+// messages from hub.  Otherwise, we show "offline"
+const MIN_HUB_UPDATE_INTERVAL = 1500;
+
+export const HUB_HOST =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+    ? "scatbot.local:5000"
+    : `${window.location.hostname}:5000`;
+
+export const HUB_URL = `ws://${HUB_HOST}/ws`;
 
 export const DEFAULT_HUB_STATE = {
   // this is UI only
@@ -89,22 +100,12 @@ export const DEFAULT_HUB_STATE = {
   },
 };
 
-const __hub_state = { ...DEFAULT_HUB_STATE };
+let __hub_state = { ...DEFAULT_HUB_STATE };
 
-setInterval(() => {
-  if (__hub_state.hubConnStatus === "online") {
-    // if the socket is hung or there is no network,
-    // the websocket will not error out until we send something
-    webSocket.send(JSON.stringify({ type: "ping" }));
-  }
-}, 1000);
-
-export const HUB_HOST =
-  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
-    ? "scatbot.local:5000"
-    : `${window.location.hostname}:5000`;
-
-export const HUB_URL = `ws://${HUB_HOST}/ws`;
+let hubStatePromises = [];
+let onUpdateCallbacks = [];
+let lastHubUpdate = Date.now();
+let hubMonitor = null;
 
 export let webSocket = null;
 
@@ -116,6 +117,8 @@ export function connectToHub(state = DEFAULT_HUB_STATE) {
     webSocket = new WebSocket(HUB_URL);
 
     webSocket.addEventListener("open", function (event) {
+      lastHubUpdate = Date.now();
+
       try {
         webSocket.send(JSON.stringify({ type: "getState" }));
         webSocket.send(JSON.stringify({ type: "subscribeState", data: "*" }));
@@ -123,6 +126,7 @@ export function connectToHub(state = DEFAULT_HUB_STATE) {
       } catch (e) {
         onConnError(state, e);
       }
+      startHubMonitor();
     });
 
     webSocket.addEventListener("error", function (event) {
@@ -135,6 +139,7 @@ export function connectToHub(state = DEFAULT_HUB_STATE) {
 
     webSocket.addEventListener("message", function (event) {
       log("got message from central-hub", event.data);
+      lastHubUpdate = Date.now();
       const message = JSON.parse(event.data);
       if (message.type === "state" && hubStatePromises.length > 0) {
         hubStatePromises.forEach((p) => p(message.data));
@@ -145,6 +150,28 @@ export function connectToHub(state = DEFAULT_HUB_STATE) {
     });
   } catch (e) {
     onConnError(state, e);
+  }
+}
+
+function startHubMonitor() {
+  stopHubMonitor();
+  hubMonitor = setInterval(() => {
+    // if the socket is hung or there is no network,
+    // the websocket will not error out until we send something
+    webSocket.send(JSON.stringify({ type: "ping" }));
+
+    if (
+      __hub_state.hubConnStatus === "online" &&
+      Date.now() - lastHubUpdate > MIN_HUB_UPDATE_INTERVAL
+    ) {
+      setHubConnStatus("offline");
+    }
+  }, HUB_PING_INTERVAL);
+}
+
+function stopHubMonitor() {
+  if (hubMonitor) {
+    clearInterval(hubMonitor);
   }
 }
 
@@ -219,6 +246,7 @@ function onConnError(state, e) {
     "got close message from central-hub socket. will attempt to reconnnect in 5 seconds",
     e
   );
+  stopHubMonitor();
   setHubConnStatus("offline");
   delayedConnectToHub(state);
 }
