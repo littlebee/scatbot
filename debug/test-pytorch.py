@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
+# this is from https://pytorch.org/tutorials/intermediate/realtime_rpi.html
+
 import time
 from os.path import exists
+
+from commons import constants
 
 # OMG, only python and nano, you HAVE to import cv2
 #  before torch on nano.
@@ -21,11 +25,11 @@ if not is_jetson:
 
 cap = None
 # TODO : figure out someway to import commons/constants
-cap = cv2.VideoCapture(4, cv2.CAP_V4L2)
+cap = cv2.VideoCapture(constants.CAMERA_CHANNEL_RGB, cv2.CAP_V4L2)
 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
-cap.set(cv2.CAP_PROP_FPS, 36)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cap.set(cv2.CAP_PROP_FPS, 60)
 
 preprocess = transforms.Compose([
     transforms.ToTensor(),
@@ -33,6 +37,7 @@ preprocess = transforms.Compose([
                          std=[0.229, 0.224, 0.225]),
 ])
 
+print("loading model")
 net = None
 if is_jetson:
     net = models.quantization.mobilenet_v2(pretrained=True)
@@ -40,14 +45,16 @@ else:
     # This also doesn't work on nano :/
     net = models.quantization.mobilenet_v2(pretrained=True, quantize=True)
 
-# jit model to take it from ~20fps to ~30fps
+print("compiling model")
 net = torch.jit.script(net)
 
+print('model compiled')
 started = time.time()
 last_logged = time.time()
 frame_count = 0
 
 with torch.no_grad():
+    print("starting benchmark")
     while True:
         # read frame
         ret, image = cap.read()
@@ -67,6 +74,8 @@ with torch.no_grad():
         # run model
         output = net(input_batch)
         # do something with output ...
+
+        # print(f"{output}")
 
         # log model performance
         frame_count += 1

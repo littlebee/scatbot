@@ -6,7 +6,9 @@
 import time
 from adafruit_motorkit import MotorKit
 
-kit = MotorKit(0x70)
+from commons import constants
+
+kit = MotorKit(constants.MOTOR_ADDRESS)
 
 motors = [kit.motor1, kit.motor2, kit.motor3, kit.motor4]
 

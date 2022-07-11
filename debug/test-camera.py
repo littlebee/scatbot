@@ -9,7 +9,9 @@ import sys
 import time
 import cv2
 
-video_channel = 4
+from commons import constants
+
+video_channel = constants.CAMERA_CHANNEL_RGB
 if len(sys.argv) > 1:
     video_channel = int(sys.argv[1])
 

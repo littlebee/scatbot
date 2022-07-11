@@ -4,6 +4,9 @@ camera_test_output.avi
 myrecording.wav
 inference_test.jpg
 
+# we clone yolo v5 and pretrained models in here
+yolov5
+
 # js things
 node_modules
 build

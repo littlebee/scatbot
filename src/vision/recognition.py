@@ -92,13 +92,12 @@ class Recognition:
             frame = cls.last_frame = cls.camera.get_frame()
 
             new_objects = []
+
             # TODO : invoke pytorch magic here
             # new_objects = face_recognition.face_locations(frame)
             #
-            cls.last_objects_seen = new_objects
 
-            # TODO : REMOVE THIS
-            time.sleep(1)
+            cls.last_objects_seen = new_objects
 
             cls.fps_stats.increment()
 
