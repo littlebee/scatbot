@@ -1,6 +1,9 @@
+import os
+
 
 # which v4l channel  is the rgb image read from
-CAMERA_CHANNEL_RGB = 4
+CAMERA_CHANNEL_RGB = 4 if not os.getenv(
+    'CAMERA_CHANNEL') else int(os.getenv('CAMERA_CHANNEL'))
 # IDK??
 CAMERA_CHANNEL_DEPTH = 2  # maybe??
 
@@ -42,3 +45,23 @@ I2C_BUS = 1
 
 # Motor controller I2C addr
 MOTOR_ADDRESS = 0x70
+
+
+# Class labels from official PyTorch documentation for the pretrained model
+# Note that there are some N/A's
+# for complete list check https://tech.amikelive.com/node-718/what-object-categories-labels-are-in-coco-dataset/
+# we will use the same list for this notebook
+COCO_INSTANCE_CATEGORY_NAMES = [
+    '__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
+    'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'N/A', 'stop sign',
+    'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+    'elephant', 'bear', 'zebra', 'giraffe', 'N/A', 'backpack', 'umbrella', 'N/A', 'N/A',
+    'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
+    'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket',
+    'bottle', 'N/A', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl',
+    'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza',
+    'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'N/A', 'dining table',
+    'N/A', 'N/A', 'toilet', 'N/A', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'N/A', 'book',
+    'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+]

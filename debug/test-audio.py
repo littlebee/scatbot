@@ -51,5 +51,5 @@ waveFile.writeframes(b''.join(recording_frames))
 waveFile.close()
 
 print(f"You can verify it recorded audio on your local machine: ")
-print(f"scp raspberrypi.local:/home/bee/scatbot/myrecording.wav . && open myrecording.wav")
+print(f"scp scatbot.local:/home/bee/scatbot/myrecording.wav . && open myrecording.wav")
 print("")

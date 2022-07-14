@@ -25,11 +25,14 @@ import cv2
 from vision.camera_opencv import OpenCvCamera
 from vision.camera_realsense import RealsenseCamera
 from vision.base_camera import BaseCamera
-from vision.recognition import Recognition
+from vision.recognition_provider import RecognitionProvider
 from vision.depth_provider import DepthProvider
 
 from commons import constants
 
+DISABLE_DEPTH_PROVIDER = os.getenv('DISABLE_DEPTH_PROVIDER') or False
+DISABLE_RECOGNITION_PROVIDER = os.getenv(
+    'DISABLE_RECOGNITION_PROVIDER') or False
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -45,7 +48,7 @@ class CAMERAS(Enum):
 which_camera = None
 if os.getenv('USE_OPENCV') != None:
     print("Will use opencv camera")
-    which_camera = CAMERAS.opecv
+    which_camera = CAMERAS.opencv
 else:
     print("Will use realsense camera")
     which_camera = CAMERAS.realsense
@@ -56,21 +59,18 @@ if which_camera == CAMERAS.opencv:
 else:
     camera = RealsenseCamera()
 
-recognition = Recognition(camera)
-depth = DepthProvider(camera)
+if not DISABLE_DEPTH_PROVIDER:
+    depth = DepthProvider(camera)
+
+if not DISABLE_RECOGNITION_PROVIDER:
+    recognition = RecognitionProvider(camera)
 
 
 def gen_rgb_video(camera):
     """Video streaming generator function."""
     while True:
         frame = camera.get_frame()
-        # can't augment the frame directly from the camera as that will
-        # alter it for all and you will see the face detection start to
-        # stutter and blank out
-        frame = frame.copy()
 
-        # add names and bounding boxes
-        frame = recognition.augment_frame(frame)
         jpeg = cv2.imencode('.jpg', frame)[1].tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
@@ -117,9 +117,15 @@ def video_feed():
 
 @app.route('/depth_feed')
 def depth_feed():
+    if DISABLE_DEPTH_PROVIDER:
+        abort(404, "depth camera disabled")
+        return
+
     """Colorized depth map streaming route. Put this in the src attribute of an img tag."""
     if which_camera == CAMERAS.opencv:
         abort(404, "depth image not support by camera")
+        return
+
     return Response(gen_depth_video(camera),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -136,19 +142,25 @@ def send_stats():
     ]
     return json_response({
         "capture": BaseCamera.stats(),
-        "recognition": Recognition.stats(),
-        "depthProvider": DepthProvider.stats(),
+        "recognition": "disabled" if DISABLE_RECOGNITION_PROVIDER else RecognitionProvider.stats(),
+        "depthProvider": "disabled" if DISABLE_DEPTH_PROVIDER else DepthProvider.stats(),
     })
 
 
 @app.route('/pauseRecognition')
 def pause_recognition():
+    if DISABLE_RECOGNITION_PROVIDER:
+        return abort(404, "recognition provider disabled")
+
     recognition.pause()
     return respond_ok()
 
 
 @app.route('/resumeRecognition')
 def resume_recognition():
+    if DISABLE_RECOGNITION_PROVIDER:
+        return abort(404, "recognition provider disabled")
+
     recognition.resume()
     return respond_ok()
 

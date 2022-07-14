@@ -7,10 +7,11 @@ from pathlib import Path
 
 import torch
 import torch.backends.cudnn as cudnn
-
 from yolov5.detect import run as detect
 
-detect(source=0)
+from commons import constants
+
+detect(source=constants.CAMERA_CHANNEL_RGB)
 
 # from yolov5.utils.torch_utils import select_device, time_sync
 # from yolov5.utils.plots import Annotator, colors, save_one_box
@@ -20,12 +21,11 @@ detect(source=0)
 # from yolov5.models.common import DetectMultiBackend
 
 
-# FILE = Path(__file__).resolve()
-# YOLO_ROOT = FILE.parents[1] + 'src/yolov5'  # YOLOv5 root directory
+# YOLO_ROOT = os.path.abspath(os.path.join(
+#     os.path.dirname(__file__), '../src/yolov5'))
 
 # WEIGHTS_FILE = YOLO_ROOT + '/yolov5s.pt'
-# SOURCE_DIR = YOLO_ROOT + 'data/images'
-# DATA_FILE = YOLO_ROOT + 'data/coco128.yaml'
+# DATA_FILE = YOLO_ROOT + '/data/coco128.yaml'
 
 
 # @torch.no_grad()
@@ -53,7 +53,8 @@ detect(source=0)
 
 #     # Dataloader
 #     cudnn.benchmark = True  # set True to speed up constant image size inference
-#     dataset = LoadStreams(SOURCE_DIR, img_size=imgsz, stride=stride, auto=pt)
+#     dataset = LoadStreams(str(constants.CAMERA_CHANNEL_RGB),
+#                           img_size=imgsz, stride=stride, auto=pt)
 #     bs = len(dataset)  # batch_size
 
 #     # Run inference

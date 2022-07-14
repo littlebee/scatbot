@@ -23,8 +23,6 @@ is_jetson = exists('/etc/nv_tegra_release')
 if not is_jetson:
     torch.backends.quantized.engine = 'qnnpack'
 
-cap = None
-# TODO : figure out someway to import commons/constants
 cap = cv2.VideoCapture(constants.CAMERA_CHANNEL_RGB, cv2.CAP_V4L2)
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)

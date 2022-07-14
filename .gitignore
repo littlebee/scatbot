@@ -3,6 +3,7 @@ opencv-test-output.jpg
 camera_test_output.avi
 myrecording.wav
 inference_test.jpg
+test-torch-detect-output.jpg
 
 # we clone yolo v5 and pretrained models in here
 yolov5

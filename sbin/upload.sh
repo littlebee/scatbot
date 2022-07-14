@@ -6,7 +6,7 @@
 
 if [ "$1" == "" ]; then
   echo "Error: missing parameter.  usage: sbin/upload.sh [USER@]IP_ADDRESS_OR_NAME"
-  echo "   ex:  sbin/upload.sh pi@raspberrypi.local"
+  echo "   ex:  sbin/upload.sh pi@scatbot.local"
   exit 1
 fi
 

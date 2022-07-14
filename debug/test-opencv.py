@@ -16,5 +16,5 @@ else:
 
 
 print("you can view the image which should have a label, with:")
-print("   scp raspberrypi.local:/home/bee/scatbot/opencv-test-output.jpg . && open opencv-test-output.jpg")
+print("   scp scatbot.local:/home/bee/scatbot/opencv-test-output.jpg . && open opencv-test-output.jpg")
 print("on your local machine")

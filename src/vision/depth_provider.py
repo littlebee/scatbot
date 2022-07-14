@@ -35,7 +35,8 @@ class DepthProvider:
         while True:
             try:
 
-                print(f"connecting to hub central at {constants.HUB_URI}")
+                print(
+                    f"depth_provider connecting to hub central at {constants.HUB_URI}")
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     await messages.send_identity(websocket, "vision")
                     while True:
@@ -47,19 +48,15 @@ class DepthProvider:
                         #   section minimums changed
                         # abs(min_distance - last_min_distance) > constants.DEPTH_MAP_CHANGE_TOLERACE:
                         if True:
-                            last_min_distance = min_distance
-                            message = json.dumps({
-                                "type": "updateState",
-                                "data": {
-                                    "depth_map": {
-                                        "min_distance": min_distance,
-                                        "max_distance": max_distance,
-                                        "last_updated": time.time(),
-                                        "section_map": section_map,
-                                    }
+                            # last_min_distance = min_distance
+                            await messages.send_state_update(websocket, {
+                                "depth_map": {
+                                    "min_distance": min_distance,
+                                    "max_distance": max_distance,
+                                    "last_updated": time.time(),
+                                    "section_map": section_map,
                                 }
                             })
-                            await websocket.send(message)
 
                         await asyncio.sleep(constants.DEPTH_PUBLISH_INTERVAL)
             except:

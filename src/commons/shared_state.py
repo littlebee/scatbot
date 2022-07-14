@@ -29,7 +29,7 @@ state = {
     },
 
     # recognized objects from pytorch
-    "inference": [
+    "recognition": [
         # this is a array of
         #  {
         #     "classificaton": "dog",
@@ -71,6 +71,9 @@ state = {
         "vision": {
             "online": 0,
         },
+        "recognition": {
+            "online": 0,
+        }
     },
 
     "throttles": {
