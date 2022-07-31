@@ -22,7 +22,12 @@ fi
 for sub_system in ${to_stop[@]}
 do
   echo "stopping $sub_system"
+
   pid_file="./$sub_system.pid"
+  if [[ "$sub_system" == *".pid" ]]; then
+    pid_file="./$sub_system"
+  fi
+
   if [ -f "$pid_file" ]; then
     kill -9 `cat $pid_file`
     rm -f $pid_file
