@@ -13,7 +13,7 @@ import cv2
 import logging
 
 from commons import constants
-from vision.base_camera import BaseCamera
+from commons.base_camera import BaseCamera
 
 logger = logging.getLogger(__name__)
 
@@ -23,16 +23,17 @@ class OpenCvCamera(BaseCamera):
     img_is_none_messaged = False
 
     def __init__(self):
-        OpenCvCamera.set_video_source(constants.CAMERA_CHANNEL_RGB)
+        OpenCvCamera.set_video_source(constants.CAMERA_CHANNEL_PICAM)
         super(OpenCvCamera, self).__init__()
 
     @staticmethod
     def set_video_source(source):
+        print(f"setting video source to {source}")
         OpenCvCamera.video_source = source
 
     @staticmethod
     def frames():
-        logger.info('initializing VideoCapture')
+        print('initializing VideoCapture')
 
         camera = cv2.VideoCapture(
             OpenCvCamera.video_source)  # , apiPreference=cv2.CAP_V4L2)

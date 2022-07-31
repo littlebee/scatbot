@@ -15,34 +15,10 @@ from flask_cors import CORS
 
 
 from common.setup_logging import setup_logging
-
+from commons import web_utils
 
 app = Flask(__name__, static_url_path='/static')
 CORS(app, supports_credentials=True)
-
-
-def json_response(data):
-    response = app.response_class(
-        response=json.dumps(data),
-        status=200,
-        mimetype='application/json'
-    )
-    return response
-
-
-def respond_ok(data=None):
-    return json_response({
-        "status": "ok",
-        "data": data
-    })
-
-
-def respond_not_ok(status, data):
-    return json_response({
-        "status": status,
-        "data": data
-    })
-
 
 dir_path = os.path.dirname(os.path.realpath(__file__)) + '/build'
 
@@ -54,7 +30,7 @@ def send_stats():
         os.popen(
             'cat /sys/devices/virtual/thermal/thermal_zone*/temp').read().split()
     ]
-    return json_response({
+    return web_utils.json_response(app, {
         "system": {
             "cpuPercent": psutil.cpu_percent(),
             "ram": psutil.virtual_memory()[2],

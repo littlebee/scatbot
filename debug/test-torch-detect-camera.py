@@ -67,7 +67,7 @@ def get_prediction(img, threshold):
         return [], []
 
 
-def main(source=constants.CAMERA_CHANNEL_RGB, threshold=0.5, rect_th=3, text_size=3, text_th=3):
+def main(source=constants.CAMERA_CHANNEL_PICAM, threshold=0.5, rect_th=3, text_size=3, text_th=3):
     """
       parameters:
         - threshold - threshold value for prediction score
@@ -105,5 +105,5 @@ def main(source=constants.CAMERA_CHANNEL_RGB, threshold=0.5, rect_th=3, text_siz
 
 if __name__ == "__main__":
     source = int(sys.argv[1]) if len(
-        sys.argv) > 1 else constants.CAMERA_CHANNEL_RGB
+        sys.argv) > 1 else constants.CAMERA_CHANNEL_PICAM
     main(source)

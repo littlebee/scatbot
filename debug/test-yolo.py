@@ -11,7 +11,7 @@ from yolov5.detect import run as detect
 
 from commons import constants
 
-detect(source=constants.CAMERA_CHANNEL_RGB)
+detect(source=constants.CAMERA_CHANNEL_PICAM)
 
 # from yolov5.utils.torch_utils import select_device, time_sync
 # from yolov5.utils.plots import Annotator, colors, save_one_box
@@ -53,7 +53,7 @@ detect(source=constants.CAMERA_CHANNEL_RGB)
 
 #     # Dataloader
 #     cudnn.benchmark = True  # set True to speed up constant image size inference
-#     dataset = LoadStreams(str(constants.CAMERA_CHANNEL_RGB),
+#     dataset = LoadStreams(str(constants.CAMERA_CHANNEL_PICAM),
 #                           img_size=imgsz, stride=stride, auto=pt)
 #     bs = len(dataset)  # batch_size
 

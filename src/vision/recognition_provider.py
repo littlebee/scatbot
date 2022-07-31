@@ -70,12 +70,6 @@ class RecognitionProvider:
 
         while True:
             try:
-                # delay websocket connect.  Python websockets have MT issues
-                # this allows depth_provider plenty of time to connect first.
-                # also delays needed before __init__ of PyTorchDetect so that
-                # network has a chance to connect incase it needs to download the model
-                await asyncio.sleep(10)
-
                 detector = PytorchDetect()
 
                 print(

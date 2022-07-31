@@ -1,7 +1,6 @@
 import time
 import threading
 import asyncio
-import json
 import websockets
 import traceback
 import logging

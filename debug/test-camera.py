@@ -11,7 +11,7 @@ import cv2
 
 from commons import constants
 
-video_channel = constants.CAMERA_CHANNEL_RGB
+video_channel = constants.CAMERA_CHANNEL_PICAM
 if len(sys.argv) > 1:
     video_channel = int(sys.argv[1])
 
@@ -48,17 +48,9 @@ while(True):
     ret, frame = video.read()
 
     if ret == True:
-
         # Write the frame into the
         # file 'filename.avi'
         writer.write(frame)
-
-        # Display the frame
-        # saved in the file
-        # cv2.imshow('Frame', frame)
-
-        cv2.waitKey(1)
-
         num_frames += 1
 
     # Break the loop
@@ -75,8 +67,6 @@ while(True):
 video.release()
 writer.release()
 
-# Closes all the frames
-cv2.destroyAllWindows()
 
 print("The video was successfully saved.")
 print(f"recorded {num_frames} in 30s ({num_frames/30:.2f} fps)")

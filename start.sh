@@ -17,6 +17,7 @@ to_start=(
   "onboard_ui"
   "system_stats"
   "vision"
+  "depth"
 )
 
 if [ $# -ne 0 ]; then

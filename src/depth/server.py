@@ -11,8 +11,8 @@
 
 import os
 import threading
-import json
 import logging
+from enum import Enum
 
 
 from flask import Flask, Response, send_from_directory, abort
@@ -20,23 +20,22 @@ from flask_cors import CORS
 
 import cv2
 
-from commons import constants
-from commons import web_utils
+from depth.camera_realsense import RealsenseCamera
+from depth.provider import DepthProvider
+
 from commons.base_camera import BaseCamera
-from vision.camera_opencv import OpenCvCamera
-from vision.recognition_provider import RecognitionProvider
+from commons import web_utils
+from commons import constants
 
-
-DISABLE_RECOGNITION_PROVIDER = os.getenv(
-    'DISABLE_RECOGNITION_PROVIDER') or False
+DISABLE_DEPTH_PROVIDER = os.getenv('DISABLE_DEPTH_PROVIDER') or False
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-camera = OpenCvCamera()
+camera = RealsenseCamera()
 
-if not DISABLE_RECOGNITION_PROVIDER:
-    recognition = RecognitionProvider(camera)
+if not DISABLE_DEPTH_PROVIDER:
+    depth = DepthProvider(camera)
 
 
 def gen_rgb_video(camera):
@@ -49,10 +48,29 @@ def gen_rgb_video(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
 
 
+def gen_depth_video(camera):
+    """Video streaming generator function."""
+    while True:
+        frame = camera.get_depth_image()
+        jpeg = cv2.imencode('.jpg', frame)[1].tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
+
+
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen_rgb_video(camera),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/depth_feed')
+def depth_feed():
+    if DISABLE_DEPTH_PROVIDER:
+        abort(404, "depth camera disabled")
+        return
+
+    return Response(gen_depth_video(camera),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -67,27 +85,10 @@ def send_stats():
             'cat /sys/devices/virtual/thermal/thermal_zone*/temp').read().split()
     ]
     return web_utils.json_response(app, {
+        "cpu_temp": cpu_temp,
         "capture": BaseCamera.stats(),
-        "recognition": "disabled" if DISABLE_RECOGNITION_PROVIDER else RecognitionProvider.stats(),
+        "depthProvider": "disabled" if DISABLE_DEPTH_PROVIDER else DepthProvider.stats(),
     })
-
-
-@app.route('/pauseRecognition')
-def pause_recognition():
-    if DISABLE_RECOGNITION_PROVIDER:
-        return abort(404, "recognition provider disabled")
-
-    recognition.pause()
-    return web_utils.respond_ok(app)
-
-
-@app.route('/resumeRecognition')
-def resume_recognition():
-    if DISABLE_RECOGNITION_PROVIDER:
-        return abort(404, "recognition provider disabled")
-
-    recognition.resume()
-    return web_utils.respond_ok(app)
 
 
 @app.route('/ping')
@@ -110,7 +111,7 @@ class webapp:
         self.camera = camera
 
     def thread(self):
-        app.run(host='0.0.0.0', port=constants.VISION_PORT, threaded=True)
+        app.run(host='0.0.0.0', port=constants.DEPTH_PORT, threaded=True)
 
     def start_thread(self):
         # Define a thread for FPV and OpenCV
@@ -123,7 +124,7 @@ class webapp:
 def start_app():
     # setup_logging('ai.log')
     logger = logging.getLogger(__name__)
-    logger.info('vision service started')
+    logger.info('depth service started')
 
     flask_app = webapp()
     flask_app.start_thread()

@@ -2,10 +2,15 @@ import os
 
 
 # which v4l channel  is the rgb image read from
-CAMERA_CHANNEL_RGB = 4 if not os.getenv(
+CAMERA_CHANNEL_PICAM = 0 if not os.getenv(
     'CAMERA_CHANNEL') else int(os.getenv('CAMERA_CHANNEL'))
-# IDK??
-CAMERA_CHANNEL_DEPTH = 2  # maybe??
+
+# realsense RGB camera channel
+CAMERA_CHANNEL_RS = 4 if not os.getenv(
+    'CAMERA_CHANNEL') else int(os.getenv('CAMERA_CHANNEL'))
+
+# realsense depth camera channel
+CAMERA_CHANNEL_RS_DEPTH = 2  # maybe??
 
 # Compass I2C address
 COMPASS_ADDRESS = 0x60
@@ -39,6 +44,9 @@ SYSTEM_STATS_SAMPLE_INTERVAL = 0.5
 
 # vision http server
 VISION_PORT = 5001
+
+# depth http server (diff from vision so they can run on the same sbc)
+DEPTH_PORT = 5002
 
 # For Raspberry Pi4 w/ 64bit OS, this should be 1
 I2C_BUS = 1

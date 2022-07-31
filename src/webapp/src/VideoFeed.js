@@ -5,8 +5,8 @@ import st from "./VideoFeed.module.css";
 
 const VIDEO_HOST =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
-    ? "scatbot.local:5001"
-    : `${window.location.hostname}:5001`;
+    ? `scatbot.local:${c.VIDEO_FEED_PORT}`
+    : `${window.location.hostname}:${c.VIDEO_FEED_PORT}`;
 
 export function VideoFeed({ whichVideo }) {
   const [rand, setRand] = useState(0);

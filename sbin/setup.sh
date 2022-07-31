@@ -19,14 +19,14 @@ flask-cors
 # This was test with very fresh and clean Raspian Bullseye 64 OS install.
 # PyTorch requires a 64 bit os.  It and OpenCV are both included in the
 # Bullseye distro.
-
 sudo pip3 install torch torchvision torchaudio
 sudo pip3 install opencv-contrib-python
 sudo pip3 install numpy --upgrade
-
-
-# you have to have tried installing tensorflow + opencv to really
+sudo pip3 install matplotlib
+sudo pip3 install werkzeug==2.0.3
+# You have to have tried installing tensorflow + opencv to really
 # appreciate how easy that was
+
 
 # Install Adafruit Brainhat accessories
 # https://learn.adafruit.com/adafruit-braincraft-hat-easy-machine-learning-for-raspberry-pi/blinka-setup

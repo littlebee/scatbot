@@ -13,11 +13,16 @@ import time
 import logging
 
 import cv2
+
+# on raspbery pi zero:
+# import pyrealsense2.pyrealsense2 as rs
+# on raspbery pi 4:
 import pyrealsense2 as rs
+
 import numpy as np
 
 from commons import constants
-from vision.base_camera import BaseCamera
+from commons.base_camera import BaseCamera
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +35,7 @@ class RealsenseCamera(BaseCamera):
     last_depth_image = None
 
     def __init__(self):
-        RealsenseCamera.set_video_source(constants.CAMERA_CHANNEL_RGB)
+        RealsenseCamera.set_video_source(constants.CAMERA_CHANNEL_RS)
         super(RealsenseCamera, self).__init__()
 
     def get_depth_image(self):

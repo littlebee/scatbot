@@ -62,29 +62,30 @@ cd ~/opencv
 mkdir -p build
 cd build
 
-cmake -D CMAKE_BUILD_TYPE=RELEASE \
--D CMAKE_INSTALL_PREFIX=/usr/local .. \
--D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
--D EIGEN_INCLUDE_PATH=/usr/include/eigen3 \
--D WITH_OPENCL=OFF \
--D WITH_CUDA=ON \
--D CUDA_ARCH_BIN=5.3 \
--D CUDA_ARCH_PTX="" \
--D WITH_CUDNN=ON \
--D WITH_CUBLAS=ON \
--D ENABLE_FAST_MATH=ON \
--D CUDA_FAST_MATH=ON \
--D OPENCV_DNN_CUDA=ON \
--D ENABLE_NEON=ON \
--D PYTHON_INCLUDE_DIR=/usr/include/python3.7 \
--D BUILD_NEW_PYTHON_SUPPORT=ON \
--D BUILD_opencv_python3=ON \
--D HAVE_opencv_python3=ON \
--D PYTHON3_EXECUTABLE=/usr/bin/python3.7 \
--D PYTHON_DEFAULT_EXECUTABLE=/usr/bin/python3.7 \
--D PYTHON_LIBRARY=/usr/lib/aarch64-linux-gnu/libpython3.7m.so \
--D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
--D INSTALL_PYTHON_EXAMPLES=ON \
+cmake \
+-DCMAKE_BUILD_TYPE=RELEASE \
+-DCMAKE_INSTALL_PREFIX=/usr/local .. \
+-DOPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
+-DEIGEN_INCLUDE_PATH=/usr/include/eigen3 \
+-DWITH_OPENCL=OFF \
+-DWITH_CUDA=ON \
+-DCUDA_ARCH_BIN=5.3 \
+-DCUDA_ARCH_PTX="" \
+-DWITH_CUDNN=ON \
+-DWITH_CUBLAS=ON \
+-DENABLE_FAST_MATH=ON \
+-DCUDA_FAST_MATH=ON \
+-DOPENCV_DNN_CUDA=ON \
+-DENABLE_NEON=ON \
+-DPYTHON_INCLUDE_DIR=/usr/include/python3.7 \
+-DBUILD_NEW_PYTHON_SUPPORT=ON \
+-DBUILD_opencv_python3=ON \
+-DHAVE_opencv_python3=ON \
+-DPYTHON3_EXECUTABLE=/usr/bin/python3.7 \
+-DPYTHON_DEFAULT_EXECUTABLE=/usr/bin/python3.7 \
+-DPYTHON_LIBRARY=/usr/lib/aarch64-linux-gnu/libpython3.7m.so \
+-DPYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
+-DINSTALL_PYTHON_EXAMPLES=ON \
 ..
 
 make -j4

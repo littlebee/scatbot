@@ -13,7 +13,7 @@ from vision.pytorch_detect import PytorchDetect
 detector = PytorchDetect()
 
 
-def main(source=constants.CAMERA_CHANNEL_RGB):
+def main(source=constants.CAMERA_CHANNEL_PICAM):
 
     print(f"starting video capture. source={source}")
     video = cv2.VideoCapture(source)
@@ -43,5 +43,5 @@ def main(source=constants.CAMERA_CHANNEL_RGB):
 
 if __name__ == "__main__":
     source = int(sys.argv[1]) if len(
-        sys.argv) > 1 else constants.CAMERA_CHANNEL_RGB
+        sys.argv) > 1 else constants.CAMERA_CHANNEL_PICAM
     main(source)
