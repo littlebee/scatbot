@@ -13,11 +13,11 @@ to_start=(
   "battery"
   "central_hub"
   "compass"
+  "depth"
   "motor_control"
   "onboard_ui"
   "system_stats"
-  "vision"
-  "depth"
+  # "vision"
 )
 
 if [ $# -ne 0 ]; then

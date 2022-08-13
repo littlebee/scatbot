@@ -10,6 +10,7 @@ to_stop=(
   "battery"
   "central_hub"
   "compass"
+  "depth"
   "motor_control"
   "onboard_ui"
   "system_stats"

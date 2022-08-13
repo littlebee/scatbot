@@ -6,13 +6,17 @@ set -x
 # stop on errors
 set -e
 
+DATA_DIR="./data"
+TFLITE_DATA_DIR="$DATA_DIR/tflite"
+
 # custom scatbot stuff
 # web and web socket server - https://gitlab.com/pgjones/quart
 sudo pip3 install \
 quart \
 websockets \
 flask \
-flask-cors
+flask-cors \
+argparse
 
 # :heart: PyTorch!  This is the easiest setup ever
 #
@@ -24,8 +28,33 @@ sudo pip3 install opencv-contrib-python
 sudo pip3 install numpy --upgrade
 sudo pip3 install matplotlib
 sudo pip3 install werkzeug==2.0.3
-# You have to have tried installing tensorflow + opencv to really
-# appreciate how easy that was
+
+# tensor flow lite (https://github.com/tensorflow/examples/tree/master/lite/examples/object_detection/raspberry_pi)
+sudo pip3 install tflite-support==0.4.0
+sudo pip3 install protobuf>=3.18.0,<4
+
+mkdir -p $TFLITE_DATA_DIR
+# Download TF Lite models
+FILE=${TFLITE_DATA_DIR}/efficientdet_lite0.tflite
+if [ ! -f "$FILE" ]; then
+  curl \
+    -L 'https://tfhub.dev/tensorflow/lite-model/efficientdet/lite0/detection/metadata/1?lite-format=tflite' \
+    -o ${FILE}
+fi
+
+FILE=${TFLITE_DATA_DIR}/efficientdet_lite0_edgetpu.tflite
+if [ ! -f "$FILE" ]; then
+  curl \
+    -L 'https://storage.googleapis.com/download.tensorflow.org/models/tflite/edgetpu/efficientdet_lite0_edgetpu_metadata.tflite' \
+    -o ${FILE}
+fi
+
+# coral edge usb tpu (https://coral.ai/docs/accelerator/get-started)
+echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install -y libedgetpu1-std
+sudo apt-get install -y python3-pycoral
 
 
 # Install Adafruit Brainhat accessories
@@ -60,7 +89,7 @@ sudo apt-get -y install libportaudio2
 sudo apt-get -y install portaudio19-dev python3-pyaudio
 sudo pip3 install pyaudio
 
-
+# braincraft LCD setup
 cd ~
 sudo pip3 install --upgrade adafruit-python-shell click
 sudo apt-get install -y git
@@ -68,7 +97,7 @@ git clone https://github.com/adafruit/Raspberry-Pi-Installer-Scripts.git
 cd Raspberry-Pi-Installer-Scripts
 sudo python3 adafruit-pitft.py -u /home/bee --display=st7789_240x240 --rotation=0 --install-type=fbcp
 
-# current sensor lib
+# current & voltage sensor lib
 sudo pip3 install adafruit-circuitpython-ina219
 
 # install yolo v5
