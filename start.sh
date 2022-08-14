@@ -17,7 +17,7 @@ to_start=(
   "motor_control"
   "onboard_ui"
   "system_stats"
-  # "vision"
+  "vision"
 )
 
 if [ $# -ne 0 ]; then

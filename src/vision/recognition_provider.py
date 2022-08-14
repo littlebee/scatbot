@@ -16,8 +16,11 @@ import logging
 from commons import constants, messages
 from commons.fps_stats import FpsStats
 from .pytorch_detect import PytorchDetect
+from .tflite_detect import TFLiteDetect
 
 logger = logging.getLogger(__name__)
+
+WHICH_DETECTOR = 'tflite'
 
 
 class RecognitionProvider:
@@ -70,7 +73,11 @@ class RecognitionProvider:
 
         while True:
             try:
-                detector = PytorchDetect()
+                detector = None
+                if(WHICH_DETECTOR == 'tflite'):
+                    detector = TFLiteDetect()
+                else:
+                    detector = PytorchDetect()
 
                 print(
                     f"recognition connecting to hub central at {constants.HUB_URI}")

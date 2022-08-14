@@ -31,7 +31,7 @@ sudo pip3 install werkzeug==2.0.3
 
 # tensor flow lite (https://github.com/tensorflow/examples/tree/master/lite/examples/object_detection/raspberry_pi)
 sudo pip3 install tflite-support==0.4.0
-sudo pip3 install protobuf>=3.18.0,<4
+sudo pip3 install "protobuf>=3.18.0,<4"
 
 mkdir -p $TFLITE_DATA_DIR
 # Download TF Lite models

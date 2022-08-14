@@ -15,9 +15,6 @@ from commons import constants
 
 logger = logging.getLogger(__name__)
 
-# object detection threshold percentage; higher = greater confidence
-OBJECT_DETECTION_THRESHOLD = 0.5
-
 
 class PytorchDetect:
     model = None
@@ -42,7 +39,7 @@ class PytorchDetect:
         indexes = range(len(pred_scores))
         for i in indexes:
             score = float(pred_scores[i])
-            if score > OBJECT_DETECTION_THRESHOLD:
+            if score > constants.OBJECT_DETECTION_THRESHOLD:
                 results.append({
                     "bounding_box": [
                         int(pred_boxes[i][0][0]),

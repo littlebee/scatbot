@@ -3,11 +3,11 @@ import os
 
 # which v4l channel  is the rgb image read from
 CAMERA_CHANNEL_PICAM = 0 if not os.getenv(
-    'CAMERA_CHANNEL') else int(os.getenv('CAMERA_CHANNEL'))
+    'CAMERA_CHANNEL_PICAM') else int(os.getenv('CAMERA_CHANNEL_PICAM'))
 
 # realsense RGB camera channel
 CAMERA_CHANNEL_RS = 4 if not os.getenv(
-    'CAMERA_CHANNEL') else int(os.getenv('CAMERA_CHANNEL'))
+    'CAMERA_CHANNEL_RS') else int(os.getenv('CAMERA_CHANNEL_RS'))
 
 # realsense depth camera channel
 CAMERA_CHANNEL_RS_DEPTH = 2  # maybe??
@@ -73,3 +73,7 @@ COCO_INSTANCE_CATEGORY_NAMES = [
     'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'N/A', 'book',
     'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
 ]
+
+# object detection threshold percentage; higher = greater confidence
+OBJECT_DETECTION_THRESHOLD = 0.5
+
