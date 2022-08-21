@@ -30,7 +30,7 @@ do
   fi
 
   if [ -f "$pid_file" ]; then
-    kill -9 `cat $pid_file`
+    kill -1 `cat $pid_file`
     rm -f $pid_file
   else
     echo "$pid_file does not exist. skipping"

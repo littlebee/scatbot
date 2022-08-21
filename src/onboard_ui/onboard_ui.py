@@ -1,5 +1,6 @@
-import sys
 import os
+import signal
+import sys
 import socket
 import json
 import pygame
@@ -35,6 +36,25 @@ large_font = pygame.font.SysFont('timesnewroman',  30)
 small_font = pygame.font.SysFont('timesnewroman',  20)
 
 current_websocket = None
+
+should_exit = False
+
+
+def handler(signum, frame):
+    global should_exit
+
+    print('caught sighup')
+    should_exit = True
+    raise OSError("Received shutdown signal!")
+
+
+# Set the signal handler and a 5-second alarm
+signal.signal(signal.SIGHUP, handler)
+
+
+def log(message):
+    print(message)
+    sys.stdout.flush()
 
 
 async def render_splash():
@@ -108,7 +128,7 @@ async def render():
         pygame.display.update()
 
     except Exception as e:
-        print(f"could not get stats {e}")
+        log(f"could not get stats {e}")
 
 
 def get_ip_address():
@@ -119,13 +139,15 @@ def get_ip_address():
         s.close()
         return ip_addr
     except Exception as e:
-        print(f"unable to get ip address. {e}")
+        log(f"unable to get ip address. {e}")
         return "0.0.0.0"
 
 
 async def ui_task():
+    global should_exit
+
     # await render_splash()
-    while True:
+    while not should_exit:
         await render()
 
         if not reset_button.value:
@@ -133,14 +155,17 @@ async def ui_task():
 
         await asyncio.sleep(1)
 
+    log("exiting ui task")
+
 
 async def state_task():
     global current_websocket
+    global should_exit
 
     try:
-        while True:
+        while not should_exit:
             try:
-                print(f"connecting to {constants.HUB_URI}", flush=True)
+                log(f"connecting to {constants.HUB_URI}")
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     current_websocket = websocket
                     await messages.send_identity(websocket, "onboard_ui")
@@ -150,26 +175,33 @@ async def state_task():
                         json_data = json.loads(message)
                         message_type = json_data.get("type")
                         message_data = json_data.get('data')
-                        # print(f"got {message_type}: {message_data}")
+
+                        if messages.LOG_ALL_MESSAGES:
+                            log(f"got {message_type}: {message_data}")
+
                         if message_type in ["stateUpdate", "state"]:
                             shared_state.update_state_from_message_data(
                                 message_data)
-                        # print('getting next message')
 
             except:
                 traceback.print_exc()
 
-            print('socket disconnected.  Reconnecting in 5 sec...')
-            await asyncio.sleep(5)
+            if should_exit:
+                log('got shutdown signal.  exiting.')
+            else:
+                log('socket disconnected.  Reconnecting in 5 sec...')
+                await asyncio.sleep(5)
+
     except Exception as e:
-        print(f"got exception on async loop. Exiting. {e}")
+        log(f"got exception on async loop. Exiting. {e}")
+
     finally:
         pygame.quit()
 
 
 async def start():
     recvTask = asyncio.create_task(state_task())
-    movementTask = asyncio.create_task(ui_task())
-    await asyncio.wait([recvTask, movementTask])
+    uiTask = asyncio.create_task(ui_task())
+    await asyncio.wait([recvTask, uiTask])
 
 asyncio.run(start())
