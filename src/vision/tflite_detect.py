@@ -1,10 +1,5 @@
 """
-This class objects in frames it gets from the camera object passed to
-the constructor.
-
-A thread is created that does the heavy lifting of detecting objects and updates
-a class var that contains the last faces detected. This allows the thread providing
-the video feed to stream at 30fps while face frames lag behind at 3fps (maybe upto 10?)
+This class provides object detection using Tensor Flow Lite.
 """
 import asyncio
 import logging

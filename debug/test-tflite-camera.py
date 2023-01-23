@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #!/usr/bin/env python3
 # sourced from:  https://github.com/tensorflow/examples/blob/master/lite/examples/object_detection/raspberry_pi/detect.py
 
@@ -14,7 +16,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Main script to run the object detection routine."""
 import argparse
 import os
 import sys

@@ -10,13 +10,20 @@ if [ "$1" == "" ]; then
   exit 1
 fi
 
+targetUser=bee
+if [ "$2" != "" ]; then
+  targetUser=$2
+  echo "got user"
+  echo $targetUser
+fi
+
 # echo on
 set -x
 
 # stop on errors
 set -e
 
-TARGET_DIR="/home/bee/scatbot"
+TARGET_DIR="/home/$targetUser/scatbot"
 TARGET_HOST=$1
 
 rsync --progress --partial \
