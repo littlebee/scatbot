@@ -9,9 +9,12 @@ if [ "$user" != "root" ]; then
   exit 1
 fi
 
+sleep=2
+
 to_start=(
-  "battery"
   "central_hub"
+
+  "battery"
   "compass"
   "depth"
   "motor_control"
@@ -22,6 +25,7 @@ to_start=(
 
 if [ $# -ne 0 ]; then
   to_start=($@)
+  sleep=0
 fi
 
 for sub_system in ${to_start[@]}
@@ -29,5 +33,9 @@ do
   echo "starting $sub_system"
   python3 src/start_$sub_system.py > ./logs/$sub_system.log 2>&1 &
   echo $! > ./$sub_system.pid
+  if [[ $sleep > 0 ]]; then
+    echo "sleeping for $sleep seconds"
+    sleep $sleep
+  fi
 done
 

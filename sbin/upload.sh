@@ -33,5 +33,6 @@ rsync --progress --partial \
 --exclude=yolov5 \
 --exclude=debug/commons \
 --exclude=camera_test_output.avi \
+--exclude=__pycache__/ \
 . $TARGET_HOST:$TARGET_DIR
 

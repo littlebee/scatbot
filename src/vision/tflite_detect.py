@@ -34,9 +34,11 @@ class TFLiteDetect:
         # Initialize the object detection model
         model = None
         if ENABLE_CORAL_TPU:
-            model = f"{TFLITE_DATA_DIR}/efficientdet_lite0_edgetpu.tflite"
+            # model = f"{TFLITE_DATA_DIR}/efficientdet_lite0_edgetpu.tflite"
+            model = f"{TFLITE_DATA_DIR}/ssd_mobilenet_v1_coco_quant_postprocess_edgetpu.tflite"
         else:
-            model = f"{TFLITE_DATA_DIR}/efficientdet_lite0.tflite"
+            # model = f"{TFLITE_DATA_DIR}/efficientdet_lite0.tflite"
+            model = f"{TFLITE_DATA_DIR}/ssd_mobilenet_v1_coco_quant_postprocess.tflite"
 
         print(f"using model {model}")
 

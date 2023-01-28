@@ -6,9 +6,6 @@ set -x
 # stop on errors
 set -e
 
-DATA_DIR="./data"
-TFLITE_DATA_DIR="$DATA_DIR/tflite"
-
 # custom scatbot stuff
 # web and web socket server - https://gitlab.com/pgjones/quart
 sudo pip3 install \
@@ -33,21 +30,7 @@ sudo pip3 install werkzeug==2.0.3
 sudo pip3 install tflite-support==0.4.0
 sudo pip3 install "protobuf>=3.18.0,<4"
 
-mkdir -p $TFLITE_DATA_DIR
-# Download TF Lite models
-FILE=${TFLITE_DATA_DIR}/efficientdet_lite0.tflite
-if [ ! -f "$FILE" ]; then
-  curl \
-    -L 'https://tfhub.dev/tensorflow/lite-model/efficientdet/lite0/detection/metadata/1?lite-format=tflite' \
-    -o ${FILE}
-fi
-
-FILE=${TFLITE_DATA_DIR}/efficientdet_lite0_edgetpu.tflite
-if [ ! -f "$FILE" ]; then
-  curl \
-    -L 'https://storage.googleapis.com/download.tensorflow.org/models/tflite/edgetpu/efficientdet_lite0_edgetpu_metadata.tflite' \
-    -o ${FILE}
-fi
+./setup-tflight-data.sh
 
 # coral edge usb tpu (https://coral.ai/docs/accelerator/get-started)
 echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
