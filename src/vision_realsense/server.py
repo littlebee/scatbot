@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
- This was originally pilfered from
- https://github.com/adeept/Adeept_RaspTank/blob/a6c45e8cc7df620ad8977845eda2b839647d5a83/server/app.py
+    This is a vision server for scatbot that provides both rgb video and
+    depth video from the Intel Realsense D435i camera.
 
- Which looks like it was in turn pilfered from
- https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
+    depth_provider.py publishes the depth_map as a smaller array of minimum
+    distances to the `depth_map` key of central hub state.
 
-"Great artists steal". Thank you, @adeept and @miguelgrinberg!
+    It also uses the recognition_provider from the base vision package to provide
+    the `recognition` key to central hub state.
+
 """
 
 import os
@@ -20,8 +22,8 @@ from flask_cors import CORS
 
 import cv2
 
-from depth.camera_realsense import RealsenseCamera
-from depth.provider import DepthProvider
+from camera_realsense import RealsenseCamera
+from depth_provider import DepthProvider
 
 from commons.base_camera import BaseCamera
 from commons import web_utils
