@@ -16,11 +16,14 @@ to_start=(
 
   "battery"
   "compass"
-  "depth"
   "motor_control"
   "onboard_ui"
   "system_stats"
+
+  ## video feed and recognition via Pi4 camera
   # "vision"
+
+  ## video feed, recognition and depth_map via Intel Realsense camera
   "vision_realsense"
 )
 

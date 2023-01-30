@@ -8,13 +8,15 @@ fi
 
 to_stop=(
   "battery"
-  "central_hub"
   "compass"
-  "depth"
   "motor_control"
   "onboard_ui"
   "system_stats"
-  "vision"
+
+  # "vision"
+  "vision_realsense"
+
+  "central_hub"
 )
 if [ $# -ne 0 ]; then
   to_stop=($@)
@@ -25,6 +27,7 @@ do
   echo "stopping $sub_system"
 
   pid_file="./$sub_system.pid"
+  fi
   if [[ "$sub_system" == *".pid" ]]; then
     pid_file="./$sub_system"
   fi

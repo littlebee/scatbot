@@ -22,14 +22,16 @@ from flask_cors import CORS
 
 import cv2
 
-from camera_realsense import RealsenseCamera
-from depth_provider import DepthProvider
-
 from commons.base_camera import BaseCamera
 from commons import web_utils
 from commons import constants
+from vision.recognition_provider import RecognitionProvider
+from vision_realsense.camera_realsense import RealsenseCamera
+from vision_realsense.depth_provider import DepthProvider
+
 
 DISABLE_DEPTH_PROVIDER = os.getenv('DISABLE_DEPTH_PROVIDER') or False
+DISABLE_RECOGNITION_PROVIDER = os.getenv('DISABLE_RECOGNITION_PROVIDER') or False
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -38,6 +40,13 @@ camera = RealsenseCamera()
 
 if not DISABLE_DEPTH_PROVIDER:
     depth = DepthProvider(camera)
+else:
+    print('Depth provider disabled');
+
+if not DISABLE_RECOGNITION_PROVIDER:
+    recognition = RecognitionProvider(camera)
+else:
+    print('Recognition provider disabled');
 
 
 def gen_rgb_video(camera):
@@ -90,6 +99,7 @@ def send_stats():
         "cpu_temp": cpu_temp,
         "capture": BaseCamera.stats(),
         "depthProvider": "disabled" if DISABLE_DEPTH_PROVIDER else DepthProvider.stats(),
+        "recognition": "disabled" if DISABLE_RECOGNITION_PROVIDER else RecognitionProvider.stats()
     })
 
 
@@ -126,7 +136,7 @@ class webapp:
 def start_app():
     # setup_logging('ai.log')
     logger = logging.getLogger(__name__)
-    logger.info('depth service started')
+    logger.info('vision_realsense service started')
 
     flask_app = webapp()
     flask_app.start_thread()
