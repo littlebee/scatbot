@@ -14,14 +14,10 @@ from commons import constants
 
 logger = logging.getLogger(__name__)
 
-
 # use coral USB tpu
-ENABLE_CORAL_TPU = True if not os.getenv(
-    'ENABLE_CORAL_TPU') else bool(int(os.getenv('ENABLE_CORAL_TPU')))
-
+ENABLE_CORAL_TPU = constants.env_bool('ENABLE_CORAL_TPU', True)
 # num cpu threads to use for tensor flow lite
-TFLITE_THREADS = 4 if not os.getenv(
-    'TFLITE_THREADS') else int(os.getenv('TFLITE_THREADS'))
+TFLITE_THREADS = constants.env_int('TFLITE_THREADS', 4)
 
 TFLITE_DATA_DIR = os.path.abspath(os.path.join(
     os.path.dirname(__file__), '../../data/tflite'))

@@ -27,7 +27,6 @@ class RecognitionProvider:
     thread = None  # background thread that reads frames from camera
     camera = None
     last_objects_seen = []
-    last_frame = []
     fps_stats = FpsStats()
     last_frame_duration = 0
     last_dimensions = {}
@@ -79,22 +78,21 @@ class RecognitionProvider:
                 else:
                     detector = PytorchDetect()
 
-                print(
-                    f"recognition connecting to hub central at {constants.HUB_URI}")
+                print(f"recognition connecting to hub central at {constants.HUB_URI}")
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     await messages.send_identity(websocket, "recognition")
                     while True:
-                        if not cls.pause_event.is_set():
-                            print(f"recognition waiting on pause event")
-                            cls.pause_event.wait()
-                            print(f"recognition resumed")
+                        # if not cls.pause_event.is_set():
+                        #     print(f"recognition waiting on pause event")
+                        #     cls.pause_event.wait()
+                        #     print(f"recognition resumed")
 
-                        frame = cls.last_frame = cls.camera.get_frame()
+                        frame = cls.camera.get_frame()
                         t1 = time.time()
                         new_objects = detector.get_prediction(frame)
                         cls.last_frame_duration = time.time() - t1
                         cls.last_objects_seen = new_objects
-                        cls.last_dimensions = cls.last_frame.shape
+                        cls.last_dimensions = frame.shape
 
                         cls.fps_stats.increment()
 
@@ -107,10 +105,12 @@ class RecognitionProvider:
                         })
 
                         await asyncio.sleep(0)
+
+                        # time.sleep(0)
             except:
                 traceback.print_exc()
 
-            print('hub central socket disconnected.  Reconnecting in 5 sec...')
+            print('central_hub socket disconnected.  Reconnecting in 5 sec...')
             time.sleep(5)
 
     @ classmethod

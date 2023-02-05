@@ -34,7 +34,7 @@ if [ ! -d $TMPDIR ]; then
 fi
 
 # enlarge the swap file for building
-sudo cp sbin/pizero-setup/files/etc/dphys-swapfile /etc
+sudo cp sbin/files/etc/dphys-swapfile /etc
 sudo /etc/init.d/dphys-swapfile restart swapon -s
 
 git clone https://github.com/IntelRealSense/librealsense.git

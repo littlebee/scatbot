@@ -27,7 +27,6 @@ do
   echo "stopping $sub_system"
 
   pid_file="./$sub_system.pid"
-  fi
   if [[ "$sub_system" == *".pid" ]]; then
     pid_file="./$sub_system"
   fi

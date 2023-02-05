@@ -18,6 +18,7 @@ class DepthProvider:
     thread = None
     camera = None
     fps_stats = FpsStats()
+    section_map = [[]]
 
     def __init__(self, camera):
         DepthProvider.camera = camera
@@ -33,73 +34,39 @@ class DepthProvider:
 
         while True:
             try:
-
-                print(
-                    f"depth_provider connecting to hub central at {constants.HUB_URI}")
+                print(f"depth_provider connecting to hub central at {constants.HUB_URI}")
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     await messages.send_identity(websocket, "vision")
                     while True:
                         cls.fps_stats.increment()
 
-                        min_distance, max_distance, section_map = cls._generate_section_map()
+                        depth_data = cls.camera.get_depth_data()
+                        cls.section_map = depth_data
 
-                        # TODO : to do this, it also needs to incorporate whether any of the
-                        #   section minimums changed
-                        # abs(min_distance - last_min_distance) > constants.DEPTH_MAP_CHANGE_TOLERACE:
-                        if True:
-                            # last_min_distance = min_distance
-                            await messages.send_state_update(websocket, {
-                                "depth_map": {
-                                    "min_distance": min_distance,
-                                    "max_distance": max_distance,
-                                    "last_updated": time.time(),
-                                    "section_map": section_map,
-                                }
-                            })
+                        # print(f"got depth_data {depth_data}")
+
+                        await messages.send_state_update(websocket, {
+                            "depth_map": {
+                                "last_updated": time.time(),
+                                "section_map": depth_data,
+                            }
+                        })
 
                         await asyncio.sleep(constants.DEPTH_PUBLISH_INTERVAL)
+                        # time.sleep(0)
             except:
                 traceback.print_exc()
 
-            print('hub central socket disconnected.  Reconnecting in 5 sec...')
+            print('central_hub socket disconnected.  Reconnecting in 5 sec...')
             time.sleep(5)
 
     @classmethod
     def stats(cls):
         return {
             "fps": cls.fps_stats.stats(),
+            "section_map": cls.section_map,
         }
 
-    @classmethod
-    def _generate_section_map(cls):
-        depth_data = cls.camera.get_depth_data().tolist()
-
-        min_value = 0
-        max_value = 0
-        target_width = constants.DEPTH_MAP_SECTION_WIDTH
-        target_height = constants.DEPTH_MAP_SECTION_HEIGHT
-
-        section_map = [
-            [0]*target_width for i in range(target_height)]
-
-        for iy, line in enumerate(depth_data):
-            section_y = int(
-                iy / (len(depth_data) / target_height))
-            for ix, value in enumerate(line):
-                section_x = int(
-                    ix / (len(line) / target_width))
-                value = int(value / 10)
-                if value > 0:
-                    sec_depth = section_map[section_y][section_x]
-                    if sec_depth == 0 or value < sec_depth:
-                        section_map[section_y][section_x] = value
-
-                    if min_value == 0 or value < min_value:
-                        min_value = value
-                    if value > max_value:
-                        max_value = value
-
-        return min_value, max_value, section_map
 
     @ classmethod
     def _thread(cls):

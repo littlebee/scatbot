@@ -21,9 +21,9 @@ to_start=(
   "system_stats"
 
   ## video feed and recognition via Pi4 camera
-  # "vision"
+  "vision"
 
-  ## video feed, recognition and depth_map via Intel Realsense camera
+  ## depth_map via Intel Realsense camera
   "vision_realsense"
 )
 

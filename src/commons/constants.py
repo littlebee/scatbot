@@ -1,16 +1,42 @@
 import os
 
 
+def env_string(name, default):
+    env_val = os.getenv(name) or str(default)
+    return env_val
+
+
+def env_int(name, default):
+    try:
+        return int(env_string(name, default))
+    except:
+        return default
+
+
+def env_bool(name, default):
+    value = env_string(name, default).lower()
+    if value in ("true", "1"):
+        return True
+    else:
+        return False
+
+
+# Raspberry Pi 4 camera
+CAMERA_CHANNEL_PICAM = 0
+# realsense RGB camera channel (USB)
+CAMERA_CHANNEL_RS = 4
 # which v4l channel  is the rgb image read from
-CAMERA_CHANNEL_PICAM = 0 if not os.getenv(
-    'CAMERA_CHANNEL_PICAM') else int(os.getenv('CAMERA_CHANNEL_PICAM'))
-
-# realsense RGB camera channel
-CAMERA_CHANNEL_RS = 4 if not os.getenv(
-    'CAMERA_CHANNEL_RS') else int(os.getenv('CAMERA_CHANNEL_RS'))
-
+CAMERA_CHANNEL = env_int('CAMERA_CHANNEL', CAMERA_CHANNEL_PICAM)
 # realsense depth camera channel
 CAMERA_CHANNEL_RS_DEPTH = 2  # maybe??
+
+DISABLE_DEPTH_PROVIDER = env_bool('DISABLE_DEPTH_PROVIDER', False)
+DISABLE_RECOGNITION_PROVIDER = env_bool('DISABLE_RECOGNITION_PROVIDER', False)
+
+# realsense_vision module can do recognition (object detection) from the rs color
+# image stream, but....  It performs really poorly
+DISABLE_REALSENSE_RECOGNITION = env_bool('DISABLE_REALSENSE_RECOGNITION', True) or DISABLE_RECOGNITION_PROVIDER
+
 
 # Compass I2C address
 COMPASS_ADDRESS = 0x60
@@ -27,7 +53,7 @@ BATTERY_SAMPLE_INTERVAL = 1  # 1Hz
 BATTERY_SHUTDOWN_VOLTAGE = 5.5
 
 # min time in seconds, between publishing depth map data to central hub
-DEPTH_PUBLISH_INTERVAL = 0.05  # 19fps
+DEPTH_PUBLISH_INTERVAL = 0.01  # 19fps
 # divide depth map into this many horz sections
 DEPTH_MAP_SECTION_WIDTH = 5
 # divide depth map into this many vert sections

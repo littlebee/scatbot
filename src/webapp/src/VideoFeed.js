@@ -8,6 +8,11 @@ const VIDEO_HOST =
     ? `scatbot.local:${c.VIDEO_FEED_PORT}`
     : `${window.location.hostname}:${c.VIDEO_FEED_PORT}`;
 
+const DEPTH_VIDEO_HOST =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+    ? `scatbot.local:${c.DEPTH_VIDEO_FEED_PORT}`
+    : `${window.location.hostname}:${c.DEPTH_VIDEO_FEED_PORT}`;
+
 export function VideoFeed({ whichVideo }) {
   const [rand, setRand] = useState(0);
   const [errorMsg, setErrorMessage] = useState(null);
@@ -35,8 +40,10 @@ export function VideoFeed({ whichVideo }) {
     setIsLoading(false);
   };
 
-  const feed_path = whichVideo === c.DEPTH_VIDEO ? "depth_feed" : "video_feed";
-  const feedUrl = `http://${VIDEO_HOST}/${feed_path}?rand=${rand}`;
+  const feedUrl =
+    whichVideo === c.DEPTH_VIDEO
+      ? `http://${DEPTH_VIDEO_HOST}/depth_feed?rand=${rand}`
+      : `http://${VIDEO_HOST}/video_feed?rand=${rand}`;
 
   // note must always render the img or it endlessly triggers onLoad
   const imgStyle = isLoading || errorMsg ? { display: "none" } : {};

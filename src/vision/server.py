@@ -27,15 +27,12 @@ from vision.camera_opencv import OpenCvCamera
 from vision.recognition_provider import RecognitionProvider
 
 
-DISABLE_RECOGNITION_PROVIDER = os.getenv(
-    'DISABLE_RECOGNITION_PROVIDER') or False
-
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 camera = OpenCvCamera()
 
-if not DISABLE_RECOGNITION_PROVIDER:
+if not constants.DISABLE_RECOGNITION_PROVIDER:
     recognition = RecognitionProvider(camera)
 
 
@@ -68,13 +65,13 @@ def send_stats():
     ]
     return web_utils.json_response(app, {
         "capture": BaseCamera.stats(),
-        "recognition": "disabled" if DISABLE_RECOGNITION_PROVIDER else RecognitionProvider.stats(),
+        "recognition": "disabled" if constants.DISABLE_RECOGNITION_PROVIDER else RecognitionProvider.stats(),
     })
 
 
 @app.route('/pauseRecognition')
 def pause_recognition():
-    if DISABLE_RECOGNITION_PROVIDER:
+    if constants.DISABLE_RECOGNITION_PROVIDER:
         return abort(404, "recognition provider disabled")
 
     recognition.pause()
@@ -83,7 +80,7 @@ def pause_recognition():
 
 @app.route('/resumeRecognition')
 def resume_recognition():
-    if DISABLE_RECOGNITION_PROVIDER:
+    if constants.DISABLE_RECOGNITION_PROVIDER:
         return abort(404, "recognition provider disabled")
 
     recognition.resume()

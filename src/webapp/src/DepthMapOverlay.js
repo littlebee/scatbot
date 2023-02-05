@@ -7,9 +7,22 @@ export function DepthMapOverlay({ depthMap }) {
     return null;
   }
   const elements = [];
-  depthMap.forEach((row) => {
-    row.forEach((col) => {
-      elements.push(<div className={st.depthSquare}>{col}cm</div>);
+  const width = 640 / depthMap[0].length;
+  const height = 480 / depthMap.length;
+  depthMap.forEach((row, yi) => {
+    row.forEach((col, xi) => {
+      const style = {
+        width,
+        height,
+        top: yi * height,
+        left: xi * width,
+      };
+
+      elements.push(
+        <div className={st.depthSquare} style={style}>
+          <div className={st.depthValue}>{col / 10}</div>
+        </div>
+      );
     });
   });
   return <>{elements}</>;

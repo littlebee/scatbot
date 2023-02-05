@@ -23,7 +23,7 @@ class OpenCvCamera(BaseCamera):
     img_is_none_messaged = False
 
     def __init__(self):
-        OpenCvCamera.set_video_source(constants.CAMERA_CHANNEL_PICAM)
+        OpenCvCamera.set_video_source(constants.CAMERA_CHANNEL)
         super(OpenCvCamera, self).__init__()
 
     @staticmethod
@@ -40,8 +40,8 @@ class OpenCvCamera(BaseCamera):
         if not camera.isOpened():
             raise RuntimeError('Could not start camera.')
 
-        camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+        camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
         while True:
             _, img = camera.read()

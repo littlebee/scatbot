@@ -30,20 +30,17 @@ from vision_realsense.camera_realsense import RealsenseCamera
 from vision_realsense.depth_provider import DepthProvider
 
 
-DISABLE_DEPTH_PROVIDER = os.getenv('DISABLE_DEPTH_PROVIDER') or False
-DISABLE_RECOGNITION_PROVIDER = os.getenv('DISABLE_RECOGNITION_PROVIDER') or False
-
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 camera = RealsenseCamera()
 
-if not DISABLE_DEPTH_PROVIDER:
+if not constants.DISABLE_DEPTH_PROVIDER:
     depth = DepthProvider(camera)
 else:
     print('Depth provider disabled');
 
-if not DISABLE_RECOGNITION_PROVIDER:
+if not constants.DISABLE_REALSENSE_RECOGNITION:
     recognition = RecognitionProvider(camera)
 else:
     print('Recognition provider disabled');
@@ -77,7 +74,7 @@ def video_feed():
 
 @app.route('/depth_feed')
 def depth_feed():
-    if DISABLE_DEPTH_PROVIDER:
+    if constants.DISABLE_DEPTH_PROVIDER:
         abort(404, "depth camera disabled")
         return
 
@@ -98,8 +95,8 @@ def send_stats():
     return web_utils.json_response(app, {
         "cpu_temp": cpu_temp,
         "capture": BaseCamera.stats(),
-        "depthProvider": "disabled" if DISABLE_DEPTH_PROVIDER else DepthProvider.stats(),
-        "recognition": "disabled" if DISABLE_RECOGNITION_PROVIDER else RecognitionProvider.stats()
+        "depthProvider": "disabled" if constants.DISABLE_DEPTH_PROVIDER else DepthProvider.stats(),
+        "recognition": "disabled" if constants.DISABLE_REALSENSE_RECOGNITION else RecognitionProvider.stats()
     })
 
 
