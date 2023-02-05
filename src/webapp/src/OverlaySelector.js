@@ -6,14 +6,19 @@ import { Button } from "./components/Button";
 import st from "./OverlaySelector.module.css";
 
 export function OverlaySelector({ whichOverlays, onSelect }) {
-  const isSelected = whichOverlays.includes(c.DEPTH_MAP_OVERLAY);
   return (
     <div className={st.overlaySelector}>
       <Button
-        isSelected={isSelected}
+        isSelected={whichOverlays.includes(c.DEPTH_MAP_OVERLAY)}
         onClick={() => onSelect(c.DEPTH_MAP_OVERLAY)}
       >
         Depth Map
+      </Button>
+      <Button
+        isSelected={whichOverlays.includes(c.OBJECTS_OVERLAY)}
+        onClick={() => onSelect(c.OBJECTS_OVERLAY)}
+      >
+        Objects
       </Button>
     </div>
   );

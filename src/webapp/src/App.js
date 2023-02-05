@@ -86,10 +86,7 @@ function App() {
           </div>
           <div className="content">
             <VideoSelector whichVideo={whichVideo} onSelect={setWhichVideo} />
-            <Overlays
-              whichOverlays={whichOverlays}
-              depthMap={hubState.depth_map.section_map}
-            >
+            <Overlays whichOverlays={whichOverlays} hubState={hubState}>
               <VideoFeed whichVideo={whichVideo} />
             </Overlays>
             <OverlaySelector
