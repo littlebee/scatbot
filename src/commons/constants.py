@@ -37,6 +37,14 @@ DISABLE_RECOGNITION_PROVIDER = env_bool('DISABLE_RECOGNITION_PROVIDER', False)
 # image stream, but....  It performs really poorly
 DISABLE_REALSENSE_RECOGNITION = env_bool('DISABLE_REALSENSE_RECOGNITION', True) or DISABLE_RECOGNITION_PROVIDER
 
+# use coral USB tpu
+DISABLE_CORAL_TPU = env_bool('DISABLE_CORAL_TPU', False)
+# num cpu threads to use for tensor flow lite
+TFLITE_THREADS = env_int('TFLITE_THREADS', 4)
+# location of models
+TFLITE_DATA_DIR = os.path.abspath(os.path.join(
+    os.path.dirname(__file__), '../../data/tflite'))
+
 
 # Compass I2C address
 COMPASS_ADDRESS = 0x60

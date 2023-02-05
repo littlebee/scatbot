@@ -10,17 +10,9 @@ from tflite_support.task import processor
 from tflite_support.task import vision
 
 
-from commons import constants
+from commons import constants as c
 
 logger = logging.getLogger(__name__)
-
-# use coral USB tpu
-ENABLE_CORAL_TPU = constants.env_bool('ENABLE_CORAL_TPU', True)
-# num cpu threads to use for tensor flow lite
-TFLITE_THREADS = constants.env_int('TFLITE_THREADS', 4)
-
-TFLITE_DATA_DIR = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../../data/tflite'))
 
 
 class TFLiteDetect:
@@ -29,17 +21,20 @@ class TFLiteDetect:
     def __init__(self):
         # Initialize the object detection model
         model = None
-        if ENABLE_CORAL_TPU:
-            # model = f"{TFLITE_DATA_DIR}/efficientdet_lite0_edgetpu.tflite"
-            model = f"{TFLITE_DATA_DIR}/ssd_mobilenet_v1_coco_quant_postprocess_edgetpu.tflite"
-        else:
+        if c.DISABLE_CORAL_TPU:
+            # # this is the model from tensor flow hub
             # model = f"{TFLITE_DATA_DIR}/efficientdet_lite0.tflite"
-            model = f"{TFLITE_DATA_DIR}/ssd_mobilenet_v1_coco_quant_postprocess.tflite"
+
+            # this is the model from coral web site
+            model = f"{c.TFLITE_DATA_DIR}/ssd_mobilenet_v1_coco_quant_postprocess.tflite"
+        else:
+            # model = f"{TFLITE_DATA_DIR}/efficientdet_lite0_edgetpu.tflite"
+            model = f"{c.TFLITE_DATA_DIR}/ssd_mobilenet_v1_coco_quant_postprocess_edgetpu.tflite"
 
         print(f"using model {model}")
 
         base_options = core.BaseOptions(
-            file_name=model, use_coral=ENABLE_CORAL_TPU, num_threads=TFLITE_THREADS)
+            file_name=model, use_coral=(not c.DISABLE_CORAL_TPU), num_threads=c.TFLITE_THREADS)
         detection_options = processor.DetectionOptions(
             max_results=3, score_threshold=0.3)
         options = vision.ObjectDetectorOptions(
