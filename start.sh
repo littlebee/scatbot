@@ -19,6 +19,7 @@ to_start=(
   "motor_control"
   "onboard_ui"
   "system_stats"
+  "web_server"
 
   ## video feed and recognition via Pi4 camera
   "vision"

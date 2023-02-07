@@ -12,6 +12,7 @@ to_stop=(
   "motor_control"
   "onboard_ui"
   "system_stats"
+  "web_server"
 
   # "vision"
   "vision_realsense"

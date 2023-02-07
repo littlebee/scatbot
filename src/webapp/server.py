@@ -13,8 +13,6 @@ import logging
 from flask import Flask, Response, send_from_directory
 from flask_cors import CORS
 
-
-from common.setup_logging import setup_logging
 from commons import web_utils
 
 app = Flask(__name__, static_url_path='/static')
@@ -77,7 +75,6 @@ class webapp:
 
 
 def start_app():
-    setup_logging('webapp.log')
     logger = logging.getLogger(__name__)
     logger.info(f"webapp started. serving {dir_path}")
 
