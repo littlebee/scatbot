@@ -26,13 +26,13 @@ cpu: 43%
 
 ### Notes
 
-After much experimentation, I was able to identify and implement the following performance improvement improvements:
+After much experimentation, I was able to identify and implement the following performance improvements:
 
-- Use findings from [Scatbot AI perf shootout](https://github.com/littlebee/scatbot-edge-ai-shootout). Which is to say, use tflite + coral USB TPU with models from coral.
+- Use findings from [Scatbot AI perf shootout](https://github.com/littlebee/scatbot-edge-ai-shootout). Which is to say, use tflite + [Coral USB accelerator](https://coral.ai/products/accelerator/) with [models from coral](https://coral.ai/models/object-detection/).
 
 - We still need a second camera for vision and only use realsense camera for depth. I experimented with doing both recognition and depth in the same Python process, but it did not go well. The threading in python dragged fps down to under 8 fps on all three metrics when not using coral tpu and under 4 fps when using the tpu.
 
-- Intel realsense 435i is negatively impacted by the Coral TPU. I think maybe this has do to with USB bus contention. If the vision subsystem is not running or is not using the Coral TPU, depth map generation with decimation runs at almost 30 fps, but more cpu is needed by tflite. There is not much I can do here except trade depth fps for stream & recog fps and less cpu. I can live with 8 fps of decimated depth data.
+- Intel realsense 435i is negatively impacted by the Coral USB Accelerator. I think maybe this has do to with USB bus contention. If the vision subsystem is not running or is not using the Coral TPU, depth map generation with decimation runs at almost 30 fps, but more cpu is needed by tflite. There is not much I can do here except trade depth fps for stream & recog fps and less cpu. I can live with 8 fps of decimated depth data.
 
 ### src/start_vision.py (with Coral TPU)
 

@@ -8,11 +8,13 @@ A robot to follow my dog around and give her treats
 
 I originally got the idea for scatbot watching my dog interact with the Roomba. She seemed disappointed and frustrated that El Roomba just went about his business as if she wasn't sitting right there with the ball the robot had just pushed out from under the couch. How rude.
 
-Scatbot is designed to be about the same height as El Roomba (< 100mm) so that it can fit under most of my furniture.
+Scatbot is designed to be about the same height as a Roomba (< 100mm) so that it can fit under most of my furniture.
 
-The idea is that it will be R/C or autonomous with several modes like "Follow" or "Hide and Seek".
+The idea is that it will be R/C or autonomous with several autonomous modes like "Follow" or "Hide and Seek".
 
-Originally I started designing, and even built an alpha-1 prototype, around the Nvidia Jetson Nano. Then I read [this article / tutorial that just changed everything](https://pytorch.org/tutorials/intermediate/realtime_rpi.html). 30fps inference on Raspberry PI??? It was true. It was also all I needed to hear after the agonizing, and at the time still going, torture of getting all of the 3rd party software (tensor flow, opencv, adafruit motorkit, ...) working together. It was a brutal dungeon craw.
+Originally I started designing, and even built an alpha-1 prototype, around the Nvidia Jetson Nano, but a couple of things doomed that design. Space! is so important and the Nano is not very small when you add on it's big heat sink and fan. Also the torture of getting all of the 3rd party software (tensor flow, opencv, adafruit motorkit, ...) working together was a brutal dungeon craw.
+
+It runs on a Raspberry PI 4b w/4GB. The [Adafruit Braincraft hat](https://www.adafruit.com/product/4374) provides the onboard-ui, audio amplifier and a few LEDs that are used for expressive behaviors.
 
 ## See also
 
