@@ -24,6 +24,7 @@ function App() {
   const [hubState, setHubState] = useState(DEFAULT_HUB_STATE);
   const [whichVideo, setWhichVideo] = useState(c.RGB_VIDEO);
   const [whichOverlays, setWhichOverlays] = useState([]);
+  const [filterConfidence, setFilterConfidence] = useState(0.5);
   const [isHubStateDialogOpen, setIsHubStateDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -86,12 +87,18 @@ function App() {
           </div>
           <div className="content">
             <VideoSelector whichVideo={whichVideo} onSelect={setWhichVideo} />
-            <Overlays whichOverlays={whichOverlays} hubState={hubState}>
+            <Overlays
+              whichOverlays={whichOverlays}
+              hubState={hubState}
+              filterConfidence={filterConfidence}
+            >
               <VideoFeed whichVideo={whichVideo} />
             </Overlays>
             <OverlaySelector
               whichOverlays={whichOverlays}
+              filterConfidence={filterConfidence}
               onSelect={handleOverlaySelected}
+              onFilterConfidence={setFilterConfidence}
             />
           </div>
         </div>
