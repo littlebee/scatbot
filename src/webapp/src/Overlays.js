@@ -5,7 +5,12 @@ import { DepthMapOverlay } from "./DepthMapOverlay";
 import { ObjectsOverlay } from "./ObjectsOverlay";
 import st from "./Overlays.module.css";
 
-export function Overlays({ whichOverlays, hubState, children }) {
+export function Overlays({
+  whichOverlays,
+  filterConfidence,
+  hubState,
+  children,
+}) {
   return (
     <div className={st.overlayContainer}>
       <div className={st.overlay}>
@@ -13,7 +18,10 @@ export function Overlays({ whichOverlays, hubState, children }) {
           <DepthMapOverlay depthMap={hubState.depth_map.section_map} />
         )}
         {whichOverlays.includes(c.OBJECTS_OVERLAY) && (
-          <ObjectsOverlay objects={hubState.recognition} />
+          <ObjectsOverlay
+            objects={hubState.recognition}
+            filterConfidence={filterConfidence}
+          />
         )}
       </div>
       {children}
