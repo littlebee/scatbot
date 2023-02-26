@@ -6,23 +6,29 @@ import pyaudio
 import wave
 
 FORMAT = pyaudio.paInt16
-CHANNELS = 1           # Number of channels
-BITRATE = 44100        # Audio Bitrate
-CHUNK_SIZE = 512       # Chunk size to
+CHANNELS = 1  # Number of channels
+BITRATE = 44100  # Audio Bitrate
+CHUNK_SIZE = 512  # Chunk size to
 RECORDING_LENGTH = 10  # Recording Length in seconds
 WAVE_OUTPUT_FILENAME = "myrecording.wav"
 audio = pyaudio.PyAudio()
 
 info = audio.get_host_api_info_by_index(0)
-numdevices = info.get('deviceCount')
+numdevices = info.get("deviceCount")
 for i in range(0, numdevices):
-    if (audio.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
-        print("Input Device id ", i, " - ",
-              audio.get_device_info_by_host_api_device_index(0, i).get('name'))
+    if (
+        audio.get_device_info_by_host_api_device_index(0, i).get("maxInputChannels")
+    ) > 0:
+        print(
+            "Input Device id ",
+            i,
+            " - ",
+            audio.get_device_info_by_host_api_device_index(0, i).get("name"),
+        )
 
 print("Which Input Device would you like to use?")
 device_id = int(input())  # Choose a device
-print("Recording using Input Device ID "+str(device_id))
+print("Recording using Input Device ID " + str(device_id))
 
 stream = audio.open(
     format=FORMAT,
@@ -30,7 +36,7 @@ stream = audio.open(
     rate=BITRATE,
     input=True,
     input_device_index=device_id,
-    frames_per_buffer=CHUNK_SIZE
+    frames_per_buffer=CHUNK_SIZE,
 )
 
 recording_frames = []
@@ -43,13 +49,13 @@ stream.stop_stream()
 stream.close()
 audio.terminate()
 
-waveFile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+waveFile = wave.open(WAVE_OUTPUT_FILENAME, "wb")
 waveFile.setnchannels(CHANNELS)
 waveFile.setsampwidth(audio.get_sample_size(FORMAT))
 waveFile.setframerate(BITRATE)
-waveFile.writeframes(b''.join(recording_frames))
+waveFile.writeframes(b"".join(recording_frames))
 waveFile.close()
 
-print(f"You can verify it recorded audio on your local machine: ")
-print(f"scp scatbot.local:/home/bee/scatbot/myrecording.wav . && open myrecording.wav")
+print("You can verify it recorded audio on your local machine: ")
+print("scp scatbot.local:/home/bee/scatbot/myrecording.wav . && open myrecording.wav")
 print("")

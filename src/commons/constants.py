@@ -26,24 +26,27 @@ CAMERA_CHANNEL_PICAM = 0
 # realsense RGB camera channel (USB)
 CAMERA_CHANNEL_RS = 4
 # which v4l channel  is the rgb image read from
-CAMERA_CHANNEL = env_int('CAMERA_CHANNEL', CAMERA_CHANNEL_PICAM)
+CAMERA_CHANNEL = env_int("CAMERA_CHANNEL", CAMERA_CHANNEL_PICAM)
 # realsense depth camera channel
 CAMERA_CHANNEL_RS_DEPTH = 2  # maybe??
 
-DISABLE_DEPTH_PROVIDER = env_bool('DISABLE_DEPTH_PROVIDER', False)
-DISABLE_RECOGNITION_PROVIDER = env_bool('DISABLE_RECOGNITION_PROVIDER', False)
+DISABLE_DEPTH_PROVIDER = env_bool("DISABLE_DEPTH_PROVIDER", False)
+DISABLE_RECOGNITION_PROVIDER = env_bool("DISABLE_RECOGNITION_PROVIDER", False)
 
 # realsense_vision module can do recognition (object detection) from the rs color
 # image stream, but....  It performs really poorly
-DISABLE_REALSENSE_RECOGNITION = env_bool('DISABLE_REALSENSE_RECOGNITION', True) or DISABLE_RECOGNITION_PROVIDER
+DISABLE_REALSENSE_RECOGNITION = (
+    env_bool("DISABLE_REALSENSE_RECOGNITION", True) or DISABLE_RECOGNITION_PROVIDER
+)
 
 # use coral USB tpu
-DISABLE_CORAL_TPU = env_bool('DISABLE_CORAL_TPU', False)
+DISABLE_CORAL_TPU = env_bool("DISABLE_CORAL_TPU", False)
 # num cpu threads to use for tensor flow lite
-TFLITE_THREADS = env_int('TFLITE_THREADS', 4)
+TFLITE_THREADS = env_int("TFLITE_THREADS", 4)
 # location of models
-TFLITE_DATA_DIR = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../../data/tflite'))
+TFLITE_DATA_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../data/tflite")
+)
 
 
 # Compass I2C address
@@ -94,20 +97,98 @@ MOTOR_ADDRESS = 0x70
 # for complete list check https://tech.amikelive.com/node-718/what-object-categories-labels-are-in-coco-dataset/
 # we will use the same list for this notebook
 COCO_INSTANCE_CATEGORY_NAMES = [
-    '__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
-    'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'N/A', 'stop sign',
-    'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-    'elephant', 'bear', 'zebra', 'giraffe', 'N/A', 'backpack', 'umbrella', 'N/A', 'N/A',
-    'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
-    'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket',
-    'bottle', 'N/A', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl',
-    'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza',
-    'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'N/A', 'dining table',
-    'N/A', 'N/A', 'toilet', 'N/A', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
-    'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'N/A', 'book',
-    'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+    "__background__",
+    "person",
+    "bicycle",
+    "car",
+    "motorcycle",
+    "airplane",
+    "bus",
+    "train",
+    "truck",
+    "boat",
+    "traffic light",
+    "fire hydrant",
+    "N/A",
+    "stop sign",
+    "parking meter",
+    "bench",
+    "bird",
+    "cat",
+    "dog",
+    "horse",
+    "sheep",
+    "cow",
+    "elephant",
+    "bear",
+    "zebra",
+    "giraffe",
+    "N/A",
+    "backpack",
+    "umbrella",
+    "N/A",
+    "N/A",
+    "handbag",
+    "tie",
+    "suitcase",
+    "frisbee",
+    "skis",
+    "snowboard",
+    "sports ball",
+    "kite",
+    "baseball bat",
+    "baseball glove",
+    "skateboard",
+    "surfboard",
+    "tennis racket",
+    "bottle",
+    "N/A",
+    "wine glass",
+    "cup",
+    "fork",
+    "knife",
+    "spoon",
+    "bowl",
+    "banana",
+    "apple",
+    "sandwich",
+    "orange",
+    "broccoli",
+    "carrot",
+    "hot dog",
+    "pizza",
+    "donut",
+    "cake",
+    "chair",
+    "couch",
+    "potted plant",
+    "bed",
+    "N/A",
+    "dining table",
+    "N/A",
+    "N/A",
+    "toilet",
+    "N/A",
+    "tv",
+    "laptop",
+    "mouse",
+    "remote",
+    "keyboard",
+    "cell phone",
+    "microwave",
+    "oven",
+    "toaster",
+    "sink",
+    "refrigerator",
+    "N/A",
+    "book",
+    "clock",
+    "vase",
+    "scissors",
+    "teddy bear",
+    "hair drier",
+    "toothbrush",
 ]
 
 # object detection threshold percentage; higher = greater confidence
 OBJECT_DETECTION_THRESHOLD = 0.5
-

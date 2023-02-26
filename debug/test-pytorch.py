@@ -13,15 +13,14 @@ from commons import constants
 import cv2
 
 import torch
-import numpy as np
 from torchvision import models, transforms
 
 
-is_jetson = exists('/etc/nv_tegra_release')
+is_jetson = exists("/etc/nv_tegra_release")
 
 #  This doesn't work on nano
 if not is_jetson:
-    torch.backends.quantized.engine = 'qnnpack'
+    torch.backends.quantized.engine = "qnnpack"
 
 cap = cv2.VideoCapture(constants.CAMERA_CHANNEL_PICAM, cv2.CAP_V4L2)
 
@@ -29,11 +28,12 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 cap.set(cv2.CAP_PROP_FPS, 60)
 
-preprocess = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                         std=[0.229, 0.224, 0.225]),
-])
+preprocess = transforms.Compose(
+    [
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ]
+)
 
 print("loading model")
 net = None
@@ -46,7 +46,7 @@ else:
 print("compiling model")
 net = torch.jit.script(net)
 
-print('model compiled')
+print("model compiled")
 started = time.time()
 last_logged = time.time()
 frame_count = 0

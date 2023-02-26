@@ -11,7 +11,6 @@
 
 import os
 import threading
-import json
 import logging
 
 
@@ -41,35 +40,41 @@ def gen_rgb_video(camera):
     while True:
         frame = camera.get_frame()
 
-        jpeg = cv2.imencode('.jpg', frame)[1].tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
+        jpeg = cv2.imencode(".jpg", frame)[1].tobytes()
+        yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n")
 
 
-@app.route('/video_feed')
+@app.route("/video_feed")
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen_rgb_video(camera),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(
+        gen_rgb_video(camera), mimetype="multipart/x-mixed-replace; boundary=frame"
+    )
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-@app.route('/stats')
+@app.route("/stats")
 def send_stats():
     (cpu_temp, *rest) = [
-        int(i) / 1000 for i in
-        os.popen(
-            'cat /sys/devices/virtual/thermal/thermal_zone*/temp').read().split()
+        int(i) / 1000
+        for i in os.popen("cat /sys/devices/virtual/thermal/thermal_zone*/temp")
+        .read()
+        .split()
     ]
-    return web_utils.json_response(app, {
-        "capture": BaseCamera.stats(),
-        "recognition": "disabled" if constants.DISABLE_RECOGNITION_PROVIDER else RecognitionProvider.stats(),
-    })
+    return web_utils.json_response(
+        app,
+        {
+            "capture": BaseCamera.stats(),
+            "recognition": "disabled"
+            if constants.DISABLE_RECOGNITION_PROVIDER
+            else RecognitionProvider.stats(),
+        },
+    )
 
 
-@app.route('/pauseRecognition')
+@app.route("/pauseRecognition")
 def pause_recognition():
     if constants.DISABLE_RECOGNITION_PROVIDER:
         return abort(404, "recognition provider disabled")
@@ -78,7 +83,7 @@ def pause_recognition():
     return web_utils.respond_ok(app)
 
 
-@app.route('/resumeRecognition')
+@app.route("/resumeRecognition")
 def resume_recognition():
     if constants.DISABLE_RECOGNITION_PROVIDER:
         return abort(404, "recognition provider disabled")
@@ -87,19 +92,19 @@ def resume_recognition():
     return web_utils.respond_ok(app)
 
 
-@app.route('/ping')
+@app.route("/ping")
 def ping():
-    return web_utils.respond_ok(app, 'pong')
+    return web_utils.respond_ok(app, "pong")
 
 
-@app.route('/<path:filename>')
+@app.route("/<path:filename>")
 def send_file(filename):
     return send_from_directory(dir_path, filename)
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return send_from_directory(dir_path, 'index.html')
+    return send_from_directory(dir_path, "index.html")
 
 
 class webapp:
@@ -107,7 +112,7 @@ class webapp:
         self.camera = camera
 
     def thread(self):
-        app.run(host='0.0.0.0', port=constants.VISION_PORT, threaded=True)
+        app.run(host="0.0.0.0", port=constants.VISION_PORT, threaded=True)
 
     def start_thread(self):
         # Define a thread for FPV and OpenCV
@@ -120,7 +125,7 @@ class webapp:
 def start_app():
     # setup_logging('ai.log')
     logger = logging.getLogger(__name__)
-    logger.info('vision service started')
+    logger.info("vision service started")
 
     flask_app = webapp()
     flask_app.start_thread()

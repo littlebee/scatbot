@@ -8,7 +8,6 @@
 "Great artists steal". Thank you, @adeept and @miguelgrinberg!
 """
 
-import os
 import cv2
 import logging
 
@@ -33,12 +32,13 @@ class OpenCvCamera(BaseCamera):
 
     @staticmethod
     def frames():
-        print('initializing VideoCapture')
+        print("initializing VideoCapture")
 
         camera = cv2.VideoCapture(
-            OpenCvCamera.video_source)  # , apiPreference=cv2.CAP_V4L2)
+            OpenCvCamera.video_source
+        )  # , apiPreference=cv2.CAP_V4L2)
         if not camera.isOpened():
-            raise RuntimeError('Could not start camera.')
+            raise RuntimeError("Could not start camera.")
 
         camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -48,9 +48,11 @@ class OpenCvCamera(BaseCamera):
             if img is None:
                 if not OpenCvCamera.img_is_none_messaged:
                     logger.error(
-                        "The camera has not read data, please check whether the camera can be used normally.")
+                        "The camera has not read data, please check whether the camera can be used normally."
+                    )
                     logger.error(
-                        "Use the command: 'raspistill -t 1000 -o image.jpg' to check whether the camera can be used correctly.")
+                        "Use the command: 'raspistill -t 1000 -o image.jpg' to check whether the camera can be used correctly."
+                    )
                     OpenCvCamera.img_is_none_messaged = True
                 continue
 

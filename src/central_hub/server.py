@@ -5,9 +5,9 @@ import json
 import asyncio
 import websockets
 
-from commons import enums, constants, shared_state
+from commons import constants, shared_state
 
-LOG_ALL_MESSAGES = os.getenv('LOG_ALL_MESSAGES') or False
+LOG_ALL_MESSAGES = os.getenv("LOG_ALL_MESSAGES") or False
 
 logging.basicConfig()
 
@@ -23,12 +23,14 @@ identities = dict()
 
 def iseeu_message(websocket):
     remoteIp = websocket.remote_address[0]
-    return json.dumps({
-        "type": "iseeu",
-        "data": {
-            "ip": remoteIp,
+    return json.dumps(
+        {
+            "type": "iseeu",
+            "data": {
+                "ip": remoteIp,
+            },
         }
-    })
+    )
 
 
 async def send_message(websocket, message):
@@ -46,14 +48,16 @@ async def send_state_update_to_subscribers(message_data):
             for sub_socket in subscribers[key]:
                 subscribed_sockets.add(sub_socket)
 
-    relay_message = json.dumps({
-        "type": "stateUpdate",
-        # note that we send the message as received to any subscribers of **any** keys
-        # in the message. So if a subsystem sends updates for two keys and a client
-        # is subscribed to one of the keys, it will get both.  Provider subsystems
-        # like compass should only be responsible for update a single top level key
-        "data": message_data
-    })
+    relay_message = json.dumps(
+        {
+            "type": "stateUpdate",
+            # note that we send the message as received to any subscribers of **any** keys
+            # in the message. So if a subsystem sends updates for two keys and a client
+            # is subscribed to one of the keys, it will get both.  Provider subsystems
+            # like compass should only be responsible for update a single top level key
+            "data": message_data,
+        }
+    )
     for socket in subscribed_sockets:
         await send_message(socket, relay_message)
 
@@ -76,13 +80,15 @@ async def notify_iseeu(websocket):
 
 async def register(websocket):
     print(
-        f"got new connection from {websocket.remote_address[0]}:{websocket.remote_address[1]}:")
+        f"got new connection from {websocket.remote_address[0]}:{websocket.remote_address[1]}:"
+    )
     connected_sockets.add(websocket)
 
 
 async def unregister(websocket):
     print(
-        f"lost connection {websocket.remote_address[0]}:{websocket.remote_address[1]}")
+        f"lost connection {websocket.remote_address[0]}:{websocket.remote_address[1]}"
+    )
     try:
         connected_sockets.remove(websocket)
         for key in subscribers:
@@ -91,7 +97,8 @@ async def unregister(websocket):
         subsystem_name = identities.pop(websocket, None)
         shared_state.state["subsystem_stats"][subsystem_name]["online"] = 0
         await send_state_update_to_subscribers(
-            {"subsystem_stats": shared_state.state["subsystem_stats"]})
+            {"subsystem_stats": shared_state.state["subsystem_stats"]}
+        )
 
     except:
         pass
@@ -101,7 +108,7 @@ async def handleStateRequest(websocket):
     await notify_state(websocket)
 
 
-async def handleStateUpdate(websocket, message_data):
+async def handleStateUpdate(message_data):
     global subscribers
 
     shared_state.update_state_from_message_data(message_data)
@@ -127,7 +134,8 @@ async def handleStateSubscribe(websocket, data):
             subscribers[key] = socket_set
 
         print(
-            f"subscribing {websocket.remote_address[0]}:{websocket.remote_address[1]} to {key}")
+            f"subscribing {websocket.remote_address[0]}:{websocket.remote_address[1]} to {key}"
+        )
         socket_set.add(websocket)
 
 
@@ -146,12 +154,12 @@ async def handleStateUnsubscribe(websocket, data):
 
 async def handleIdentity(websocket, subsystem_name):
     identities[websocket] = subsystem_name
-    print(
-        f"setting identity of {websocket.remote_address[1]} to {subsystem_name}")
+    print(f"setting identity of {websocket.remote_address[1]} to {subsystem_name}")
 
     shared_state.state["subsystem_stats"][subsystem_name]["online"] = 1
     await send_state_update_to_subscribers(
-        {"subsystem_stats": shared_state.state["subsystem_stats"]})
+        {"subsystem_stats": shared_state.state["subsystem_stats"]}
+    )
 
 
 async def handlePing(websocket):
@@ -167,14 +175,14 @@ async def handleMessage(websocket, path):
 
             jsonData = json.loads(message)
             messageType = jsonData.get("type")
-            messageData = jsonData.get('data')
+            messageData = jsonData.get("data")
 
             # {type: "state"}
             if messageType == "getState":
                 await handleStateRequest(websocket)
             # {type: "updateState" data: { new state }}
             elif messageType == "updateState":
-                await handleStateUpdate(websocket, messageData)
+                await handleStateUpdate(messageData)
             # {type: "subscribeState", data: [state_keys] or "*"
             elif messageType == "subscribeState":
                 await handleStateSubscribe(websocket, messageData)
@@ -194,7 +202,8 @@ async def handleMessage(websocket, path):
 async def send_hub_stats_task():
     while True:
         await send_state_update_to_subscribers(
-            {"hub_stats": shared_state.state["hub_stats"]})
+            {"hub_stats": shared_state.state["hub_stats"]}
+        )
 
         await asyncio.sleep(20)
 

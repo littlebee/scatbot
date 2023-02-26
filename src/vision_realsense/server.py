@@ -14,7 +14,6 @@
 import os
 import threading
 import logging
-from enum import Enum
 
 
 from flask import Flask, Response, send_from_directory, abort
@@ -38,12 +37,12 @@ camera = RealsenseCamera()
 if not constants.DISABLE_DEPTH_PROVIDER:
     depth = DepthProvider(camera)
 else:
-    print('Depth provider disabled');
+    print("Depth provider disabled")
 
 if not constants.DISABLE_REALSENSE_RECOGNITION:
     recognition = RecognitionProvider(camera)
 else:
-    print('Recognition provider disabled');
+    print("Recognition provider disabled")
 
 
 def gen_rgb_video(camera):
@@ -51,68 +50,76 @@ def gen_rgb_video(camera):
     while True:
         frame = camera.get_frame()
 
-        jpeg = cv2.imencode('.jpg', frame)[1].tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
+        jpeg = cv2.imencode(".jpg", frame)[1].tobytes()
+        yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n")
 
 
 def gen_depth_video(camera):
     """Video streaming generator function."""
     while True:
         frame = camera.get_depth_image()
-        jpeg = cv2.imencode('.jpg', frame)[1].tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + jpeg + b'\r\n')
+        jpeg = cv2.imencode(".jpg", frame)[1].tobytes()
+        yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n")
 
 
-@app.route('/video_feed')
+@app.route("/video_feed")
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen_rgb_video(camera),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(
+        gen_rgb_video(camera), mimetype="multipart/x-mixed-replace; boundary=frame"
+    )
 
 
-@app.route('/depth_feed')
+@app.route("/depth_feed")
 def depth_feed():
     if constants.DISABLE_DEPTH_PROVIDER:
         abort(404, "depth camera disabled")
         return
 
-    return Response(gen_depth_video(camera),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(
+        gen_depth_video(camera), mimetype="multipart/x-mixed-replace; boundary=frame"
+    )
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-@app.route('/stats')
+@app.route("/stats")
 def send_stats():
     (cpu_temp, *rest) = [
-        int(i) / 1000 for i in
-        os.popen(
-            'cat /sys/devices/virtual/thermal/thermal_zone*/temp').read().split()
+        int(i) / 1000
+        for i in os.popen("cat /sys/devices/virtual/thermal/thermal_zone*/temp")
+        .read()
+        .split()
     ]
-    return web_utils.json_response(app, {
-        "cpu_temp": cpu_temp,
-        "capture": BaseCamera.stats(),
-        "depthProvider": "disabled" if constants.DISABLE_DEPTH_PROVIDER else DepthProvider.stats(),
-        "recognition": "disabled" if constants.DISABLE_REALSENSE_RECOGNITION else RecognitionProvider.stats()
-    })
+    return web_utils.json_response(
+        app,
+        {
+            "cpu_temp": cpu_temp,
+            "capture": BaseCamera.stats(),
+            "depthProvider": "disabled"
+            if constants.DISABLE_DEPTH_PROVIDER
+            else DepthProvider.stats(),
+            "recognition": "disabled"
+            if constants.DISABLE_REALSENSE_RECOGNITION
+            else RecognitionProvider.stats(),
+        },
+    )
 
 
-@app.route('/ping')
+@app.route("/ping")
 def ping():
-    return web_utils.respond_ok(app, 'pong')
+    return web_utils.respond_ok(app, "pong")
 
 
-@app.route('/<path:filename>')
+@app.route("/<path:filename>")
 def send_file(filename):
     return send_from_directory(dir_path, filename)
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return send_from_directory(dir_path, 'index.html')
+    return send_from_directory(dir_path, "index.html")
 
 
 class webapp:
@@ -120,7 +127,7 @@ class webapp:
         self.camera = camera
 
     def thread(self):
-        app.run(host='0.0.0.0', port=constants.DEPTH_PORT, threaded=True)
+        app.run(host="0.0.0.0", port=constants.DEPTH_PORT, threaded=True)
 
     def start_thread(self):
         # Define a thread for FPV and OpenCV
@@ -133,7 +140,7 @@ class webapp:
 def start_app():
     # setup_logging('ai.log')
     logger = logging.getLogger(__name__)
-    logger.info('vision_realsense service started')
+    logger.info("vision_realsense service started")
 
     flask_app = webapp()
     flask_app.start_thread()

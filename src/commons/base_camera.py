@@ -28,6 +28,7 @@ class CameraEvent(object):
     """An Event-like class that signals all active clients when a new frame is
     available.
     """
+
     def __init__(self):
         self.events = {}
 
@@ -66,7 +67,6 @@ class CameraEvent(object):
         self.events[get_ident()][0].clear()
 
 
-
 class BaseCamera(object):
     thread = None  # background thread that reads frames from camera
     frame = None  # current frame is stored here by background thread
@@ -95,8 +95,8 @@ class BaseCamera(object):
 
     @staticmethod
     def frames():
-        """"Generator that returns frames from the camera."""
-        raise RuntimeError('Must be implemented by subclasses.')
+        """ "Generator that returns frames from the camera."""
+        raise RuntimeError("Must be implemented by subclasses.")
 
     @classmethod
     def stats(cls):
@@ -105,7 +105,7 @@ class BaseCamera(object):
     @classmethod
     def _thread(cls):
         """Camera background thread."""
-        logger.info('Starting camera thread.')
+        logger.info("Starting camera thread.")
         BaseCamera.fps_stats.start()
 
         frames_iterator = cls.frames()

@@ -1,6 +1,5 @@
-#!/bin/bash
-
 #!/usr/bin/env python3
+
 # sourced from:  https://github.com/tensorflow/examples/blob/master/lite/examples/object_detection/raspberry_pi/detect.py
 
 # Copyright 2021 The TensorFlow Authors. All Rights Reserved.
@@ -26,12 +25,17 @@ from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
 
-TF_DATA_DIR = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../data/tflite'))
+TF_DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/tflite"))
 
 
-def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
-        enable_edgetpu: bool) -> None:
+def run(
+    model: str,
+    camera_id: int,
+    width: int,
+    height: int,
+    num_threads: int,
+    enable_edgetpu: bool,
+) -> None:
     """Continuously run inference on images acquired from the camera.
 
     Args:
@@ -63,11 +67,12 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     print(f"using model {model}")
 
     base_options = core.BaseOptions(
-        file_name=model, use_coral=enable_edgetpu, num_threads=num_threads)
-    detection_options = processor.DetectionOptions(
-        max_results=3, score_threshold=0.3)
+        file_name=model, use_coral=enable_edgetpu, num_threads=num_threads
+    )
+    detection_options = processor.DetectionOptions(max_results=3, score_threshold=0.3)
     options = vision.ObjectDetectorOptions(
-        base_options=base_options, detection_options=detection_options)
+        base_options=base_options, detection_options=detection_options
+    )
     detector = vision.ObjectDetector.create_from_options(options)
 
     # Continuously capture images from the camera and run inference
@@ -75,7 +80,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
         success, image = cap.read()
         if not success:
             sys.exit(
-                'ERROR: Unable to read from webcam. Please verify your webcam settings.'
+                "ERROR: Unable to read from webcam. Please verify your webcam settings."
             )
 
         counter += 1
@@ -97,7 +102,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
             start_time = time.time()
 
         # Show the FPS
-        fps_text = 'FPS = {:.1f}'.format(fps)
+        fps_text = "FPS = {:.1f}".format(fps)
 
         print(f"{fps_text}\n{detection_result}")
 
@@ -107,43 +112,56 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
 def main():
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
     parser.add_argument(
-        '--model',
-        help='Path of the object detection model.',
+        "--model",
+        help="Path of the object detection model.",
         required=False,
-        default=None)
+        default=None,
+    )
     parser.add_argument(
-        '--cameraId', help='Id of camera.', required=False, type=int, default=0)
+        "--cameraId", help="Id of camera.", required=False, type=int, default=0
+    )
     parser.add_argument(
-        '--frameWidth',
-        help='Width of frame to capture from camera.',
-        required=False,
-        type=int,
-        default=640)
-    parser.add_argument(
-        '--frameHeight',
-        help='Height of frame to capture from camera.',
+        "--frameWidth",
+        help="Width of frame to capture from camera.",
         required=False,
         type=int,
-        default=480)
+        default=640,
+    )
     parser.add_argument(
-        '--numThreads',
-        help='Number of CPU threads to run the model.',
+        "--frameHeight",
+        help="Height of frame to capture from camera.",
         required=False,
         type=int,
-        default=4)
+        default=480,
+    )
     parser.add_argument(
-        '--enableEdgeTPU',
-        help='Whether to run the model on EdgeTPU.',
-        action='store_true',
+        "--numThreads",
+        help="Number of CPU threads to run the model.",
         required=False,
-        default=False)
+        type=int,
+        default=4,
+    )
+    parser.add_argument(
+        "--enableEdgeTPU",
+        help="Whether to run the model on EdgeTPU.",
+        action="store_true",
+        required=False,
+        default=False,
+    )
     args = parser.parse_args()
 
-    run(args.model, int(args.cameraId), args.frameWidth, args.frameHeight,
-        int(args.numThreads), bool(args.enableEdgeTPU))
+    run(
+        args.model,
+        int(args.cameraId),
+        args.frameWidth,
+        args.frameHeight,
+        int(args.numThreads),
+        bool(args.enableEdgeTPU),
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

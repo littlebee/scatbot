@@ -20,7 +20,7 @@ from .tflite_detect import TFLiteDetect
 
 logger = logging.getLogger(__name__)
 
-WHICH_DETECTOR = 'tflite'
+WHICH_DETECTOR = "tflite"
 
 
 class RecognitionProvider:
@@ -63,7 +63,7 @@ class RecognitionProvider:
             "last_objects_seen": cls.last_objects_seen,
             "fps": cls.fps_stats.stats(),
             "total_objects_detected": cls.total_objects_detected,
-            "last_frame_duration": cls.last_frame_duration
+            "last_frame_duration": cls.last_frame_duration,
         }
 
     @classmethod
@@ -73,7 +73,7 @@ class RecognitionProvider:
         while True:
             try:
                 detector = None
-                if(WHICH_DETECTOR == 'tflite'):
+                if WHICH_DETECTOR == "tflite":
                     detector = TFLiteDetect()
                 else:
                     detector = PytorchDetect()
@@ -100,9 +100,12 @@ class RecognitionProvider:
                         cls.next_objects_event.set()  # send signal to clients
                         cls.total_objects_detected += num_objects
 
-                        await messages.send_state_update(websocket, {
-                            "recognition": new_objects,
-                        })
+                        await messages.send_state_update(
+                            websocket,
+                            {
+                                "recognition": new_objects,
+                            },
+                        )
 
                         await asyncio.sleep(0)
 
@@ -110,10 +113,10 @@ class RecognitionProvider:
             except:
                 traceback.print_exc()
 
-            print('central_hub socket disconnected.  Reconnecting in 5 sec...')
+            print("central_hub socket disconnected.  Reconnecting in 5 sec...")
             time.sleep(5)
 
-    @ classmethod
+    @classmethod
     def _thread(cls):
-        logger.info('Starting recognition thread.')
+        logger.info("Starting recognition thread.")
         asyncio.run(cls.provide_state())

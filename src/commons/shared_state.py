@@ -6,28 +6,18 @@ state = {
         "voltage": 0,
         "current": 0,
     },
-
     # which behavior - RC, hide $ seek, follow
     "behavior": 0,
-
     # heading
     "compass": 0,
-
     # depth map - array of mm distance from camera per pixel
     "depth_map": {
         "min_distance": 0,
         "max_distance": 0,
         "section_map": [],
     },
-
-    "feeder": {
-        "requested_at": 0
-    },
-
-    "hub_stats": {
-        "state_updates_recv": 0
-    },
-
+    "feeder": {"requested_at": 0},
+    "hub_stats": {"state_updates_recv": 0},
     # recognized objects from pytorch
     "recognition": [
         # this is a array of
@@ -37,21 +27,14 @@ state = {
         #     "confidence": 90
         #  }
     ],
-
     # This is separate from throttles which is the requested throttles.
     # This is what motor_control subsystem says the actual throttles are.
-    "motors": {
-        "left": 0,
-        "right": 0,
-        "feeder": 0
-    },
-
+    "motors": {"left": 0, "right": 0, "feeder": 0},
     "system_stats": {
         "cpu_util": 0,
         "cpu_temp": 0,
         "ram_util": 0,
     },
-
     "subsystem_stats": {
         "central_hub": {
             "online": 1,
@@ -73,14 +56,12 @@ state = {
         },
         "recognition": {
             "online": 0,
-        }
+        },
     },
-
     "throttles": {
         "left": 0,
         "right": 0,
-    }
-
+    },
 }
 
 # these are intended to be semi-constant and calibrated values
@@ -88,7 +69,6 @@ CONFIG = {
     # This is the difference between magnetic north (as read by the
     # tilt compensated compass) and true north
     "headingOffset": 28,
-
 }
 
 
