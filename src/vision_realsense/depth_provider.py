@@ -28,13 +28,13 @@ class DepthProvider:
 
     @classmethod
     async def provide_state(cls):
-        sample_count = 0
-        start_time = time.time()
         cls.fps_stats.start()
 
         while True:
             try:
-                print(f"depth_provider connecting to hub central at {constants.HUB_URI}")
+                print(
+                    f"depth_provider connecting to hub central at {constants.HUB_URI}"
+                )
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     await messages.send_identity(websocket, "vision")
                     while True:
@@ -45,19 +45,22 @@ class DepthProvider:
 
                         # print(f"got depth_data {depth_data}")
 
-                        await messages.send_state_update(websocket, {
-                            "depth_map": {
-                                "last_updated": time.time(),
-                                "section_map": depth_data,
-                            }
-                        })
+                        await messages.send_state_update(
+                            websocket,
+                            {
+                                "depth_map": {
+                                    "last_updated": time.time(),
+                                    "section_map": depth_data,
+                                }
+                            },
+                        )
 
                         await asyncio.sleep(constants.DEPTH_PUBLISH_INTERVAL)
                         # time.sleep(0)
             except:
                 traceback.print_exc()
 
-            print('central_hub socket disconnected.  Reconnecting in 5 sec...')
+            print("central_hub socket disconnected.  Reconnecting in 5 sec...")
             time.sleep(5)
 
     @classmethod
@@ -67,8 +70,7 @@ class DepthProvider:
             "section_map": cls.section_map,
         }
 
-
-    @ classmethod
+    @classmethod
     def _thread(cls):
-        logger.info('Starting depth map thread.')
+        logger.info("Starting depth map thread.")
         asyncio.run(cls.provide_state())

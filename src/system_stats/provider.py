@@ -12,20 +12,23 @@ from commons import constants, messages
 
 def get_update_message():
     (cpu_temp, *rest) = [
-        int(i) / 1000 for i in
-        os.popen(
-            'cat /sys/devices/virtual/thermal/thermal_zone*/temp').read().split()
+        int(i) / 1000
+        for i in os.popen("cat /sys/devices/virtual/thermal/thermal_zone*/temp")
+        .read()
+        .split()
     ]
-    return json.dumps({
-        "type": "updateState",
-        "data": {
-            "system_stats": {
-                "cpu_util": psutil.cpu_percent(),
-                "cpu_temp": cpu_temp,
-                "ram_util": psutil.virtual_memory()[2],
+    return json.dumps(
+        {
+            "type": "updateState",
+            "data": {
+                "system_stats": {
+                    "cpu_util": psutil.cpu_percent(),
+                    "cpu_temp": cpu_temp,
+                    "ram_util": psutil.virtual_memory()[2],
+                },
             },
         }
-    })
+    )
 
 
 async def provide_state():
@@ -41,7 +44,7 @@ async def provide_state():
         except:
             traceback.print_exc()
 
-        print('socket disconnected.  Reconnecting in 5 sec...')
+        print("socket disconnected.  Reconnecting in 5 sec...")
         time.sleep(5)
 
 

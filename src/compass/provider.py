@@ -15,7 +15,7 @@ def get_heading():
     bear1 = bus.read_byte_data(constants.COMPASS_ADDRESS, 2)
     bear2 = bus.read_byte_data(constants.COMPASS_ADDRESS, 3)
     bear = (bear1 << 8) + bear2
-    bear = bear/10.0
+    bear = bear / 10.0
     return add_degrees(bear, constants.COMPASS_MAGNETIC_OFFSET)
 
 
@@ -49,25 +49,26 @@ async def provide_state():
                     diff = abs(sample - last_sample)
                     last_sample = sample
                     if diff > constants.COMPASS_CHANGE_TOLERANCE:
-                        message = json.dumps({
-                            "type": "updateState",
-                            "data": {
-                                "compass": sample
-                            },
-                        })
+                        message = json.dumps(
+                            {
+                                "type": "updateState",
+                                "data": {"compass": sample},
+                            }
+                        )
                         await websocket.send(message)
                     sample_count += 1
                     if sample_count == 1000:
                         elapsed = time.time() - start_time
                         print(
-                            f"Got {sample_count} samples in {elapsed} seconds. ({sample_count/elapsed} Hz)")
+                            f"Got {sample_count} samples in {elapsed} seconds. ({sample_count/elapsed} Hz)"
+                        )
                         sample_count = 0
                         start_time = time.time()
                     await asyncio.sleep(constants.COMPASS_SAMPLE_INTERVAL)
         except:
             traceback.print_exc()
 
-        print('socket disconnected.  Reconnecting in 5 sec...')
+        print("socket disconnected.  Reconnecting in 5 sec...")
         time.sleep(5)
 
 

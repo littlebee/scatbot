@@ -14,12 +14,11 @@ detector = PytorchDetect()
 
 
 def main(source=constants.CAMERA_CHANNEL_PICAM):
-
     print(f"starting video capture. source={source}")
     video = cv2.VideoCapture(source)
 
     # We need to check if camera is opened previously or not
-    if (video.isOpened() == False):
+    if video.isOpened() == False:
         print("Error creating video capture")
 
     video.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -42,6 +41,5 @@ def main(source=constants.CAMERA_CHANNEL_PICAM):
 
 
 if __name__ == "__main__":
-    source = int(sys.argv[1]) if len(
-        sys.argv) > 1 else constants.CAMERA_CHANNEL_PICAM
+    source = int(sys.argv[1]) if len(sys.argv) > 1 else constants.CAMERA_CHANNEL_PICAM
     main(source)

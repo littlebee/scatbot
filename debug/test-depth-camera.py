@@ -4,7 +4,7 @@
 # Copyright(c) 2015-2017 Intel Corporation. All Rights Reserved.
 
 #####################################################
-## librealsense tutorial #1 - Accessing depth data ##
+# librealsense tutorial #1 - Accessing depth data ##
 #####################################################
 
 # First import the library
@@ -35,18 +35,18 @@ try:
             continue
 
         # Print a simple text-based representation of the image, by breaking it into 10x20 pixel regions and approximating the coverage of pixels within one meter
-        coverage = [0]*64
+        coverage = [0] * 64
         for y in range(480):
             for x in range(640):
                 dist = depth.get_distance(x, y)
                 if 0 < dist and dist < 1:
-                    coverage[x//10] += 1
+                    coverage[x // 10] += 1
 
             if y % 20 == 19:
                 line = ""
                 for c in coverage:
-                    line += " .:nhBXWW"[c//25]
-                coverage = [0]*64
+                    line += " .:nhBXWW"[c // 25]
+                coverage = [0] * 64
                 print(line)
     exit(0)
 # except rs.error as e:

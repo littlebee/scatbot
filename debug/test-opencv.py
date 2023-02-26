@@ -5,8 +5,9 @@ import cv2
 img = cv2.imread("test/images/daphne-1.jpg")
 
 # pretty sure this is a picture of daphne :), let's label it such
-labeled_image = cv2.putText(img, "Daphne!", (200, 400), cv2.FONT_HERSHEY_SIMPLEX,
-                            5, (128, 0, 255), 20)
+labeled_image = cv2.putText(
+    img, "Daphne!", (200, 400), cv2.FONT_HERSHEY_SIMPLEX, 5, (128, 0, 255), 20
+)
 
 ret = cv2.imwrite("opencv-test-output.jpg", labeled_image)
 if ret:
@@ -16,5 +17,7 @@ else:
 
 
 print("you can view the image which should have a label, with:")
-print("   scp scatbot.local:/home/bee/scatbot/opencv-test-output.jpg . && open opencv-test-output.jpg")
+print(
+    "   scp scatbot.local:/home/bee/scatbot/opencv-test-output.jpg . && open opencv-test-output.jpg"
+)
 print("on your local machine")

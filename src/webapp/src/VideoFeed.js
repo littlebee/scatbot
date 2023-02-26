@@ -20,7 +20,6 @@ export function VideoFeed({ whichVideo }) {
 
   useEffect(() => {
     setInterval(() => {
-      setIsLoading(true);
       setRand(Math.random());
     }, 30000);
   }, []);
@@ -30,7 +29,8 @@ export function VideoFeed({ whichVideo }) {
   }, [whichVideo]);
 
   const handleError = (e) => {
-    console.log("got error from image load", e);
+    setIsLoading(true);
+    console.error("got error from image load", e);
     setErrorMessage(`Unable to get video feed from ${VIDEO_HOST}`);
   };
 

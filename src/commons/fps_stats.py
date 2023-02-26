@@ -8,7 +8,6 @@ FPS_WINDOW = 60
 
 
 class FpsStats(object):
-
     def __init__(self):
         self.start()
 
@@ -38,5 +37,5 @@ class FpsStats(object):
             "totalTime": total_time,
             "overallFps": self.total_frames / total_time,
             "fpsStartedAt": self.floating_started_at,
-            "floatingFps": self.last_floating_fps
+            "floatingFps": self.last_floating_fps,
         }

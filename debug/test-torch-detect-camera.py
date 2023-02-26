@@ -28,7 +28,8 @@ from commons import constants
 # # Faster and accurate. Also less sensitive - only detects one object "dog"
 # # 0.59s on macbook cpu; 2.11s on PI 4b:
 model = torchvision.models.detection.fasterrcnn_mobilenet_v3_large_320_fpn(
-    pretrained=True)
+    pretrained=True
+)
 
 
 model.eval()
@@ -53,27 +54,30 @@ def get_prediction(img, threshold):
 
     img = transform(img)
     pred = model([img])
-    pred_class = [constants.COCO_INSTANCE_CATEGORY_NAMES[i]
-                  for i in list(pred[0]['labels'].numpy())]
-    pred_boxes = [[(i[0], i[1]), (i[2], i[3])]
-                  for i in list(pred[0]['boxes'].detach().numpy())]
-    pred_score = list(pred[0]['scores'].detach().numpy())
+    pred_class = [
+        constants.COCO_INSTANCE_CATEGORY_NAMES[i]
+        for i in list(pred[0]["labels"].numpy())
+    ]
+    pred_boxes = [
+        [(i[0], i[1]), (i[2], i[3])] for i in list(pred[0]["boxes"].detach().numpy())
+    ]
+    pred_score = list(pred[0]["scores"].detach().numpy())
     pred_t = [pred_score.index(x) for x in pred_score if x > threshold]
     if len(pred_t):
-        pred_boxes = pred_boxes[:pred_t[-1]+1]
-        pred_class = pred_class[:pred_t[-1]+1]
+        pred_boxes = pred_boxes[: pred_t[-1] + 1]
+        pred_class = pred_class[: pred_t[-1] + 1]
         return pred_boxes, pred_class
     else:
         return [], []
 
 
-def main(source=constants.CAMERA_CHANNEL_PICAM, threshold=0.5, rect_th=3, text_size=3, text_th=3):
+def main(
+    source=constants.CAMERA_CHANNEL_PICAM,
+    threshold=0.5,
+):
     """
-      parameters:
-        - threshold - threshold value for prediction score
-        - rect_th - thickness of bounding box
-        - text_size - size of the class label text
-        - text_th - thichness of the text
+    parameters:
+      - threshold - threshold value for prediction score
     """
 
     print(f"starting video capture. source={source}")
@@ -81,7 +85,7 @@ def main(source=constants.CAMERA_CHANNEL_PICAM, threshold=0.5, rect_th=3, text_s
     video = cv2.VideoCapture(source)
 
     # We need to check if camera is opened previously or not
-    if (video.isOpened() == False):
+    if video.isOpened() == False:
         print("Error creating video capture")
 
     video.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -104,6 +108,5 @@ def main(source=constants.CAMERA_CHANNEL_PICAM, threshold=0.5, rect_th=3, text_s
 
 
 if __name__ == "__main__":
-    source = int(sys.argv[1]) if len(
-        sys.argv) > 1 else constants.CAMERA_CHANNEL_PICAM
+    source = int(sys.argv[1]) if len(sys.argv) > 1 else constants.CAMERA_CHANNEL_PICAM
     main(source)

@@ -11,8 +11,7 @@ JOYUP_PIN = board.D23
 JOYRIGHT_PIN = board.D24
 JOYSELECT_PIN = board.D16
 
-buttons = [BUTTON_PIN, JOYUP_PIN, JOYDOWN_PIN,
-           JOYLEFT_PIN, JOYRIGHT_PIN, JOYSELECT_PIN]
+buttons = [BUTTON_PIN, JOYUP_PIN, JOYDOWN_PIN, JOYLEFT_PIN, JOYRIGHT_PIN, JOYSELECT_PIN]
 for i, pin in enumerate(buttons):
     buttons[i] = DigitalInOut(pin)
     buttons[i].direction = Direction.INPUT

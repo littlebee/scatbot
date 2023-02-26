@@ -1,4 +1,3 @@
-from multiprocessing.dummy import Array
 import time
 import json
 import asyncio
@@ -23,12 +22,15 @@ SERVO_OPEN_ANGLE = 140
 
 
 async def send_motor_state(websocket):
-    await messages.send_state_update(websocket, {
-        "motors": {
-            "left": left_motor.throttle,
-            "right": right_motor.throttle,
-        }
-    })
+    await messages.send_state_update(
+        websocket,
+        {
+            "motors": {
+                "left": left_motor.throttle,
+                "right": right_motor.throttle,
+            }
+        },
+    )
 
 
 async def feeder_task(requestedAt):
@@ -36,9 +38,9 @@ async def feeder_task(requestedAt):
     if requestedAt != last_feed_requested_at:
         print(f"got feeder request: {requestedAt}")
         feed_servo.angle = 0
-        await asyncio.sleep(.25)
+        await asyncio.sleep(0.25)
         feed_servo.angle = 110
-        await asyncio.sleep(.5)
+        await asyncio.sleep(0.5)
         feed_servo.angle = SERVO_REST_ANGLE
         last_feed_requested_at = requestedAt
 
@@ -60,24 +62,26 @@ async def provide_state():
                     message_data = data.get("data")
                     if "throttles" in message_data:
                         left_throttle = min(
-                            max(message_data["throttles"]["left"], -1), 1)
+                            max(message_data["throttles"]["left"], -1), 1
+                        )
                         right_throttle = min(
-                            max(message_data["throttles"]["right"], -1), 1)
-                        print(
-                            f"setting throttles ({left_throttle}, {right_throttle})")
+                            max(message_data["throttles"]["right"], -1), 1
+                        )
+                        print(f"setting throttles ({left_throttle}, {right_throttle})")
                         left_motor.throttle = left_throttle
                         right_motor.throttle = right_throttle
                         await send_motor_state(websocket)
                     elif "feeder" in message_data:
-                        asyncio.create_task(feeder_task(
-                            message_data["feeder"]["requested_at"]))
+                        asyncio.create_task(
+                            feeder_task(message_data["feeder"]["requested_at"])
+                        )
 
                 await asyncio.sleep(0.05)
 
         except:
             traceback.print_exc()
 
-        print('socket disconnected.  Reconnecting in 5 sec...')
+        print("socket disconnected.  Reconnecting in 5 sec...")
         time.sleep(5)
 
 

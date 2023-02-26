@@ -102,5 +102,3 @@ set +x
 echo "After verifying the above worked, be sure to..."
 echo "cd ~/opencv/build && make clean"
 echo ""
-
-

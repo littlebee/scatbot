@@ -11,12 +11,14 @@ logging.basicConfig()
 
 def iseeu_message():
     remoteIp = websocket.remote_address[0]
-    return json.dumps({
-        "type": "iseeu",
-        "data": {
-            "ip": remoteIp,
+    return json.dumps(
+        {
+            "type": "iseeu",
+            "data": {
+                "ip": remoteIp,
+            },
         }
-    })
+    )
 
 
 # async def send_message(websocket, message):
@@ -65,6 +67,7 @@ def collect_websocket(func):
             return await func(queue, *args, **kwargs)
         finally:
             connected_websockets.remove(queue)
+
     return wrapper
 
 
@@ -78,12 +81,7 @@ async def hello():
     return await render_template("index.html")
 
 
-@app.route("/api")
-async def json():
-    return {"hello": "world"}
-
-
-@app.websocket('/ws')
+@app.websocket("/ws")
 @collect_websocket
 async def ws(queue):
     await websocket.send_json({"hello": "world"})
@@ -93,4 +91,3 @@ async def ws(queue):
         data = await queue.get()
         print(f"got message {data}")
         await broadcast(data)
-

@@ -49,4 +49,3 @@ echo ""
 echo "you need to run 'sudo /opt/nvidia/jetson-io/jetson-io.py' and enable SPI"
 echo "see, https://learn.adafruit.com/circuitpython-libraries-on-linux-and-the-nvidia-jetson-nano/initial-setup#enable-uart-i2c-and-spi-3039597-23"
 echo ""
-
