@@ -28,4 +28,3 @@
 #
 #  bee - enabled (uncommented) and changed from 2048
 CONF_MAXSWAP=4096
-

@@ -17,5 +17,3 @@ extend-ignore =
   E722,
 ; unused args - I think callbacks will fail if their positional args are not present
   U100
-
-

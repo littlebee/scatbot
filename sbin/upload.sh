@@ -35,4 +35,3 @@ rsync --progress --partial \
 --exclude=camera_test_output.avi \
 --exclude=__pycache__/ \
 . $TARGET_HOST:$TARGET_DIR
-

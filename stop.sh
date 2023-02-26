@@ -39,4 +39,3 @@ do
     echo "$pid_file does not exist. skipping"
   fi
 done
-
