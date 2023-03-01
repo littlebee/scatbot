@@ -2,7 +2,7 @@
 
 A robot to follow my dog around and give her treats
 
-<img src="https://github.com/littlebee/Scatbot/blob/fdfa67ec1966cedb2e5a322f2bc2d7778dd695b0/docs/img/Scatbot-pi-design.png"
+<img src="https://github.com/littlebee/Scatbot/blob/fdfa67ec1966cedb2e5a322f2bc2d7778dd695b0/docs/img/scatbot-pi-design.png"
      alt="design image"
      style="float: right; margin-right: 10px; width: 400px;" />
 
@@ -25,6 +25,10 @@ Fusion 360 designs:
 https://ymail2984.autodesk360.com/g/shares/SH35dfcQT936092f0e436a5991538bbd4822
 
 ## How it works
+
+<img src="https://github.com/littlebee/Scatbot/blob/fdfa67ec1966cedb2e5a322f2bc2d7778dd695b0/docs/img/scatbot-system-diagram.png"
+     alt="system diagram"
+     style="float: right; margin-right: 10px; width: 400px;" />
 
 Scatbot has several sub-systems that interact to provide data from the underlying system, sensors, cameras and object detection. There are also sub-systems that consume that information and provide motor control and autonomous behaviors. All of the sub-systems of Scatbot are individual python processes and can be viewed via an ssh shell using the `ps` command:
 
