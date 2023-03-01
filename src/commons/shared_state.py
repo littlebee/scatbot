@@ -18,7 +18,7 @@ state = {
     },
     "feeder": {"requested_at": 0},
     "hub_stats": {"state_updates_recv": 0},
-    # recognized objects from pytorch
+    # recognized objects from recognition subsystem
     "recognition": [
         # this is a array of
         #  {
