@@ -208,7 +208,7 @@ async def send_hub_stats_task():
         await asyncio.sleep(20)
 
 
-print(f"Starting server on port {constants.HUB_PORT}")
+print(f"Starting serverz on port {constants.HUB_PORT}")
 start_server = websockets.serve(handleMessage, port=constants.HUB_PORT)
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().create_task(send_hub_stats_task())
