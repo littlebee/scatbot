@@ -26,7 +26,7 @@ https://ymail2984.autodesk360.com/g/shares/SH35dfcQT936092f0e436a5991538bbd4822
 
 ## How it works
 
-<img src="https://github.com/littlebee/Scatbot/blob/fdfa67ec1966cedb2e5a322f2bc2d7778dd695b0/docs/img/scatbot-system-diagram.png"
+<img src="https://github.com/littlebee/scatbot/blob/c2800de8906b14173201d16030e8d390157eb641/docs/img/scatbot-systems-diagram.png"
      alt="system diagram"
      style="float: right; margin-right: 10px; width: 400px;" />
 
