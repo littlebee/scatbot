@@ -61,8 +61,8 @@ All messages to and from `central-hub` are in JSON and have the format:
 
 ```json
 {
-  type: "string",
-  data: {...}
+  "type": "string",
+  "data": {}
 }
 ```
 
