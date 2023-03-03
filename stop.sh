@@ -1,10 +1,10 @@
 #!/bin/bash
 
-user=`echo $USER`
-if [ "$user" != "root" ]; then
-  echo "Script must be run as root.  Try 'sudo ./stop.sh'"
-  exit 1
-fi
+# user=`echo $USER`
+# if [ "$user" != "root" ]; then
+#   echo "Script must be run as root.  Try 'sudo ./stop.sh'"
+#   exit 1
+# fi
 
 to_stop=(
   "battery"

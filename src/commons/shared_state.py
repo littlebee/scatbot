@@ -57,6 +57,9 @@ state = {
         "recognition": {
             "online": 0,
         },
+        "test_system": {
+            "online": 0,
+        },
     },
     "throttles": {
         "left": 0,

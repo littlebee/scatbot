@@ -123,7 +123,6 @@ class webapp:
 
 
 def start_app():
-    # setup_logging('ai.log')
     logger = logging.getLogger(__name__)
     logger.info("vision service started")
 
