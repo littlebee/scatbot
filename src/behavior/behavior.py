@@ -8,11 +8,21 @@ import traceback
 import websockets
 
 from commons import constants, messages, shared_state
+from commons.enums import BEHAVIORS, DEFAULT_BEHAVIOR, VALID_BEHAVIORS
+
+from tasks.follow_task import follow_task
 
 
-current_websocket = None
+TASKS = {
+    # in remote control mode, there is nothing to do; the UI directly controls
+    # lights, sounds, motors and feeder
+    BEHAVIORS.RC: None,
+    # Follow people or pets
+    BEHAVIORS.FOLLOW: follow_task,
+}
 
-should_exit = False
+current_behavior = DEFAULT_BEHAVIOR
+current_behavior_task = None
 
 
 def hup_handler():
@@ -23,7 +33,6 @@ def hup_handler():
     raise OSError("Received shutdown signal!")
 
 
-# Set the signal handler and a 5-second alarm
 signal.signal(signal.SIGHUP, hup_handler)
 
 
@@ -33,15 +42,32 @@ def log(message):
     sys.stdout.flush()
 
 
-async def state_task():
-    global current_websocket
+async def maybe_switch_behavior():
+    global current_behavior
+    global current_behavior_task
 
+    new_behavior = shared_state["behavior"]
+    if new_behavior == current_behavior or new_behavior not in VALID_BEHAVIORS:
+        return
+
+    current_behavior = new_behavior
+
+    if current_behavior_task:
+        await current_behavior_task.cancel()
+
+    new_behavior_task = TASKS[new_behavior]
+    if new_behavior_task:
+        current_behavior_task = asyncio.create_task(new_behavior_task)
+    else:
+        current_behavior_task = None
+
+
+async def state_task():
     try:
         while not should_exit:
             try:
                 log(f"connecting to {constants.HUB_URI}")
                 async with websockets.connect(constants.HUB_URI) as websocket:
-                    current_websocket = websocket
                     await messages.send_identity(websocket, "behavior")
                     await messages.send_subscribe(
                         websocket, ["behavior", "compass", "depth_map", "recognition"]
@@ -58,6 +84,8 @@ async def state_task():
                         if message_type in ["stateUpdate", "state"]:
                             shared_state.update_state_from_message_data(message_data)
 
+                        await maybe_switch_behavior()
+
             except:
                 traceback.print_exc()
 
@@ -72,13 +100,6 @@ async def state_task():
 
     finally:
         pass
-
-
-async def behavior_task():
-    """
-    This task watches for changes to behavior mode in shared state and calls the
-    appropriate BehaviorTask loop function
-    """
 
 
 async def start():

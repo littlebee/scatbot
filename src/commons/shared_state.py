@@ -1,13 +1,15 @@
 import time
 import json
 
+from commons.enums import DEFAULT_BEHAVIOR
+
 state = {
     "battery": {
         "voltage": 0,
         "current": 0,
     },
-    # which behavior - RC, hide $ seek, follow
-    "behavior": 0,
+    # which behavior RC or auto see BEHAVIORS in commons.enums
+    "behavior": DEFAULT_BEHAVIOR,
     # heading
     "compass": 0,
     # depth map - array of mm distance from camera per pixel

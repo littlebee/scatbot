@@ -1,13 +1,12 @@
 from enum import Enum
 
 
-class BOT_MODES(Enum):
+class BEHAVIORS(Enum):
     # Remote control mode
-    rc = 0
-    # Hide and Seek (autonomous)
-    hide_and_seek = 1
-    # Follow any cat or dog it sees (autonomous)
-    follow = 2
+    RC = 0
+    # Follow any person, cat or dog it sees (autonomous)
+    FOLLOW = 1
 
 
-VALID_BOT_MODES = set(item.value for item in BOT_MODES)
+VALID_BEHAVIORS = set(item.value for item in BEHAVIORS)
+DEFAULT_BEHAVIOR = BEHAVIORS.RC
