@@ -222,8 +222,8 @@ def main(img_path, threshold=0.5, rect_th=3, text_size=3, text_th=3):
 
 
 if __name__ == "__main__":
-    main("test/images/daphne-1.jpg")
+    main("tests/images/daphne-1.jpg")
 
-    # boxes, pred_cls = get_prediction("test/images/daphne-1.jpg", threshold=0.5)
+    # boxes, pred_cls = get_prediction("tests/images/daphne-1.jpg", threshold=0.5)
     # for i in range(len(boxes)):
     #     print(f"box0={boxes[i][0]} box1={boxes[i][1]} class={pred_cls[i]}")

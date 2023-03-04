@@ -2,7 +2,7 @@
 import cv2
 
 
-img = cv2.imread("test/images/daphne-1.jpg")
+img = cv2.imread("tests/images/daphne-1.jpg")
 
 # pretty sure this is a picture of daphne :), let's label it such
 labeled_image = cv2.putText(
