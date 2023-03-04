@@ -44,7 +44,7 @@ jobs:
         run: poetry run flake8
 
       - name: Format
-        run: poetry run black --check
+        run: poetry run black . --check
 
       - name: Test
         run: poetry run pytest tests/
