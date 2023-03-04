@@ -10,6 +10,7 @@ import websocket
 websocket.enableTrace(True)
 
 CENTRAL_HUB_TEST_PORT = 9069
+DEFAULT_TIMEOUT = 5
 
 
 def start():
@@ -29,13 +30,41 @@ def stop():
 def connect():
     """connect to central hub and return a websocket (websocket-client lib)"""
     ws = websocket.create_connection(f"ws://localhost:{CENTRAL_HUB_TEST_PORT}/ws")
-    ws.settimeout(5)
+    ws.settimeout(DEFAULT_TIMEOUT)
     return ws
 
 
 def send(ws, dict):
+    """send dictionary as json to central hub"""
     return ws.send(json.dumps(dict))
+
+
+def send_state_update(ws, dict):
+    send(
+        ws,
+        {
+            "type": "updateState",
+            "data": dict,
+        },
+    )
 
 
 def recv(ws):
     return json.loads(ws.recv())
+
+
+def has_received_data(ws):
+    # note zero doesn't work here because it causes it creates a non blocking socket
+    # plus we need to give central hub chance to reply for test purposes
+    ws.settimeout(0.1)
+    try:
+        return recv(ws)
+    except websocket._exceptions.WebSocketTimeoutException:
+        return False
+    finally:
+        ws.settimeout(DEFAULT_TIMEOUT)
+
+
+def has_received_state_update(ws, key, value):
+    stateUpdate = recv(ws)
+    return stateUpdate["type"] == "stateUpdate" and stateUpdate["data"][key] == value
