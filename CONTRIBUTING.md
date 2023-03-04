@@ -10,7 +10,7 @@ Should be all that is needed to bootstrap a development setup. To save time, bla
 
 Run automatically by Github action CI/CD
 
-`poetry run pytest`
+`poetry run pytest tests/`
 
 ## Running lint
 
@@ -22,4 +22,4 @@ Run automatically by commit-hook and CI/CD.
 
 Run automatically by commit-hook and CI/CD.
 
-`poetry run black`
+`poetry run black .`
