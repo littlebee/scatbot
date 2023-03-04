@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-import os
 import logging
 import json
 import asyncio
 import websockets
 
-from commons import constants, shared_state
-
-LOG_ALL_MESSAGES = os.getenv("LOG_ALL_MESSAGES") or False
+from commons import constants, shared_state, log
 
 logging.basicConfig()
 
@@ -34,6 +31,8 @@ def iseeu_message(websocket):
 
 
 async def send_message(websocket, message):
+    if constants.LOG_ALL_MESSAGES:
+        log.info(f"sending {message} to {websocket.remote_address[0]}")
     if websocket and websocket != "all":
         await websocket.send(message)
     elif connected_sockets:  # asyncio.wait doesn't accept an empty list
@@ -44,7 +43,7 @@ async def send_state_update_to_subscribers(message_data):
     subscribed_sockets = set()
     for key in message_data:
         if key in subscribers:
-            # print(f"subscribed sockets for {key}: {subscribers[key]}")
+            # log.info(f"subscribed sockets for {key}: {subscribers[key]}")
             for sub_socket in subscribers[key]:
                 subscribed_sockets.add(sub_socket)
 
@@ -79,14 +78,14 @@ async def notify_iseeu(websocket):
 
 
 async def register(websocket):
-    print(
+    log.info(
         f"got new connection from {websocket.remote_address[0]}:{websocket.remote_address[1]}:"
     )
     connected_sockets.add(websocket)
 
 
 async def unregister(websocket):
-    print(
+    log.info(
         f"lost connection {websocket.remote_address[0]}:{websocket.remote_address[1]}"
     )
     try:
@@ -133,7 +132,7 @@ async def handleStateSubscribe(websocket, data):
             socket_set = set()
             subscribers[key] = socket_set
 
-        print(
+        log.info(
             f"subscribing {websocket.remote_address[0]}:{websocket.remote_address[1]} to {key}"
         )
         socket_set.add(websocket)
@@ -154,12 +153,13 @@ async def handleStateUnsubscribe(websocket, data):
 
 async def handleIdentity(websocket, subsystem_name):
     identities[websocket] = subsystem_name
-    print(f"setting identity of {websocket.remote_address[1]} to {subsystem_name}")
+    log.info(f"setting identity of {websocket.remote_address[1]} to {subsystem_name}")
 
     shared_state.state["subsystem_stats"][subsystem_name]["online"] = 1
     await send_state_update_to_subscribers(
         {"subsystem_stats": shared_state.state["subsystem_stats"]}
     )
+    await notify_iseeu(websocket)
 
 
 async def handlePing(websocket):
@@ -170,8 +170,8 @@ async def handleMessage(websocket, path):
     await register(websocket)
     try:
         async for message in websocket:
-            if LOG_ALL_MESSAGES:
-                print(f"{message} from {websocket.remote_address[1]}")
+            if constants.LOG_ALL_MESSAGES:
+                log.info(f"received {message} from {websocket.remote_address[1]}")
 
             jsonData = json.loads(message)
             messageType = jsonData.get("type")
@@ -208,7 +208,7 @@ async def send_hub_stats_task():
         await asyncio.sleep(20)
 
 
-print(f"Starting serverz on port {constants.HUB_PORT}")
+log.info(f"Starting server on port {constants.HUB_PORT}")
 start_server = websockets.serve(handleMessage, port=constants.HUB_PORT)
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().create_task(send_hub_stats_task())

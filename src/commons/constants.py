@@ -73,8 +73,10 @@ DEPTH_MAP_SECTION_HEIGHT = 5
 DEPTH_MAP_CHANGE_TOLERACE = 1
 
 # Connect to central hub websocket
-HUB_PORT = 5000
+HUB_PORT = env_int("HUB_PORT", 5000)
 HUB_URI = f"ws://127.0.0.1:{HUB_PORT}/ws"
+
+LOG_ALL_MESSAGES = env_bool("LOG_ALL_MESSAGES", False)
 
 # delay between sampling compass; 0.5 = ~2Hz
 SYSTEM_STATS_SAMPLE_INTERVAL = 0.5

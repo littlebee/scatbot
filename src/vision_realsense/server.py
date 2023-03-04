@@ -138,7 +138,6 @@ class webapp:
 
 
 def start_app():
-    # setup_logging('ai.log')
     logger = logging.getLogger(__name__)
     logger.info("vision_realsense service started")
 

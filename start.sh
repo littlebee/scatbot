@@ -3,11 +3,11 @@
 mkdir -p ./logs
 
 
-user=`echo $USER`
-if [ "$user" != "root" ]; then
-  echo "Script must be run as root.  Try 'sudo ./start.sh'"
-  exit 1
-fi
+# user=`echo $USER`
+# if [ "$user" != "root" ]; then
+#   echo "Script must be run as root.  Try 'sudo ./start.sh'"
+#   exit 1
+# fi
 
 sleep=2
 
