@@ -2,6 +2,8 @@ import json
 import os
 import time
 
+import helpers.constants as tc
+
 # Note this is actually the websocket_client and not the websockets lib.
 # websocket_client provides a way of synchronously sending and receiving
 # ws messages.  See: https://pypi.org/project/websocket-client/
@@ -9,28 +11,32 @@ import websocket
 
 websocket.enableTrace(True)
 
-CENTRAL_HUB_TEST_PORT = 9069
-DEFAULT_TIMEOUT = 5
-
 
 def start():
     """starts central hub as a detached process using same start script used to start on the bot"""
-    cmd = f"LOG_ALL_MESSAGES=1 HUB_PORT={CENTRAL_HUB_TEST_PORT} poetry run ./start.sh central_hub"
+    cmd = f"LOG_ALL_MESSAGES=1 HUB_PORT={tc.CENTRAL_HUB_TEST_PORT} poetry run ./start.sh central_hub"
     exit_code = os.system(cmd)
     assert exit_code == 0
     time.sleep(1)
 
 
 def stop():
-    """stops central hub"""
+    """stops central hub and dumps it's log file"""
     exit_code = os.system("./stop.sh central_hub")
+
+    # note that this only shows when a test module fails
+    print("\ncentral_hub logs")
+    print("===================================================================")
+    os.system("cat logs/central_hub.log")
+    print("===================================================================")
+
     assert exit_code == 0
 
 
 def connect():
     """connect to central hub and return a websocket (websocket-client lib)"""
-    ws = websocket.create_connection(f"ws://localhost:{CENTRAL_HUB_TEST_PORT}/ws")
-    ws.settimeout(DEFAULT_TIMEOUT)
+    ws = websocket.create_connection(f"ws://localhost:{tc.CENTRAL_HUB_TEST_PORT}/ws")
+    ws.settimeout(tc.DEFAULT_TIMEOUT)
     return ws
 
 
@@ -49,6 +55,10 @@ def send_state_update(ws, dict):
     )
 
 
+def send_subscribe(ws, namesList):
+    send(ws, {"type": "subscribeState", "data": namesList})
+
+
 def recv(ws):
     return json.loads(ws.recv())
 
@@ -62,7 +72,7 @@ def has_received_data(ws):
     except websocket._exceptions.WebSocketTimeoutException:
         return False
     finally:
-        ws.settimeout(DEFAULT_TIMEOUT)
+        ws.settimeout(tc.DEFAULT_TIMEOUT)
 
 
 def has_received_state_update(ws, key, value):

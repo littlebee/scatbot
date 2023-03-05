@@ -8,6 +8,7 @@
 
 to_stop=(
   "battery"
+  "behavior"
   "compass"
   "motor_control"
   "onboard_ui"

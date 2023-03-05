@@ -180,7 +180,7 @@ async def state_task():
                         message_type = json_data.get("type")
                         message_data = json_data.get("data")
 
-                        if messages.LOG_ALL_MESSAGES:
+                        if constants.LOG_ALL_MESSAGES:
                             log(f"got {message_type}: {message_data}")
 
                         if message_type in ["stateUpdate", "state"]:

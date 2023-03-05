@@ -1,7 +1,9 @@
 import asyncio
 
+from commons import log
+
 
 async def follow_task():
     while True:
-        print("behavior follow task is running")
-        asyncio.sleep(1)
+        log.info("behavior follow task is running")
+        await asyncio.sleep(30)

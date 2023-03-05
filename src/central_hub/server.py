@@ -77,6 +77,17 @@ async def notify_iseeu(websocket):
     await send_message(websocket, iseeu_message(websocket))
 
 
+async def update_online_status(subsystem_name: str, status: int):
+    if subsystem_name in shared_state.state["subsystem_stats"]:
+        shared_state.state["subsystem_stats"][subsystem_name]["online"] = status
+    else:
+        shared_state.state["subsystem_stats"][subsystem_name] = {"online": status}
+
+    await send_state_update_to_subscribers(
+        {"subsystem_stats": shared_state.state["subsystem_stats"]}
+    )
+
+
 async def register(websocket):
     log.info(
         f"got new connection from {websocket.remote_address[0]}:{websocket.remote_address[1]}:"
@@ -94,10 +105,7 @@ async def unregister(websocket):
             subscribers[key].remove(websocket)
 
         subsystem_name = identities.pop(websocket, None)
-        shared_state.state["subsystem_stats"][subsystem_name]["online"] = 0
-        await send_state_update_to_subscribers(
-            {"subsystem_stats": shared_state.state["subsystem_stats"]}
-        )
+        await update_online_status(subsystem_name, 0)
 
     except:
         pass
@@ -154,11 +162,7 @@ async def handleStateUnsubscribe(websocket, data):
 async def handleIdentity(websocket, subsystem_name):
     identities[websocket] = subsystem_name
     log.info(f"setting identity of {websocket.remote_address[1]} to {subsystem_name}")
-
-    shared_state.state["subsystem_stats"][subsystem_name]["online"] = 1
-    await send_state_update_to_subscribers(
-        {"subsystem_stats": shared_state.state["subsystem_stats"]}
-    )
+    await update_online_status(subsystem_name, 1)
     await notify_iseeu(websocket)
 
 

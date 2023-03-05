@@ -15,6 +15,7 @@ to_start=(
   "central_hub"
 
   "battery"
+  "behavior"
   "compass"
   "motor_control"
   "onboard_ui"

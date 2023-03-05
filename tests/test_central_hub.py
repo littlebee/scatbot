@@ -37,12 +37,12 @@ class TestCentralHub:
 
     def test_pubsub(self):
         ws1 = hub.connect()
-        hub.send(ws1, {"type": "subscribeState", "data": ["compass", "behavior"]})
+        hub.send_subscribe(ws1, ["compass", "behavior"])
         # should not have received anything in response to subscribe
         assert not hub.has_received_data(ws1)
 
         ws2 = hub.connect()
-        hub.send(ws2, {"type": "subscribeState", "data": ["behavior"]})
+        hub.send_subscribe(ws2, ["behavior"])
 
         # second client sends a compass update
         hub.send_state_update(ws2, {"compass": ANSWER})

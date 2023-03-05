@@ -11,6 +11,7 @@ yolov5
 # js things
 node_modules
 build
+debug/commons
 
 # vscode
 .vscode
