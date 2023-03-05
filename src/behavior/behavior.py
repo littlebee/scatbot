@@ -25,7 +25,7 @@ current_behavior_task = None
 should_exit = False
 
 
-def hup_handler(_a, _b):
+def hup_handler(_arg1, _arg2):  # noqa: U101
     global should_exit
     log.info("caught sighup")
     should_exit = True
