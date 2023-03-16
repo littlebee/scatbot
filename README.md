@@ -133,6 +133,22 @@ The data received must be the **full data for that key**. `central-hub` will rep
 
 See the [central hub switch source](https://github.com/littlebee/Scatbot/blob/6c179c63231e4363c791b09ce4e7f3c8b00bc4e3/src/central_hub/server.py#L180) for more information on supported message types.
 
+## battery subsystem
+
+Provides keys: `battery`
+Subscribes to keys: `none`
+
+The battery subsystem monitors the battery levels and current draw using the Adafruit ina219 I2C module.
+
+## behavior subsystem
+
+Provides keys: `behavior, motors, feeders`
+Subscribes to keys: `behave, depth, recognition, range` ...and more
+
+The `behave` key in shared state represents which autonomous mode or remote control mode that Scatbot is configured. It is changed manually from the `webapp` or from the `onboard_ui`. Different autonomous behaviors need various keys from shared state.
+
+The `behavior` key is shared data udpated from the specific task running in the behavior subsystem.
+
 ## compass subsystem
 
 Provides keys: `compass`
@@ -145,7 +161,7 @@ Subscribes to keys: `throttles`, `feeder`
 
 ## onboard_ui subsystem
 
-Provides keys: `none`
+Provides keys: `behave`
 Subscribes to keys: `system_stats`, `battery`
 
 `onboard_ui` provides the information displayed on Scatbot's onboard LCD (Adafruit Braincraft Hat). Futurue updates will include the ability to set the `behavior` key.
@@ -156,28 +172,6 @@ Provides keys: `system_stats`
 Subscribes to keys: `none`
 
 Provides hardware info like percent cpu utilization (`cpu_util`) and temperature (`cpu_temp`) and percent memory utilization (`ram_util`)
-
-## behavior subsystem
-
-Provides keys: `none`
-Subscribes to keys: `behavior, *`
-
-The behavior key in shared state represents which autonomous mode or remote control mode that Scatbot is configured. It is changed manually from the `webapp` or from the `onboard_ui`. Different autonomous behaviors need keys from shared state.
-
-## web_server subsystem and webapp
-
-The `web_server` subsystem is a simple flask web server that serves up the React webapp from src/webapp/build on port 80. The `webapp` runs in the user's browser and connects to `central_hub` websocket remotely. `webapp` provides a human user with UI that allows remote motor control + remote real time viewing. The user can also click on the hub state button in the upper left to view the full shared state.
-
-Provides keys: `behavior`, `throttles`, `feeder`
-Subscribes to keys: `*`
-
-Additionally, to stream RGB and depth video, `webapp` connects directly to a flask endpoint on the `vision` and `vision_realsense` subsystem.
-
-For rgb video stream, Scatbot connects an img element to:
-http://scatbot.local:5001/video_feed?rand=0
-
-For depth video display:
-http://scatbot.local:5002/depth_feed?rand=0.6099424588409756
 
 ## vision subsystem
 
@@ -192,3 +186,18 @@ Provides keys: `depth_map`
 Subscribes to keys: `none`
 
 The `vision_realsense` subsystem is specific to the Intel Realsense 435i depth camera. The `depth_map.section_map` provided to `central_hub` is a decimated 5x5 grid of min distances in decimeters. The full resolution (640x480) depth data is also provided via a dedicated flask endpoint (/depth_feed) on port 5002 for the clients to stream RGB video using a multipart jpg format compatible with any HTML img tag.
+
+## web_server subsystem and webapp
+
+The `web_server` subsystem is a simple flask web server that serves up the React webapp from src/webapp/build on port 80. The `webapp` runs in the user's browser and connects to `central_hub` websocket remotely. `webapp` provides a human user with UI that allows remote motor control + remote real time viewing. The user can also click on the hub state button in the upper left to view the full shared state.
+
+Provides keys: `behave`, `throttles`, `feeder`
+Subscribes to keys: `*`
+
+Additionally, to stream RGB and depth video, `webapp` connects directly to a flask endpoint on the `vision` and `vision_realsense` subsystem.
+
+For rgb video stream, Scatbot connects an img element to:
+http://scatbot.local:5001/video_feed
+
+For depth video display:
+http://scatbot.local:5002/depth_feed

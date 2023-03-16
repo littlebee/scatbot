@@ -16,6 +16,7 @@ import { Overlays } from "./Overlays";
 import { OverlaySelector } from "./OverlaySelector";
 import { HubStateDialog } from "./HubStateDialog";
 import { Thumbstick } from "./Thumbstick";
+import { BehaviorSelector } from "./BehaviorSelector";
 
 import "./lcars.css";
 import "./App.css";
@@ -64,9 +65,7 @@ function App() {
       />
       <div className="wrap">
         <div className="left-frame" id="gap">
-          <div className="sidebar-buttons">
-            <a>Remote Control</a>
-          </div>
+          <BehaviorSelector hubState={hubState} />
           <div className="sidebar-buttons">
             <a onClick={handleGiveTreatClick}>Give Treat</a>
           </div>

@@ -5,7 +5,7 @@ import asyncio
 import traceback
 import websockets
 
-from commons import constants, messages
+from commons import constants, messages, log
 
 bus = smbus.SMBus(constants.I2C_BUS)
 
@@ -37,11 +37,10 @@ def diff_degrees(deg1, deg2):
 
 async def provide_state():
     sample_count = 0
-    start_time = time.time()
     last_sample = 0
     while True:
         try:
-            print(f"connecting to {constants.HUB_URI}")
+            log.info(f"connecting to {constants.HUB_URI}")
             async with websockets.connect(constants.HUB_URI) as websocket:
                 await messages.send_identity(websocket, "compass")
                 while True:
@@ -57,18 +56,11 @@ async def provide_state():
                         )
                         await websocket.send(message)
                     sample_count += 1
-                    if sample_count == 1000:
-                        elapsed = time.time() - start_time
-                        print(
-                            f"Got {sample_count} samples in {elapsed} seconds. ({sample_count/elapsed} Hz)"
-                        )
-                        sample_count = 0
-                        start_time = time.time()
                     await asyncio.sleep(constants.COMPASS_SAMPLE_INTERVAL)
         except:
             traceback.print_exc()
 
-        print("socket disconnected.  Reconnecting in 5 sec...")
+        log.info("socket disconnected.  Reconnecting in 5 sec...")
         time.sleep(5)
 
 

@@ -1,13 +1,12 @@
-import os
 import json
 
-LOG_ALL_MESSAGES = os.getenv("LOG_ALL_MESSAGES") or False
+from commons import log, constants as c
 
 
 async def send_message(websocket, message):
     json_message = json.dumps(message)
-    if LOG_ALL_MESSAGES:
-        print(f"{json_message} to {websocket.remote_address[1]}")
+    if c.LOG_ALL_MESSAGES:
+        log.info(f"sent {json_message} to {websocket.remote_address[1]}")
     await websocket.send(json_message)
 
 

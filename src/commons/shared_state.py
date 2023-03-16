@@ -1,14 +1,24 @@
 import time
 import json
 
+from commons.constants import DEFAULT_BEHAVIOR
+
 state = {
     "battery": {
         "voltage": 0,
         "current": 0,
     },
-    # which behavior - RC, hide $ seek, follow
-    "behavior": 0,
-    # heading
+    # Which behavior RC or auto see BEHAVIORS in commons.constants
+    # webapp and onboard_ui (TBD) set this key to tell the behavior
+    # subsystem which behavior task to select
+    "behave": DEFAULT_BEHAVIOR,
+    # The behavior subsystem updates this key with information
+    # about the current selected behavior
+    "behavior": {
+        "mode": DEFAULT_BEHAVIOR,
+        "status": "",
+    },
+    # heading - note that this is not necessarily calibrated to mag or true north
     "compass": 0,
     # depth map - array of mm distance from camera per pixel
     "depth_map": {

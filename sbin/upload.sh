@@ -29,9 +29,12 @@ TARGET_HOST=$1
 rsync --progress --partial \
 --exclude=node_modules \
 --exclude=data/ \
+--exclude=logs/ \
 --exclude=.git -avz \
 --exclude=yolov5 \
 --exclude=debug/commons \
 --exclude=camera_test_output.avi \
 --exclude=__pycache__/ \
+--exclude=.mypy_cache \
+--exclude=.github \
 . $TARGET_HOST:$TARGET_DIR

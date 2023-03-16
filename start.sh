@@ -15,6 +15,7 @@ to_start=(
   "central_hub"
 
   "battery"
+  "behavior"
   "compass"
   "motor_control"
   "onboard_ui"
@@ -36,7 +37,12 @@ fi
 for sub_system in ${to_start[@]}
 do
   echo "starting $sub_system"
+
+  mv -f ./logs/$sub_system.log ./logs/$sub_system.log.1
+  echo "starting $sub_system at $(date)" >> ./logs/$sub_system.log
+
   python3 src/start_$sub_system.py > ./logs/$sub_system.log 2>&1 &
+
   echo $! > ./$sub_system.pid
   if [[ $sleep > 0 ]]; then
     echo "sleeping for $sleep seconds"

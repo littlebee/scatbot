@@ -1,3 +1,4 @@
+from enum import Enum
 import os
 
 
@@ -92,6 +93,17 @@ I2C_BUS = 1
 
 # Motor controller I2C addr
 MOTOR_ADDRESS = 0x70
+
+
+class BEHAVIORS(Enum):
+    # Remote control mode
+    RC = 0
+    # Follow any person, cat or dog it sees (autonomous)
+    FOLLOW = 1
+
+
+VALID_BEHAVIORS = set(item.value for item in BEHAVIORS)
+DEFAULT_BEHAVIOR = 0
 
 
 # Class labels from official PyTorch documentation for the pretrained model
