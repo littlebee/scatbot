@@ -19,12 +19,14 @@ class TestBehavior:
         ws = hub.connect()
         hub.send_subscribe(ws, ["behavior"])
 
-        # `behave` key should initially be BEHAVIORS.RC.value
+        # `behave` key should initially not be BEHAVIORS.FOLLOW.value
         hub.send(ws, {"type": "getState"})
         initial_state = hub.recv(ws)
         assert initial_state["data"]["behave"] != BEHAVIORS.FOLLOW.value
+        assert initial_state["data"]["behavior"]["mode"] != BEHAVIORS.FOLLOW.value
 
-        # changing the set behavior mode ('behave') should update the `behavior` key
+        # changing the set behavior mode ('behave') should cause the behavior subsystem
+        # to switch behavior tasks and update the `behavior` key if it is successful
         hub.send_state_update(ws, {"behave": BEHAVIORS.FOLLOW.value})
         hub_message = hub.recv(ws)
         assert hub_message["type"] == "stateUpdate"

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# don't stop on error - let other subs exit if any sub fails to exit
+# set -e
+
 # user=`echo $USER`
 # if [ "$user" != "root" ]; then
 #   echo "Script must be run as root.  Try 'sudo ./stop.sh'"

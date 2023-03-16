@@ -1,0 +1,23 @@
+
+.select {
+  background-color: #58e;
+  border-bottom: solid 8px #000;
+  color: #000;
+  font-size: 16px;
+  text-transform: uppercase;
+  outline: none;
+
+  [class$="-control"] {
+    background-color: #58e;
+    border-color: #58e;
+  }
+
+  [class$="-indicatorSeparator"] {
+    width: 0px;
+  }
+
+  [class$="-ValueContainer"] {
+    padding: 0px;
+  }
+
+}

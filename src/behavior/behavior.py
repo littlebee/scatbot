@@ -1,5 +1,4 @@
 """ This is the behavior subsystem """
-import signal
 import json
 import asyncio
 import traceback
@@ -21,18 +20,6 @@ TASKS = {
 
 current_behavior = c.DEFAULT_BEHAVIOR
 current_behavior_task = None
-
-should_exit = False
-
-
-def hup_handler(_arg1, _arg2):  # noqa: U101
-    global should_exit
-    log.info("caught sighup")
-    should_exit = True
-    current_behavior_task and current_behavior_task.cancel()
-
-
-signal.signal(signal.SIGHUP, hup_handler)
 
 
 async def send_state_update(websocket):
@@ -64,48 +51,38 @@ async def maybe_switch_behavior(websocket):
     else:
         current_behavior_task = None
 
-    log.info("switched behavior mode to {current_behavior}")
+    log.info(f"switched behavior mode to {current_behavior}")
     await send_state_update(websocket)
 
 
 async def state_task():
-    try:
-        while not should_exit:
-            try:
-                log.info(f"connecting to {c.HUB_URI}")
-                async with websockets.connect(c.HUB_URI) as websocket:
-                    await messages.send_identity(websocket, "behavior")
-                    await messages.send_subscribe(
-                        websocket, ["behave", "compass", "depth_map", "recognition"]
-                    )
-                    await messages.send_get_state(websocket)
-                    async for message in websocket:
-                        json_data = json.loads(message)
-                        message_type = json_data.get("type")
-                        message_data = json_data.get("data")
+    while True:
+        try:
+            log.info(f"connecting to {c.HUB_URI}")
+            async with websockets.connect(c.HUB_URI) as websocket:
+                await messages.send_identity(websocket, "behavior")
+                await messages.send_subscribe(
+                    websocket, ["behave", "compass", "depth_map", "recognition"]
+                )
+                await messages.send_get_state(websocket)
+                async for message in websocket:
+                    json_data = json.loads(message)
+                    message_type = json_data.get("type")
+                    message_data = json_data.get("data")
 
-                        if c.LOG_ALL_MESSAGES:
-                            log.info(f"got {message_type}: {message_data}")
+                    if c.LOG_ALL_MESSAGES:
+                        log.info(f"got {message_type}: {message_data}")
 
-                        if message_type in ["stateUpdate", "state"]:
-                            shared_state.update_state_from_message_data(message_data)
+                    if message_type in ["stateUpdate", "state"]:
+                        shared_state.update_state_from_message_data(message_data)
 
-                        await maybe_switch_behavior(websocket)
+                    await maybe_switch_behavior(websocket)
 
-            except:
-                traceback.print_exc()
+        except:
+            traceback.print_exc()
 
-            if should_exit:
-                log.info("got shutdown signal.  exiting.")
-            else:
-                log.info("socket disconnected.  Reconnecting in 5 sec...")
-                await asyncio.sleep(5)
-
-    except Exception as e:
-        log.info(f"got exception on async loop. Exiting. {e}")
-
-    finally:
-        pass
+        log.info("socket disconnected.  Reconnecting in 5 sec...")
+        await asyncio.sleep(5)
 
 
 async def start():
