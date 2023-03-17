@@ -22,6 +22,12 @@ def env_bool(name, default):
         return False
 
 
+# Add I2C Addresses for all devices here for easy lookup
+COMPASS_I2C_ADDRESS = 0x60
+MOTOR_I2C_ADDRESS = 0x70
+BATTERY_I2C_ADDRESS = 0x40
+
+
 # Raspberry Pi 4 camera
 CAMERA_CHANNEL_PICAM = 0
 # realsense RGB camera channel (USB)
@@ -50,8 +56,6 @@ TFLITE_DATA_DIR = os.path.abspath(
 )
 
 
-# Compass I2C address
-COMPASS_ADDRESS = 0x60
 # delay between sampling compass; 0.5 = ~20Hz
 COMPASS_SAMPLE_INTERVAL = 0.05
 # min absolute difference between samples to send to hub
@@ -90,9 +94,6 @@ DEPTH_PORT = 5002
 
 # For Raspberry Pi4 w/ 64bit OS, this should be 1
 I2C_BUS = 1
-
-# Motor controller I2C addr
-MOTOR_ADDRESS = 0x70
 
 
 class BEHAVIORS(Enum):

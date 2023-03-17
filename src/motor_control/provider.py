@@ -9,11 +9,11 @@ from adafruit_servokit import ServoKit
 from commons import constants, messages
 
 # need freq of 50hz for servo (I think)
-kit = MotorKit(constants.MOTOR_ADDRESS)
+kit = MotorKit(constants.MOTOR_I2C_ADDRESS)
 left_motor = kit.motor3
 right_motor = kit.motor4
 
-servoKit = ServoKit(channels=16, address=constants.MOTOR_ADDRESS)
+servoKit = ServoKit(channels=16, address=constants.MOTOR_I2C_ADDRESS)
 feed_servo = servoKit.servo[14]
 last_feed_requested_at = 0
 

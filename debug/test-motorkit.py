@@ -8,7 +8,7 @@ from adafruit_motorkit import MotorKit
 
 from commons import constants
 
-kit = MotorKit(constants.MOTOR_ADDRESS)
+kit = MotorKit(constants.MOTOR_I2C_ADDRESS)
 
 motors = [kit.motor1, kit.motor2, kit.motor3, kit.motor4]
 

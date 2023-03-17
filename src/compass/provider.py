@@ -12,8 +12,8 @@ bus = smbus.SMBus(constants.I2C_BUS)
 
 # Make clockwise negative
 def get_heading():
-    bear1 = bus.read_byte_data(constants.COMPASS_ADDRESS, 2)
-    bear2 = bus.read_byte_data(constants.COMPASS_ADDRESS, 3)
+    bear1 = bus.read_byte_data(constants.COMPASS_I2C_ADDRESS, 2)
+    bear2 = bus.read_byte_data(constants.COMPASS_I2C_ADDRESS, 3)
     bear = (bear1 << 8) + bear2
     bear = bear / 10.0
     return add_degrees(bear, constants.COMPASS_MAGNETIC_OFFSET)
