@@ -23,9 +23,16 @@ def env_bool(name, default):
 
 
 # Add I2C Addresses for all devices here for easy lookup
+
+BATTERY_I2C_ADDRESS = 0x40
 COMPASS_I2C_ADDRESS = 0x60
 MOTOR_I2C_ADDRESS = 0x70
-BATTERY_I2C_ADDRESS = 0x40
+# this is the I2c address of a TCA9548A i2c multiplexer that is
+# connected to several ToF sensors in front and rear bumpers
+# Note that the preconf address of the Adafruit breakout is 0x70
+# which conficts with the Motor I2C addr and I changed by jumpering
+# the A0 solder pads on back of the board
+MULTI_TOF_I2C_ADDRESS = 0x71
 
 
 # Raspberry Pi 4 camera

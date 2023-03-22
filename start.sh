@@ -17,6 +17,7 @@ to_start=(
   "battery"
   "behavior"
   "compass"
+  "hazards"
   "motor_control"
   "onboard_ui"
   "system_stats"
@@ -38,10 +39,15 @@ for sub_system in ${to_start[@]}
 do
   echo "starting $sub_system"
 
-  mv -f ./logs/$sub_system.log ./logs/$sub_system.log.1
-  echo "starting $sub_system at $(date)" >> ./logs/$sub_system.log
+  logfile="./logs/$sub_system.log"
 
-  python3 src/start_$sub_system.py > ./logs/$sub_system.log 2>&1 &
+  if [ -f "$logfile" ]; then
+    mv -f "$logfile" "$logfile".1
+  fi
+
+  echo "starting $sub_system at $(date)" >> "$logfile"
+
+  python3 src/start_$sub_system.py > $logfile 2>&1 &
 
   echo $! > ./$sub_system.pid
   if [[ $sleep > 0 ]]; then

@@ -83,15 +83,20 @@ sudo python3 adafruit-pitft.py -u /home/bee --display=st7789_240x240 --rotation=
 # current & voltage sensor lib
 sudo pip3 install adafruit-circuitpython-ina219
 
-# install yolo v5
-#   https://www.section.io/engineering-education/object-detection-with-yolov5-and-pytorch/
-cd src
-#  we are using a custom fork that allows detect(view_img=false) to work for headless
-#  and maybe other changes see commits to that repo
-git clone https://github.com/littlebee/yolov5.git
-cd yolov5
-pip install -r requirements.txt
-cd ../..
+# I2C multiplexer
+sudo pip3 install adafruit-circuitpython-tca9548a
+# I2C ToF distance sensor
+sudo pip3 install adafruit-circuitpython-vl53l4cd
+
+# # install yolo v5
+# #   https://www.section.io/engineering-education/object-detection-with-yolov5-and-pytorch/
+# cd src
+# #  we are using a custom fork that allows detect(view_img=false) to work for headless
+# #  and maybe other changes see commits to that repo
+# git clone https://github.com/littlebee/yolov5.git
+# cd yolov5
+# pip install -r requirements.txt
+# cd ../..
 
 
 set +x

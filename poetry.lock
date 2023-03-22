@@ -182,6 +182,24 @@ files = [
 Adafruit-Blinka = "*"
 
 [[package]]
+name = "adafruit-circuitpython-tca9548a"
+version = "0.7.0"
+description = "CircuitPython driver for the TCA9548A I2C Multiplexer."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "adafruit-circuitpython-tca9548a-0.7.0.tar.gz", hash = "sha256:d1f2a19bd00c4e425bc32240f80523138f4b9cd8135ffb69e99abd6d12b82bb3"},
+    {file = "adafruit_circuitpython_tca9548a-0.7.0-py3-none-any.whl", hash = "sha256:e42d333e75deb8596c0d92ace463039dd9677e0bf1540606b61353c08e274df8"},
+]
+
+[package.dependencies]
+Adafruit-Blinka = "*"
+adafruit-circuitpython-busdevice = "*"
+adafruit-circuitpython-typing = "*"
+typing-extensions = ">=4.0,<5.0"
+
+[[package]]
 name = "adafruit-circuitpython-typing"
 version = "1.8.3"
 description = "Types needed for type annotation that are not in `typing`"
@@ -2277,4 +2295,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "338cb475b6374115a86792a37f3feb04983b2da58d5474052ea9cb2542bb64b3"
+content-hash = "4fe380f57d0eb9e62be9e61e4912f11965ac487c033f17c0ba7809bdcf84eb96"

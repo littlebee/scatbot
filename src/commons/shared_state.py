@@ -27,6 +27,7 @@ state = {
         "section_map": [],
     },
     "feeder": {"requested_at": 0},
+    "hazards": {"front": {}, "rear": {}},
     "hub_stats": {"state_updates_recv": 0},
     # recognized objects from recognition subsystem
     "recognition": [
