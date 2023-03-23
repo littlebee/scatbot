@@ -69,19 +69,25 @@ def get_distances():
 def detect_hazards_front(distances):
     hazards = []
     left_front_dist, right_front_dist, front_dist, front_cliff_dist = distances
+
     if left_front_dist > SIDE_SENSOR_MAX_DIST:
         hazards.append({"sensor": LEFT_FRONT_SENSOR, "type": HAZARD_TYPE_CLIFF})
-    if 0 <= left_front_dist < SIDE_SENSOR_MIN_DIST:
+    # Note that zero is not a possible value as an object placed right up to the sensor
+    # produces distance of ~ +/- 2cm.  zero only shows up when the distance from sensor
+    # is far away (> 100cm). I think its from refraction echos. Exclude zero.
+    if 0 < left_front_dist < SIDE_SENSOR_MIN_DIST:
         hazards.append({"sensor": LEFT_FRONT_SENSOR, "type": HAZARD_TYPE_COLLISION})
 
     if right_front_dist > SIDE_SENSOR_MAX_DIST:
         hazards.append({"sensor": RIGHT_FRONT_SENSOR, "type": HAZARD_TYPE_CLIFF})
-    if 0 <= right_front_dist < SIDE_SENSOR_MIN_DIST:
+    if 0 < right_front_dist < SIDE_SENSOR_MIN_DIST:
         hazards.append({"sensor": RIGHT_FRONT_SENSOR, "type": HAZARD_TYPE_COLLISION})
 
     if front_cliff_dist > FRONT_SENSOR_MAX_DIST:
         hazards.append({"sensor": FRONT_CLIFF_SENSOR, "type": HAZARD_TYPE_CLIFF})
-    if 0 <= front_dist < FRONT_SENSOR_MIN_DIST:
+
+    if 0 < front_dist < FRONT_SENSOR_MIN_DIST:
+        print(f"{front_dist=}")
         hazards.append({"sensor": FRONT_SENSOR, "type": HAZARD_TYPE_COLLISION})
 
     return hazards
@@ -96,14 +102,22 @@ async def provide_state():
                 await messages.send_identity(websocket, "hazards")
                 while True:
                     # query the sensors for distances
-                    front_hazards = detect_hazards_front(get_distances())
+                    distances = get_distances()
+                    front_hazards = detect_hazards_front(distances)
                     message = json.dumps(
                         {
                             "type": "updateState",
-                            "data": {"hazards": {"front": front_hazards}},
+                            "data": {
+                                "hazards": {
+                                    "front": front_hazards,
+                                    # "distances": distances,
+                                }
+                            },
                         }
                     )
                     if message != last_message:
+                        if constants.LOG_ALL_MESSAGES:
+                            log.info(f"sending: {message}")
                         await websocket.send(message)
                     last_message = message
                     await asyncio.sleep(0.01)

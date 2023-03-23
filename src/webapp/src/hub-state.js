@@ -45,6 +45,10 @@ export const DEFAULT_HUB_STATE = {
     requested_at: 0,
   },
 
+  hazards: {
+    front: [],
+  },
+
   hub_stats: {
     state_updates_recv: 0,
   },
