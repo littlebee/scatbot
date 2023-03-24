@@ -26,6 +26,7 @@ adafruit-circuitpython-bmp280 = "^3.2.19"
 adafruit-python-shell = "^1.6.0"
 click = "^8.1.3"
 adafruit-circuitpython-motorkit = "^1.6.11"
+adafruit-circuitpython-tca9548a = "^0.7.0"
 
 # TODO: pyaudio fails to install (compile) in github actions container due to missing
 #    portaudio.h.  Prolly needs a to run `apt install` for portaudio-dev or such

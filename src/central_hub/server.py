@@ -167,7 +167,7 @@ async def handleIdentity(websocket, subsystem_name):
 
 
 async def handlePing(websocket):
-    send_message(websocket, json.dumps({"type": "pong"}))
+    await send_message(websocket, json.dumps({"type": "pong"}))
 
 
 async def handleMessage(websocket, path):

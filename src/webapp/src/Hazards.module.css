@@ -1,0 +1,22 @@
+
+.hazardsContainer {
+  position: fixed;
+  right: 5px;
+  bottom: 5px;
+  user-select: none;
+}
+
+.indicator {
+  position: fixed;
+  height: 40px;
+  width: 40px;
+  animation: blinkingBackground .5s infinite;
+}
+
+@keyframes blinkingBackground{
+  0%		{ opacity: 0; }
+  25%		{ opacity: 0.25; }
+  50%		{ opacity: 0.55; }
+  75%		{ opacity: 0.75; }
+  100%	{ opacity: 1; }
+}

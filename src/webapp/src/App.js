@@ -15,6 +15,7 @@ import { VideoSelector } from "./VideoSelector";
 import { Overlays } from "./Overlays";
 import { OverlaySelector } from "./OverlaySelector";
 import { HubStateDialog } from "./HubStateDialog";
+import { Hazards } from "./Hazards";
 import { Thumbstick } from "./Thumbstick";
 import { BehaviorSelector } from "./BehaviorSelector";
 
@@ -102,6 +103,7 @@ function App() {
           </div>
         </div>
       </div>
+      <Hazards hubState={hubState} />
       <Thumbstick />
       <HubStateDialog
         hubState={hubState}

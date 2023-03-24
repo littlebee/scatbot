@@ -154,6 +154,13 @@ The `behavior` key is shared data udpated from the specific task running in the 
 Provides keys: `compass`
 Subscribes to keys: `none`
 
+## hazards subsystem
+
+Provides keys: `hazards`
+Subscribes to keys: `none`
+
+The hazards subsystem provides information from front and rear bumper sensors to detect collisions and cliffs.
+
 ## motor_control subsystem
 
 Provides keys: `motors`

@@ -11,7 +11,7 @@ import board
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 
 i2c_bus = board.I2C()
-ina219 = INA219(i2c_bus)
+ina219 = INA219(i2c_bus, constants.BATTERY_I2C_ADDRESS)
 ina219.bus_adc_resolution = ADCResolution.ADCRES_12BIT_32S
 ina219.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_32S
 ina219.bus_voltage_range = BusVoltageRange.RANGE_16V

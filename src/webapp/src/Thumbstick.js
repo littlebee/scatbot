@@ -68,7 +68,7 @@ export function Thumbstick() {
     const relativeY =
       -1 * (clientY - containerRef.current.offsetTop - STICK_RADIUS);
 
-    console.log("computed offsets", { relativeX, relativeY });
+    // console.log("computed offsets", { relativeX, relativeY });
 
     setRelativeX(relativeX);
     setRelativeY(relativeY);

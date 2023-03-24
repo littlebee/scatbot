@@ -13,6 +13,7 @@ to_stop=(
   "battery"
   "behavior"
   "compass"
+  "hazards"
   "motor_control"
   "onboard_ui"
   "system_stats"
