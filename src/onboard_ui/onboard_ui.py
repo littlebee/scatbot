@@ -1,20 +1,18 @@
 import os
 import signal
 import sys
-import socket
 import json
 import pygame
 import websockets
 import asyncio
 import traceback
-import subprocess
 import board
 from digitalio import DigitalInOut, Direction, Pull
 
-from commons import constants, messages, shared_state
-
-white = (255, 255, 255)
-black = (0, 0, 0)
+from commons import constants, log, messages, shared_state
+from onboard_ui.leds import update_leds
+from onboard_ui.system_info import render_system_info
+import onboard_ui.styles as styles
 
 reset_button = DigitalInOut(board.D17)
 reset_button.direction = Direction.INPUT
@@ -30,10 +28,7 @@ screen_width = screen.get_width()
 screen_height = screen.get_height()
 
 pygame.mouse.set_visible(False)
-screen.fill(black)
-
-large_font = pygame.font.SysFont("timesnewroman", 30)
-small_font = pygame.font.SysFont("timesnewroman", 20)
+screen.fill(styles.BLACK)
 
 current_websocket = None
 
@@ -50,11 +45,6 @@ def handler(signum, frame):
 
 # Set the signal handler and a 5-second alarm
 signal.signal(signal.SIGHUP, handler)
-
-
-def log(message):
-    print(message)
-    sys.stdout.flush()
 
 
 async def render_splash():
@@ -76,7 +66,7 @@ async def render_splash():
 
     pygame.display.update()
     await asyncio.sleep(10)
-    screen.fill(black)
+    screen.fill(styles.BLACK)
     pygame.display.update()
 
 
@@ -86,63 +76,13 @@ async def render():
     global screen_height
 
     try:
-        (cpu_temp, *rest) = [
-            int(i) / 1000
-            for i in os.popen("cat /sys/devices/virtual/thermal/thermal_zone*/temp")
-            .read()
-            .split()
-        ]
-
-        screen.fill(black)
-        text = small_font.render("Network:", True, white, black)
-        screen.blit(text, (0, 0))
-
-        text = large_font.render(f"{socket.gethostname()}.local", True, white, black)
-        screen.blit(text, (10, 22))
-
-        text = large_font.render(get_ip_address(), True, white, black)
-        screen.blit(text, (10, 58))
-
-        wifiSsid = subprocess.run(["iwgetid", "-r"], stdout=subprocess.PIPE).stdout
-        text = large_font.render(wifiSsid, True, white, black)
-        screen.blit(text, (10, 92))
-
-        text = small_font.render("CPU: ", True, white, black)
-        screen.blit(text, (0, 126))
-
-        cpu_util = shared_state.state["system_stats"]["cpu_util"]
-        text = large_font.render(f"{cpu_util:.1f}%", True, white, black)
-        screen.blit(text, (10, 148))
-
-        cpu_temp = shared_state.state["system_stats"]["cpu_temp"]
-        text = large_font.render(f"{cpu_temp:.1f}°", True, white, black)
-        screen.blit(text, (100, 148))
-
-        text = small_font.render("Battery: ", True, white, black)
-        screen.blit(text, (0, 180))
-        battery_voltage = shared_state.state["battery"]["voltage"]
-        battery_current = shared_state.state["battery"]["current"]
-        text = large_font.render(
-            f"{battery_voltage:.1f}V@{battery_current:.1f}A", True, white, black
-        )
-        screen.blit(text, (10, 202))
-
+        screen.fill(styles.BLACK)
+        render_system_info(screen)
         pygame.display.update()
 
     except Exception as e:
-        log(f"could not get stats {e}")
-
-
-def get_ip_address():
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip_addr = s.getsockname()[0]
-        s.close()
-        return ip_addr
-    except Exception as e:
-        log(f"unable to get ip address. {e}")
-        return "0.0.0.0"
+        traceback.print_exc()
+        log.error(f"could not get stats {e}")
 
 
 async def ui_task():
@@ -151,13 +91,22 @@ async def ui_task():
     # await render_splash()
     while not should_exit:
         await render()
-
         if not reset_button.value:
             os.system("shutdown now")
 
         await asyncio.sleep(1)
 
-    log("exiting ui task")
+    log.info("exiting ui task")
+
+
+async def led_task():
+    while not should_exit:
+        try:
+            update_leds()
+            await asyncio.sleep(0.25)
+        except Exception as e:
+            traceback.print_exc()
+            log.error(f"error in led_task: {e}")
 
 
 async def state_task():
@@ -167,12 +116,12 @@ async def state_task():
     try:
         while not should_exit:
             try:
-                log(f"connecting to {constants.HUB_URI}")
+                log.info(f"connecting to {constants.HUB_URI}")
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     current_websocket = websocket
                     await messages.send_identity(websocket, "onboard_ui")
                     await messages.send_subscribe(
-                        websocket, ["system_stats", "battery"]
+                        websocket, ["system_stats", "battery", "hazards"]
                     )
                     await messages.send_get_state(websocket)
                     async for message in websocket:
@@ -181,7 +130,7 @@ async def state_task():
                         message_data = json_data.get("data")
 
                         if constants.LOG_ALL_MESSAGES:
-                            log(f"got {message_type}: {message_data}")
+                            log.info(f"got {message_type}: {message_data}")
 
                         if message_type in ["stateUpdate", "state"]:
                             shared_state.update_state_from_message_data(message_data)
@@ -190,22 +139,24 @@ async def state_task():
                 traceback.print_exc()
 
             if should_exit:
-                log("got shutdown signal.  exiting.")
+                log.info("got shutdown signal.  exiting.")
             else:
-                log("socket disconnected.  Reconnecting in 5 sec...")
+                log.info("socket disconnected.  Reconnecting in 5 sec...")
                 await asyncio.sleep(5)
 
     except Exception as e:
-        log(f"got exception on async loop. Exiting. {e}")
+        log.error(f"got exception on async loop. Exiting. {e}")
 
     finally:
         pygame.quit()
 
 
 async def start():
-    recvTask = asyncio.create_task(state_task())
-    uiTask = asyncio.create_task(ui_task())
-    await asyncio.wait([recvTask, uiTask])
+    tasks = []
+    tasks.append(asyncio.create_task(state_task()))
+    tasks.append(asyncio.create_task(ui_task()))
+    tasks.append(asyncio.create_task(led_task()))
+    await asyncio.wait(tasks)
 
 
 asyncio.run(start())
