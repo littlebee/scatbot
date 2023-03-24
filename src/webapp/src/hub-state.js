@@ -29,7 +29,13 @@ export const DEFAULT_HUB_STATE = {
   },
 
   // which behavior - RC, hide $ seek, follow
-  behavior: 0,
+  behave: 0,
+
+  // updated by behavior subsystem
+  behavior: {
+    mode: 0,
+    status: "",
+  },
 
   // heading
   compass: 0,

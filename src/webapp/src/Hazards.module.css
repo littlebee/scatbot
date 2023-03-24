@@ -2,15 +2,36 @@
 .hazardsContainer {
   position: fixed;
   right: 5px;
-  bottom: 5px;
+  bottom: 25px;
   user-select: none;
+  width: 250px;
+  height: 300px;
+  transition: width 1s, height 1s;
 }
 
+.smallerContainer {
+  width: 175px;
+  height: 210px;
+  bottom: 20px;
+  right: 20px;
+}
+
+.image {
+  height: 100%;
+  width: 100%;
+}
+
+
 .indicator {
-  position: fixed;
+  position: absolute;
   height: 40px;
   width: 40px;
   animation: blinkingBackground .5s infinite;
+}
+
+.smallerIndicator {
+  height: 30px;
+  width: 30px;
 }
 
 @keyframes blinkingBackground{
