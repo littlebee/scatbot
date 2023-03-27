@@ -17,6 +17,7 @@ state = {
     "behavior": {
         "mode": DEFAULT_BEHAVIOR,
         "status": "",
+        "targetAcquired": False,
     },
     # heading - note that this is not necessarily calibrated to mag or true north
     "compass": 0,
