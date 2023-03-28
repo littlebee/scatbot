@@ -10,14 +10,19 @@ import adafruit_vl53l4cd
 
 from commons import constants, messages, log
 
-LEFT_FRONT_SENSOR = 0
-RIGHT_FRONT_SENSOR = 1
-FRONT_SENSOR = 2
+FRONT_SENSORS_BASE_INDEX = 0
+REAR_SENSORS_BASE_INDEX = 3
+
+FRONT_DISTANCE_SENSOR = FRONT_SENSORS_BASE_INDEX + 2
+REAR_DISTANCE_SENSOR = REAR_SENSORS_BASE_INDEX + 2
 
 SENSOR_CHANNELS = [
     5,  # LEFT FRONT
     6,  # RIGHT FRONT
     7,  # CENTER FRONT
+    3,  # LEFT REAR
+    2,  # RIGHT REAR
+    4,  # CENTER REAR
 ]
 
 HAZARD_TYPE_COLLISION = "collision"
@@ -25,7 +30,7 @@ HAZARD_TYPE_CLIFF = "cliff"
 
 SIDE_SENSOR_MIN_DIST = 6
 SIDE_SENSOR_MAX_DIST = 15
-FRONT_SENSOR_MIN_DIST = 5
+CENTER_SENSOR_MIN_DIST = 5
 
 
 # Create I2C bus as normal
@@ -63,27 +68,31 @@ def get_distances():
     return distances
 
 
-def detect_hazards_front(distances):
+def detect_hazards(distances, base_sensor_index):
     hazards = []
-    left_front_dist, right_front_dist, front_dist = distances
+    [left_dist, right_dist, center_dist] = distances[
+        base_sensor_index : base_sensor_index + 3
+    ]
+    [left_sensor, right_sensor, center_sensor] = range(
+        base_sensor_index, base_sensor_index + 3
+    )
 
-    if left_front_dist > SIDE_SENSOR_MAX_DIST:
-        hazards.append({"sensor": LEFT_FRONT_SENSOR, "type": HAZARD_TYPE_CLIFF})
+    if left_dist > SIDE_SENSOR_MAX_DIST:
+        hazards.append({"sensor": left_sensor, "type": HAZARD_TYPE_CLIFF})
 
     # Note that zero is not a possible value as an object placed right up to the sensor
     # produces distance of ~2cm.  zero only shows up when the distance from sensor
     # is far away (> 100cm). I think its from refraction echos. Exclude zero.
-    if 0 < left_front_dist < SIDE_SENSOR_MIN_DIST:
-        hazards.append({"sensor": LEFT_FRONT_SENSOR, "type": HAZARD_TYPE_COLLISION})
+    if 0 < left_dist < SIDE_SENSOR_MIN_DIST:
+        hazards.append({"sensor": left_sensor, "type": HAZARD_TYPE_COLLISION})
 
-    if right_front_dist > SIDE_SENSOR_MAX_DIST:
-        hazards.append({"sensor": RIGHT_FRONT_SENSOR, "type": HAZARD_TYPE_CLIFF})
-    if 0 < right_front_dist < SIDE_SENSOR_MIN_DIST:
-        hazards.append({"sensor": RIGHT_FRONT_SENSOR, "type": HAZARD_TYPE_COLLISION})
+    if right_dist > SIDE_SENSOR_MAX_DIST:
+        hazards.append({"sensor": right_sensor, "type": HAZARD_TYPE_CLIFF})
+    if 0 < right_dist < SIDE_SENSOR_MIN_DIST:
+        hazards.append({"sensor": right_sensor, "type": HAZARD_TYPE_COLLISION})
 
-    if 0 < front_dist < FRONT_SENSOR_MIN_DIST:
-        print(f"{front_dist=}")
-        hazards.append({"sensor": FRONT_SENSOR, "type": HAZARD_TYPE_COLLISION})
+    if 0 < center_dist < CENTER_SENSOR_MIN_DIST:
+        hazards.append({"sensor": center_sensor, "type": HAZARD_TYPE_COLLISION})
 
     return hazards
 
@@ -98,15 +107,21 @@ async def provide_state():
                 while True:
                     # query the sensors for distances
                     distances = get_distances()
-                    front_hazards = detect_hazards_front(distances)
+                    front_hazards = detect_hazards(distances, FRONT_SENSORS_BASE_INDEX)
+                    rear_hazards = detect_hazards(distances, REAR_SENSORS_BASE_INDEX)
+
                     message = json.dumps(
                         {
                             "type": "updateState",
                             "data": {
                                 "hazards": {
                                     "front": front_hazards,
-                                    # "distances": distances,
-                                }
+                                    "rear": rear_hazards,
+                                },
+                                "distances": {
+                                    "front": distances[FRONT_DISTANCE_SENSOR],
+                                    "rear": distances[REAR_DISTANCE_SENSOR],
+                                },
                             },
                         }
                     )

@@ -8,17 +8,17 @@ import { classnames } from "./util/classNames";
 
 const INDICATORS = [
   {
-    name: "front right hazard",
-    hazards_key: "front",
-    sensor: 1,
-    left: "63%",
-    top: -5,
-  },
-  {
     name: "front left hazard",
     hazards_key: "front",
     sensor: 0,
     left: "22%",
+    top: -5,
+  },
+  {
+    name: "front right hazard",
+    hazards_key: "front",
+    sensor: 1,
+    left: "63%",
     top: -5,
   },
   {
@@ -28,6 +28,27 @@ const INDICATORS = [
     left: "42%",
     top: -25,
   },
+  {
+    name: "rear left hazard",
+    hazards_key: "rear",
+    sensor: 3,
+    left: "22%",
+    top: 270,
+  },
+  {
+    name: "rear right hazard",
+    hazards_key: "rear",
+    sensor: 4,
+    left: "63%",
+    top: 270,
+  },
+  {
+    name: "rear center hazard",
+    hazards_key: "rear",
+    sensor: 5,
+    left: "42%",
+    top: 285,
+  },
 ];
 
 const HAZARD_TYPE_COLORS = {
@@ -36,13 +57,15 @@ const HAZARD_TYPE_COLORS = {
 };
 
 export function Hazards({ hubState }) {
-  const frontHazardsBySensor = useMemo(
-    () =>
-      Object.fromEntries(
-        hubState.hazards.front.map((hazard) => [hazard.sensor, hazard.type])
-      ),
-    [hubState.hazards]
-  );
+  const hazardsBySensor = useMemo(() => {
+    const frontHazards = Object.fromEntries(
+      hubState.hazards.front.map((hazard) => [hazard.sensor, hazard.type])
+    );
+    const rearHazards = Object.fromEntries(
+      hubState.hazards.rear.map((hazard) => [hazard.sensor, hazard.type])
+    );
+    return { ...frontHazards, ...rearHazards };
+  }, [hubState.hazards]);
 
   const isRemoteControl = hubState.behavior.mode === 0;
 
@@ -60,7 +83,7 @@ export function Hazards({ hubState }) {
     <div className={containerClass}>
       <img className={st.image} src="/scatbot-overlay.png" />
       {INDICATORS.map((indicator) => {
-        const hazardType = frontHazardsBySensor[indicator.sensor];
+        const hazardType = hazardsBySensor[indicator.sensor];
         const style = {
           top: indicator.top,
           left: indicator.left,

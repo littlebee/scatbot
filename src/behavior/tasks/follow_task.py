@@ -18,6 +18,8 @@ ROTATION_THROTTLE = constants.env_float("ROTATION_THROTTLE", 0.5)
 # how many degrees off center until we rotate
 DEGREES_OFF_THRESHOLD = constants.env_float("DEGREES_OFF_THRESHOLD", 2)
 
+was_target_acquired = False
+
 
 async def follow_task(websocket):
     """follow_task is a coroutine that runs when the follow `behave` mode is selected"""
@@ -65,6 +67,11 @@ def acquire_target():
 async def update_target_state(websocket, target_object):
     target_acquired = target_object is not None
     bounding_box = target_object[0]["boundingBox"] if target_acquired else []
+
+    # any time we have a target, we want to update because the bounding
+    # box most likely changed
+    if not target_acquired and not was_target_acquired:
+        return
 
     if target_acquired:
         log.info(f"follow_task: target acquired {target_object}")

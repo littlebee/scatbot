@@ -47,6 +47,11 @@ export const DEFAULT_HUB_STATE = {
     section_map: [],
   },
 
+  distances: {
+    front: 0,
+    rear: 0,
+  },
+
   feeder: {
     requested_at: 0,
   },

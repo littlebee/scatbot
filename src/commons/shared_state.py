@@ -27,6 +27,11 @@ state = {
         "max_distance": 0,
         "section_map": [],
     },
+    # provided by hazards/provider.py
+    "distances": {
+        "front": 0,
+        "rear": 0,
+    },
     "feeder": {"requested_at": 0},
     # provided by hazards/provider.py
     "hazards": {"front": [], "rear": []},
