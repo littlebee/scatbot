@@ -13,13 +13,11 @@ from commons import constants, messages, log
 LEFT_FRONT_SENSOR = 0
 RIGHT_FRONT_SENSOR = 1
 FRONT_SENSOR = 2
-FRONT_CLIFF_SENSOR = 3
 
 SENSOR_CHANNELS = [
-    4,  # LEFT FRONT
-    5,  # RIGHT FRONT
-    6,  # CENTER FRONT
-    7,  # CENTER FRONT CLIFF
+    5,  # LEFT FRONT
+    6,  # RIGHT FRONT
+    7,  # CENTER FRONT
 ]
 
 HAZARD_TYPE_COLLISION = "collision"
@@ -28,7 +26,6 @@ HAZARD_TYPE_CLIFF = "cliff"
 SIDE_SENSOR_MIN_DIST = 6
 SIDE_SENSOR_MAX_DIST = 15
 FRONT_SENSOR_MIN_DIST = 5
-FRONT_SENSOR_MAX_DIST = 15
 
 
 # Create I2C bus as normal
@@ -68,12 +65,13 @@ def get_distances():
 
 def detect_hazards_front(distances):
     hazards = []
-    left_front_dist, right_front_dist, front_dist, front_cliff_dist = distances
+    left_front_dist, right_front_dist, front_dist = distances
 
     if left_front_dist > SIDE_SENSOR_MAX_DIST:
         hazards.append({"sensor": LEFT_FRONT_SENSOR, "type": HAZARD_TYPE_CLIFF})
+
     # Note that zero is not a possible value as an object placed right up to the sensor
-    # produces distance of ~ +/- 2cm.  zero only shows up when the distance from sensor
+    # produces distance of ~2cm.  zero only shows up when the distance from sensor
     # is far away (> 100cm). I think its from refraction echos. Exclude zero.
     if 0 < left_front_dist < SIDE_SENSOR_MIN_DIST:
         hazards.append({"sensor": LEFT_FRONT_SENSOR, "type": HAZARD_TYPE_COLLISION})
@@ -82,9 +80,6 @@ def detect_hazards_front(distances):
         hazards.append({"sensor": RIGHT_FRONT_SENSOR, "type": HAZARD_TYPE_CLIFF})
     if 0 < right_front_dist < SIDE_SENSOR_MIN_DIST:
         hazards.append({"sensor": RIGHT_FRONT_SENSOR, "type": HAZARD_TYPE_COLLISION})
-
-    if front_cliff_dist > FRONT_SENSOR_MAX_DIST:
-        hazards.append({"sensor": FRONT_CLIFF_SENSOR, "type": HAZARD_TYPE_CLIFF})
 
     if 0 < front_dist < FRONT_SENSOR_MIN_DIST:
         print(f"{front_dist=}")

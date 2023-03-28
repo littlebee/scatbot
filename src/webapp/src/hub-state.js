@@ -53,6 +53,7 @@ export const DEFAULT_HUB_STATE = {
 
   hazards: {
     front: [],
+    rear: [],
   },
 
   hub_stats: {

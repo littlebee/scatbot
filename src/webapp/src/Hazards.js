@@ -8,17 +8,17 @@ import { classnames } from "./util/classNames";
 
 const INDICATORS = [
   {
-    name: "front left hazard",
+    name: "front right hazard",
     hazards_key: "front",
     sensor: 1,
-    left: "22%",
+    left: "63%",
     top: -5,
   },
   {
-    name: "front right hazard",
+    name: "front left hazard",
     hazards_key: "front",
     sensor: 0,
-    left: "63%",
+    left: "22%",
     top: -5,
   },
   {
@@ -27,13 +27,6 @@ const INDICATORS = [
     sensor: 2,
     left: "42%",
     top: -25,
-  },
-  {
-    name: "front bottom hazard",
-    hazards_key: "front",
-    sensor: 3,
-    left: "42%",
-    top: 10,
   },
 ];
 
@@ -80,6 +73,7 @@ export function Hazards({ hubState }) {
             key={indicator.sensor}
             className={indicatorClass}
             style={style}
+            title={`${indicator.name} - ${hazardType}`}
           />
         );
       })}

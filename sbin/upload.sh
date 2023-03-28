@@ -35,6 +35,7 @@ rsync --progress --partial \
 --exclude=debug/commons \
 --exclude=camera_test_output.avi \
 --exclude=__pycache__/ \
+--exclude=.pytest_cache \
 --exclude=.mypy_cache \
 --exclude=.github \
 . $TARGET_HOST:$TARGET_DIR
