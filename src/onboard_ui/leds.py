@@ -27,9 +27,9 @@ def update_leds():
     else:
         DOTS[RIGHT_DOT] = BLACK
 
-    # if "rear" in hazards and len(hazards["rear"]) > 0:
-    #     DOTS[LEFT_DOT] = RED
-    # else:
-    #     DOTS[LEFT_DOT] = BLACK
+    if "rear" in hazards and len(hazards["rear"]) > 0:
+        DOTS[LEFT_DOT] = RED
+    else:
+        DOTS[LEFT_DOT] = BLACK
 
-    # DOTS[CENTER_DOT] = BLACK
+    DOTS[CENTER_DOT] = BLACK

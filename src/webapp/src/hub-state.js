@@ -29,7 +29,13 @@ export const DEFAULT_HUB_STATE = {
   },
 
   // which behavior - RC, hide $ seek, follow
-  behavior: 0,
+  behave: 0,
+
+  // updated by behavior subsystem
+  behavior: {
+    mode: 0,
+    status: "",
+  },
 
   // heading
   compass: 0,
@@ -41,12 +47,18 @@ export const DEFAULT_HUB_STATE = {
     section_map: [],
   },
 
+  distances: {
+    front: 0,
+    rear: 0,
+  },
+
   feeder: {
     requested_at: 0,
   },
 
   hazards: {
     front: [],
+    rear: [],
   },
 
   hub_stats: {

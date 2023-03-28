@@ -14,6 +14,13 @@ def env_int(name, default):
         return default
 
 
+def env_float(name, default):
+    try:
+        return float(env_string(name, default))
+    except:
+        return default
+
+
 def env_bool(name, default):
     value = env_string(name, default).lower()
     if value in ("true", "1"):

@@ -104,7 +104,7 @@ function App() {
         </div>
       </div>
       <Hazards hubState={hubState} />
-      <Thumbstick />
+      {hubState.behavior.mode === 0 && <Thumbstick />}
       <HubStateDialog
         hubState={hubState}
         isOpen={isHubStateDialogOpen}

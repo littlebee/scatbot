@@ -17,6 +17,7 @@ state = {
     "behavior": {
         "mode": DEFAULT_BEHAVIOR,
         "status": "",
+        "targetAcquired": False,
     },
     # heading - note that this is not necessarily calibrated to mag or true north
     "compass": 0,
@@ -26,8 +27,15 @@ state = {
         "max_distance": 0,
         "section_map": [],
     },
+    # provided by hazards/provider.py
+    "distances": {
+        "front": 0,
+        "rear": 0,
+    },
     "feeder": {"requested_at": 0},
-    "hazards": {"front": {}, "rear": {}},
+    # provided by hazards/provider.py
+    "hazards": {"front": [], "rear": []},
+    # provided by central_hub/
     "hub_stats": {"state_updates_recv": 0},
     # recognized objects from recognition subsystem
     "recognition": [

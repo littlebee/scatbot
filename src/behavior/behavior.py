@@ -8,6 +8,7 @@ import websockets
 from commons import constants as c, messages, shared_state, log
 
 from behavior.tasks.follow_task import follow_task
+from behavior.behavior_state import send_state_update
 
 
 TASKS = {
@@ -20,16 +21,6 @@ TASKS = {
 
 current_behavior = c.DEFAULT_BEHAVIOR
 current_behavior_task = None
-
-
-async def send_state_update(websocket):
-    await messages.send_message(
-        websocket,
-        {
-            "type": "updateState",
-            "data": {"behavior": {"mode": current_behavior, "status": "peachy"}},
-        },
-    )
 
 
 async def maybe_switch_behavior(websocket):
@@ -47,12 +38,13 @@ async def maybe_switch_behavior(websocket):
 
     new_behavior_task = TASKS[new_behavior]
     if new_behavior_task:
-        current_behavior_task = asyncio.create_task(new_behavior_task())
+        current_behavior_task = asyncio.create_task(new_behavior_task(websocket))
     else:
+        # no behavior is RC mode
         current_behavior_task = None
 
     log.info(f"switched behavior mode to {current_behavior}")
-    await send_state_update(websocket)
+    await send_state_update(websocket, {"mode": current_behavior})
 
 
 async def state_task():
