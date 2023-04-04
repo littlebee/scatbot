@@ -16,6 +16,7 @@ def get_heading():
     bear2 = bus.read_byte_data(constants.COMPASS_I2C_ADDRESS, 3)
     bear = (bear1 << 8) + bear2
     bear = bear / 10.0
+    # return bear
     return add_degrees(bear, constants.COMPASS_MAGNETIC_OFFSET)
 
 

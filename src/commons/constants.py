@@ -29,8 +29,15 @@ def env_bool(name, default):
         return False
 
 
-# Add I2C Addresses for all devices here for easy lookup
+# Image capture dims in pixels
+VISION_HEIGHT = 480
+VISION_WIDTH = 640
+# in degrees; depends on camera; RPi v2 cam is 62deg
+VISION_FOV = 62
 
+#
+# Add I2C Addresses for all devices here for easy lookup
+#
 BATTERY_I2C_ADDRESS = 0x40
 COMPASS_I2C_ADDRESS = 0x60
 MOTOR_I2C_ADDRESS = 0x70
@@ -74,8 +81,8 @@ TFLITE_DATA_DIR = os.path.abspath(
 COMPASS_SAMPLE_INTERVAL = 0.05
 # min absolute difference between samples to send to hub
 COMPASS_CHANGE_TOLERANCE = 0.1
-# true north / magnetic north offset
-COMPASS_MAGNETIC_OFFSET = -67.2
+# true north / magnetic north offset (based on factory calibrated cmps14)
+COMPASS_MAGNETIC_OFFSET = env_int("COMPASS_MAGNETIC_OFFSET", 144)
 
 # how often the ina219 is sampled for batter voltage
 BATTERY_SAMPLE_INTERVAL = 1  # 1Hz
@@ -113,8 +120,10 @@ I2C_BUS = 1
 class BEHAVIORS(Enum):
     # Remote control mode
     RC = 0
+    # Track in place any person, cat or dog it sees (autonomous)
+    TRACK = 1
     # Follow any person, cat or dog it sees (autonomous)
-    FOLLOW = 1
+    FOLLOW = 2
 
 
 VALID_BEHAVIORS = set(item.value for item in BEHAVIORS)

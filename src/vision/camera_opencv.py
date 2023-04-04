@@ -9,12 +9,9 @@
 """
 
 import cv2
-import logging
 
-from commons import constants
+from commons import constants as c, log
 from commons.base_camera import BaseCamera
-
-logger = logging.getLogger(__name__)
 
 
 class OpenCvCamera(BaseCamera):
@@ -22,17 +19,17 @@ class OpenCvCamera(BaseCamera):
     img_is_none_messaged = False
 
     def __init__(self):
-        OpenCvCamera.set_video_source(constants.CAMERA_CHANNEL)
+        OpenCvCamera.set_video_source(c.CAMERA_CHANNEL)
         super(OpenCvCamera, self).__init__()
 
     @staticmethod
     def set_video_source(source):
-        print(f"setting video source to {source}")
+        log.info(f"setting video source to {source}")
         OpenCvCamera.video_source = source
 
     @staticmethod
     def frames():
-        print("initializing VideoCapture")
+        log.info("initializing VideoCapture")
 
         camera = cv2.VideoCapture(
             OpenCvCamera.video_source
@@ -40,17 +37,17 @@ class OpenCvCamera(BaseCamera):
         if not camera.isOpened():
             raise RuntimeError("Could not start camera.")
 
-        camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        camera.set(cv2.CAP_PROP_FRAME_WIDTH, c.VISION_WIDTH)
+        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, c.VISION_HEIGHT)
 
         while True:
             _, img = camera.read()
             if img is None:
                 if not OpenCvCamera.img_is_none_messaged:
-                    logger.error(
+                    log.error(
                         "The camera has not read data, please check whether the camera can be used normally."
                     )
-                    logger.error(
+                    log.error(
                         "Use the command: 'raspistill -t 1000 -o image.jpg' to check whether the camera can be used correctly."
                     )
                     OpenCvCamera.img_is_none_messaged = True

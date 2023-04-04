@@ -15,6 +15,8 @@ TASKS = {
     # in remote control mode, there is nothing to do; the UI directly controls
     # lights, sounds, motors and feeder
     c.BEHAVIORS.RC.value: None,
+    # Track people or pets (rotate only)
+    c.BEHAVIORS.TRACK.value: follow_task,
     # Follow people or pets
     c.BEHAVIORS.FOLLOW.value: follow_task,
 }
@@ -44,7 +46,10 @@ async def maybe_switch_behavior(websocket):
         current_behavior_task = None
 
     log.info(f"switched behavior mode to {current_behavior}")
-    await send_state_update(websocket, {"mode": current_behavior})
+    await send_state_update(
+        websocket,
+        {"mode": current_behavior, "targetAcquired": False, "targetBoundingBox": []},
+    )
 
 
 async def state_task():
@@ -54,7 +59,15 @@ async def state_task():
             async with websockets.connect(c.HUB_URI) as websocket:
                 await messages.send_identity(websocket, "behavior")
                 await messages.send_subscribe(
-                    websocket, ["behave", "compass", "depth_map", "recognition"]
+                    websocket,
+                    [
+                        "behave",
+                        "compass",
+                        "depth_map",
+                        "recognition",
+                        "hazards",
+                        "distances",
+                    ],
                 )
                 await messages.send_get_state(websocket)
                 async for message in websocket:

@@ -92,7 +92,9 @@ async def ui_task():
     while not should_exit:
         await render()
         if not reset_button.value:
+            os.system("./stop.sh")
             os.system("shutdown now")
+            should_exit = True
 
         await asyncio.sleep(1)
 

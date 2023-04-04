@@ -99,6 +99,9 @@ def detect_hazards(distances, base_sensor_index):
 
 async def provide_state():
     last_message = ""
+    last_front_distance = 0
+    last_rear_distance = 0
+
     while True:
         try:
             log.info(f"connecting to {constants.HUB_URI}")
@@ -107,8 +110,16 @@ async def provide_state():
                 while True:
                     # query the sensors for distances
                     distances = get_distances()
+
                     front_hazards = detect_hazards(distances, FRONT_SENSORS_BASE_INDEX)
                     rear_hazards = detect_hazards(distances, REAR_SENSORS_BASE_INDEX)
+
+                    last_front_distance = (
+                        distances[FRONT_DISTANCE_SENSOR] or last_front_distance
+                    )
+                    last_rear_distance = (
+                        distances[REAR_DISTANCE_SENSOR] or last_rear_distance
+                    )
 
                     message = json.dumps(
                         {
@@ -119,8 +130,8 @@ async def provide_state():
                                     "rear": rear_hazards,
                                 },
                                 "distances": {
-                                    "front": distances[FRONT_DISTANCE_SENSOR],
-                                    "rear": distances[REAR_DISTANCE_SENSOR],
+                                    "front": last_front_distance,
+                                    "rear": last_rear_distance,
                                 },
                             },
                         }
