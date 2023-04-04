@@ -11,14 +11,12 @@ import threading
 import asyncio
 import websockets
 import traceback
-import logging
 
-from commons import constants, messages
+from commons import constants, messages, log
 from commons.fps_stats import FpsStats
 from .pytorch_detect import PytorchDetect
 from .tflite_detect import TFLiteDetect
 
-logger = logging.getLogger(__name__)
 
 WHICH_DETECTOR = "tflite"
 
@@ -78,14 +76,16 @@ class RecognitionProvider:
                 else:
                     detector = PytorchDetect()
 
-                print(f"recognition connecting to hub central at {constants.HUB_URI}")
+                log.info(
+                    f"recognition connecting to hub central at {constants.HUB_URI}"
+                )
                 async with websockets.connect(constants.HUB_URI) as websocket:
                     await messages.send_identity(websocket, "recognition")
                     while True:
                         # if not cls.pause_event.is_set():
-                        #     print(f"recognition waiting on pause event")
+                        #     log.info(f"recognition waiting on pause event")
                         #     cls.pause_event.wait()
-                        #     print(f"recognition resumed")
+                        #     log.info(f"recognition resumed")
 
                         frame = cls.camera.get_frame()
                         t1 = time.time()
@@ -113,10 +113,10 @@ class RecognitionProvider:
             except:
                 traceback.print_exc()
 
-            print("central_hub socket disconnected.  Reconnecting in 5 sec...")
+            log.info("central_hub socket disconnected.  Reconnecting in 5 sec...")
             time.sleep(5)
 
     @classmethod
     def _thread(cls):
-        logger.info("Starting recognition thread.")
+        log.info("Starting recognition thread.")
         asyncio.run(cls.provide_state())

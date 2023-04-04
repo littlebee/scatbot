@@ -62,11 +62,11 @@ export function Header({
                     <LabeledText label="compass">
                       {hubState.compass?.toFixed(1)}˚
                     </LabeledText>
-                    <LabeledText label="min dist">
-                      {hubState.depth_map?.min_distance?.toFixed(1)}cm
+                    <LabeledText label="dist front">
+                      {hubState.distances?.front?.toFixed(1)}cm
                     </LabeledText>
-                    <LabeledText label="max dist">
-                      {hubState.depth_map?.max_distance?.toFixed(1)}cm
+                    <LabeledText label="dist rear">
+                      {hubState.distances?.rear?.toFixed(1)}cm
                     </LabeledText>
                   </div>
                 </>

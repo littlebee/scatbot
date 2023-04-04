@@ -6,7 +6,8 @@ import st from "./BehaviorSelector.module.scss";
 
 const options = [
   { value: 0, label: "Remote Control" },
-  { value: 1, label: "Follow Pets and People" },
+  { value: 1, label: "Track Pets and People" },
+  { value: 2, label: "Follow Pets and People" },
 ];
 
 export function BehaviorSelector({ hubState }) {

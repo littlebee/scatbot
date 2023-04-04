@@ -22,7 +22,7 @@ import pyrealsense2 as rs
 
 import numpy as np
 
-from commons import constants
+from commons import constants as c
 from commons.base_camera import BaseCamera, CameraEvent
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ DECIMATE_PURE_PY = 0
 DECIMATE_REALSENSE = 1
 DECIMATE_NUMPY = 2
 
-DECIMATE_METHOD = constants.env_int("DECIMATE_METHOD", DECIMATE_NUMPY)
+DECIMATE_METHOD = c.env_int("DECIMATE_METHOD", DECIMATE_NUMPY)
 
 
 class RealsenseCamera(BaseCamera):
@@ -43,7 +43,7 @@ class RealsenseCamera(BaseCamera):
     depth_frame_event = CameraEvent()
 
     def __init__(self):
-        RealsenseCamera.set_video_source(constants.CAMERA_CHANNEL_RS)
+        RealsenseCamera.set_video_source(c.CAMERA_CHANNEL_RS)
         super(RealsenseCamera, self).__init__()
 
     def get_depth_image(self):
@@ -73,10 +73,14 @@ class RealsenseCamera(BaseCamera):
 
         # Configure streams
         config = rs.config()
-        if not constants.DISABLE_REALSENSE_RECOGNITION:
-            config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
-        if not constants.DISABLE_DEPTH_PROVIDER:
-            config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+        if not c.DISABLE_REALSENSE_RECOGNITION:
+            config.enable_stream(
+                rs.stream.color, c.VISION_WIDTH, c.VISION_HEIGHT, rs.format.bgr8, 30
+            )
+        if not c.DISABLE_DEPTH_PROVIDER:
+            config.enable_stream(
+                rs.stream.depth, c.VISION_WIDTH, c.VISION_HEIGHT, rs.format.z16, 30
+            )
 
         # align_to = rs.stream.color
         # align = rs.align(align_to)
@@ -96,11 +100,11 @@ class RealsenseCamera(BaseCamera):
                 # frames = align.process(frames)
 
                 color_image = None
-                if not constants.DISABLE_REALSENSE_RECOGNITION:
+                if not c.DISABLE_REALSENSE_RECOGNITION:
                     color_frame = frames.get_color_frame()
                     color_image = np.asanyarray(color_frame.get_data())
 
-                if not constants.DISABLE_DEPTH_PROVIDER:
+                if not c.DISABLE_DEPTH_PROVIDER:
                     depth_frame = frames.get_depth_frame()
                     full_depth_data = np.asanyarray(depth_frame.get_data())
                     depth_image = cv2.applyColorMap(
@@ -116,7 +120,7 @@ class RealsenseCamera(BaseCamera):
                     RealsenseCamera.last_depth_image = depth_image
                     RealsenseCamera.depth_frame_event.set()
 
-                if color_image is None and not constants.DISABLE_REALSENSE_RECOGNITION:
+                if color_image is None and not c.DISABLE_REALSENSE_RECOGNITION:
                     if not RealsenseCamera.img_is_none_messaged:
                         logger.error(
                             "The camera has not read data, please check whether the camera can be used normally."
@@ -127,7 +131,7 @@ class RealsenseCamera(BaseCamera):
                         RealsenseCamera.img_is_none_messaged = True
                     continue
 
-                yield color_image if not constants.DISABLE_REALSENSE_RECOGNITION else depth_image
+                yield color_image if not c.DISABLE_REALSENSE_RECOGNITION else depth_image
 
             except:
                 traceback.print_exc()
@@ -153,8 +157,8 @@ class RealsenseCamera(BaseCamera):
         This is, as it turns out, a really slow way to do
         it.  (like 0.2 FPS slow)
         """
-        target_width = constants.DEPTH_MAP_SECTION_WIDTH
-        target_height = constants.DEPTH_MAP_SECTION_HEIGHT
+        target_width = c.DEPTH_MAP_SECTION_WIDTH
+        target_height = c.DEPTH_MAP_SECTION_HEIGHT
 
         dec_depth_data = [[0] * target_width for i in range(target_height)]
 
@@ -193,8 +197,8 @@ class RealsenseCamera(BaseCamera):
         """
         This is also pretty fast (25fps)
         """
-        target_width = constants.DEPTH_MAP_SECTION_WIDTH
-        target_height = constants.DEPTH_MAP_SECTION_HEIGHT
+        target_width = c.DEPTH_MAP_SECTION_WIDTH
+        target_height = c.DEPTH_MAP_SECTION_HEIGHT
         [data_width, data_height] = depth_data.shape
 
         block_width = int(data_width / target_width)

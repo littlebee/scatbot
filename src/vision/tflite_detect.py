@@ -1,16 +1,12 @@
 """
 This class provides object detection using Tensor Flow Lite.
 """
-import logging
-
 from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
 
 
-from commons import constants as c
-
-logger = logging.getLogger(__name__)
+from commons import constants as c, log
 
 
 class TFLiteDetect:
@@ -31,7 +27,7 @@ class TFLiteDetect:
             # model = f"{TFLITE_DATA_DIR}/efficientdet_lite0_edgetpu.tflite"
             model = f"{c.TFLITE_DATA_DIR}/ssd_mobilenet_v1_coco_quant_postprocess_edgetpu.tflite"
 
-        print(f"using model {model}")
+        log.info(f"using model {model}")
 
         base_options = core.BaseOptions(
             file_name=model,

@@ -1,22 +1,30 @@
+"""
+    Provides all track and follow task behaviors
+"""
 import asyncio
 import traceback
 
-from commons import log, shared_state, constants
+from commons import log, shared_state, constants as c
 import behavior.behavior_state as state
 
 CONFIDENCE_THRESHOLD = 0.5
 TO_MATCH = ["person", "dog", "cat"]
-VIEW_CENTER = (640 / 2, 480 / 2)
+VIEW_CENTER = (c.VISION_WIDTH / 2, c.VISION_HEIGHT / 2)
 
 # how many pixels per one degree of rotation
 # 640 pix / Raspberry Pi v2 cam  62 deg hz fov = 10.32
-PIXELS_PER_DEGREE = constants.env_int("PIXELS_PER_DEGREE", 10)
-# how many seconds to rotate per degree; TODO: replace this with use of compass
-SECONDS_PER_DEGREE = constants.env_float("SECONDS_PER_DEGREE", 0.008)
+PIXELS_PER_DEGREE = c.env_int("PIXELS_PER_DEGREE", c.VISION_WIDTH / c.VISION_FOV)
+# how many seconds to rotate per degree; TODO: maybe replace this with use of compass
+SECONDS_PER_DEGREE = c.env_float("SECONDS_PER_DEGREE", 0.007)
 # -1 to 1 speed of rotation
-ROTATION_THROTTLE = constants.env_float("ROTATION_THROTTLE", 0.5)
+ROTATION_THROTTLE = c.env_float("ROTATION_THROTTLE", 0.5)
 # how many degrees off center until we rotate
-DEGREES_OFF_THRESHOLD = constants.env_float("DEGREES_OFF_THRESHOLD", 2)
+DEGREES_OFF_THRESHOLD = c.env_float("DEGREES_OFF_THRESHOLD", 2)
+# minimum percent height of target / 480 to maintain
+MIN_PERCENT_HEIGHT = 0.5
+# maximum percent height of target / 480 to maintain
+MAX_PERCENT_HEIGHT = 0.8
+
 
 was_target_acquired = False
 
@@ -33,7 +41,8 @@ async def follow_task(websocket):
 
             # returns True if centered on target, rotates if not
             if await center_on_target(websocket, target_object):
-                await move_with_target(target_object)
+                if shared_state.state["behave"] == c.BEHAVIORS.FOLLOW.value:
+                    await move_with_target(target_object)
 
             await asyncio.sleep(0.05)
 
@@ -103,7 +112,15 @@ async def center_on_target(websocket, target_object):
 
 
 async def move_with_target(target_object):
-    # TODO
+    log.info(f"Moving to target {target_object=}")
+    [obj, [height, width, area]] = target_object
+
+    height_diff = height / c.VISION_HEIGHT
+    if height_diff < MIN_PERCENT_HEIGHT:
+        log.info("moving forward")
+    elif height_diff > MAX_PERCENT_HEIGHT:
+        log.info("moving backward")
+
     await asyncio.sleep(0.2)
 
 
