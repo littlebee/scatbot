@@ -1,0 +1,15 @@
+
+.wrapper {
+  position: absolute;
+  top: 300px;
+  height: 480px;
+  width: 640px;
+  align-self: center;
+}
+
+.objectSquare {
+  display: block;
+  position: absolute;
+
+  border: 3px solid #00e75d;
+}

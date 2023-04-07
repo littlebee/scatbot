@@ -18,6 +18,7 @@ import { HubStateDialog } from "./HubStateDialog";
 import { Hazards } from "./Hazards";
 import { Thumbstick } from "./Thumbstick";
 import { BehaviorSelector } from "./BehaviorSelector";
+import { TargetOverlay } from "./TargetOverlay";
 
 import "./lcars.css";
 import "./App.css";
@@ -94,6 +95,7 @@ function App() {
             >
               <VideoFeed whichVideo={whichVideo} />
             </Overlays>
+            <TargetOverlay behavior={hubState.behavior} />
             <OverlaySelector
               whichOverlays={whichOverlays}
               filterConfidence={filterConfidence}
