@@ -74,6 +74,8 @@ def acquire_target():
 
 
 async def update_target_state(websocket, target_object):
+    global was_target_acquired
+
     target_acquired = target_object is not None
     bounding_box = target_object[0]["boundingBox"] if target_acquired else []
 
@@ -81,6 +83,8 @@ async def update_target_state(websocket, target_object):
     # box most likely changed
     if not target_acquired and not was_target_acquired:
         return
+
+    was_target_acquired = True
 
     if target_acquired:
         log.info(f"follow_task: target acquired {target_object}")
