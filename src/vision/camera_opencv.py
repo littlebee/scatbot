@@ -7,7 +7,7 @@
 
 "Great artists steal". Thank you, @adeept and @miguelgrinberg!
 """
-
+import os
 import cv2
 
 from commons import constants as c, log
@@ -39,6 +39,11 @@ class OpenCvCamera(BaseCamera):
 
         camera.set(cv2.CAP_PROP_FRAME_WIDTH, c.VISION_WIDTH)
         camera.set(cv2.CAP_PROP_FRAME_HEIGHT, c.VISION_HEIGHT)
+
+        # Doing the rotation using cv2.rotate() was a 6-7 FPS drop
+        # Unfortunately, you can't set the rotation on the v4l driver
+        # on raspian bullseye before doing the opencv init above - why, idk.
+        os.system(f"sudo v4l2-ctl --set-ctrl=rotate={c.CAMERA_ROTATION}")
 
         while True:
             _, img = camera.read()

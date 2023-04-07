@@ -57,6 +57,8 @@ CAMERA_CHANNEL_RS = 4
 CAMERA_CHANNEL = env_int("CAMERA_CHANNEL", CAMERA_CHANNEL_PICAM)
 # realsense depth camera channel
 CAMERA_CHANNEL_RS_DEPTH = 2  # maybe??
+# camera rotation if side mounted (90, 270) or upside down mounted (180)
+CAMERA_ROTATION = 180
 
 DISABLE_DEPTH_PROVIDER = env_bool("DISABLE_DEPTH_PROVIDER", False)
 DISABLE_RECOGNITION_PROVIDER = env_bool("DISABLE_RECOGNITION_PROVIDER", False)

@@ -2,6 +2,12 @@
 #
 # rc.local for scatbot-pi
 
+# WARNING: setting the v4l rotation here will cause rc.local to abend
+#   see comment in opencv_camera.py
+#
+# rotate camera 180 deg for upsidedown mount
+#  sudo v4l2-ctl --set-ctrl=rotate=180
+
 TARGET_DIR="/home/bee/scatbot"
 LOG_FILE=$TARGET_DIR/logs/rclocal.log
 
