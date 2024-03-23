@@ -43,7 +43,7 @@ sudo apt-get install -y python3-pycoral
 # Install Adafruit Brainhat accessories
 # https://learn.adafruit.com/adafruit-braincraft-hat-easy-machine-learning-for-raspberry-pi/blinka-setup
 
-# Blinka
+# Blinka  (needed by all of the adafruit libs below)
 cd ~
 sudo pip3 install --upgrade adafruit-python-shell
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py

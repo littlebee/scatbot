@@ -9,27 +9,17 @@
 #   exit 1
 # fi
 
-to_stop=(
-  "battery"
-  "behavior"
-  "compass"
-  "hazards"
-  "motor_control"
-  "onboard_ui"
-  "system_stats"
-  "web_server"
-
-  # "vision"
-  "vision_realsense"
-
-  "central_hub"
-)
+to_stop=()
 if [ $# -ne 0 ]; then
   to_stop=($@)
+else
+  IFS=$'\n' read -d '' -r -a to_stop < ./services.cfg
 fi
 
-for sub_system in ${to_stop[@]}
+// stop in reverse order as start
+for ((i=${#to_stop[@]}-1; i>=0; i--));
 do
+  sub_system=${to_stop[i]}
   echo "stopping $sub_system"
 
   pid_file="./$sub_system.pid"

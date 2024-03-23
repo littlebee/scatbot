@@ -11,28 +11,13 @@ mkdir -p ./logs
 
 sleep=2
 
-to_start=(
-  "central_hub"
-
-  "battery"
-  "behavior"
-  "compass"
-  "hazards"
-  "motor_control"
-  "onboard_ui"
-  "system_stats"
-  "web_server"
-
-  ## video feed and recognition via Pi4 camera
-  "vision"
-
-  ## depth_map via Intel Realsense camera
-  "vision_realsense"
-)
+to_start=()
 
 if [ $# -ne 0 ]; then
   to_start=($@)
   sleep=0
+else
+  IFS=$'\n' read -d '' -r -a to_start < ./services.cfg
 fi
 
 for sub_system in ${to_start[@]}
